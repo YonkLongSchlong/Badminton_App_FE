@@ -3,10 +3,17 @@ import React from "react";
 import { scale, ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
 
-const CourseList = (props) => {
+const CourseCard = (props) => {
+  const navigation = useNavigation();
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("CourseDetails", { course: props.course })
+      }
+      style={styles.container}
+    >
       <View style={styles.imageContainer}></View>
       <View style={styles.courseNameContainer}>
         <View style={styles.quantityContainer}>
@@ -19,13 +26,15 @@ const CourseList = (props) => {
             {props.course.lesson_quantity} Lessons
           </Text>
         </View>
-        <Text style={styles.heading}>{props.course.name}</Text>
+        <Text style={styles.heading} numberOfLines={1}>
+          {props.course.name}
+        </Text>
       </View>
     </TouchableOpacity>
   );
 };
 
-export default CourseList;
+export default CourseCard;
 
 const styles = ScaledSheet.create({
   container: {

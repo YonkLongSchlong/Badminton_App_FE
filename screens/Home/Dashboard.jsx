@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ColorAccent from "../../constant/Color.js";
-import InstructorList from "../../components/Home/InstructorList.jsx";
-import CourseCategoryList from "../../components/Home/CourseCategoryList.jsx";
-import CourseList from "../../components/Home/CourseList.jsx";
+import InstructorCard from "../../components/Home/InstructorCard.jsx";
+import CourseCategoryCard from "../../components/Home/CourseCategoryCard.jsx";
+import CourseCard from "../../components/Home/CourseCard.jsx";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 const instructors = [
@@ -66,6 +66,43 @@ const courses = [
     name: "Getting started with badminton",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna tempor incididunt ut labore et dolore magna aliqua tempor incididunt ut labore et dolore magna aliqua",
+    lessons: [
+      {
+        id: 1,
+        name: "Introduction",
+        length: "2 Min 45 Sec",
+      },
+      {
+        id: 2,
+        name: "How to get into badminton",
+        length: "2 Min 45 Sec",
+      },
+      {
+        id: 3,
+        name: "Let's get start with how to hold the racket",
+        length: "2 Min 45 Sec",
+      },
+      {
+        id: 4,
+        name: "Master your grip",
+        length: "2 Min 45 Sec",
+      },
+      {
+        id: 5,
+        name: "Your first serve",
+        length: "2 Min 45 Sec",
+      },
+      {
+        id: 6,
+        name: "Your first serve",
+        length: "2 Min 45 Sec",
+      },
+      {
+        id: 7,
+        name: "Your first serve",
+        length: "2 Min 45 Sec",
+      },
+    ],
   },
   {
     id: 2,
@@ -95,7 +132,7 @@ const Dashboard = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* USER SECTION */}
+        {/* USER GREETING SECTION */}
         <View style={styles.userSection}>
           <Text style={styles.heading}>Hi, Batman</Text>
           <View>
@@ -106,7 +143,7 @@ const Dashboard = () => {
           </View>
         </View>
 
-        {/* HERO SECTION*/}
+        {/* HERO SECTION */}
         <View style={styles.heroSection}>
           <View style={styles.headlineContainer}>
             <Text style={styles.heroHeadline}>
@@ -135,7 +172,7 @@ const Dashboard = () => {
             showsHorizontalScrollIndicator={false}
           >
             {instructors.map((instructor) => (
-              <InstructorList key={instructor.id} instructor={instructor} />
+              <InstructorCard key={instructor.id} instructor={instructor} />
             ))}
           </ScrollView>
         </View>
@@ -143,13 +180,14 @@ const Dashboard = () => {
         {/* COURSES LIST SECTION */}
         <View style={styles.coursesSection}>
           <Text style={styles.heading}>Courses</Text>
+
           <ScrollView
             contentContainerStyle={styles.categoryListContainer}
             horizontal
             showsHorizontalScrollIndicator={false}
           >
             {categories.map((category) => (
-              <CourseCategoryList
+              <CourseCategoryCard
                 key={category.id}
                 category={category}
                 chosenCategory={chosenCategory}
@@ -157,11 +195,13 @@ const Dashboard = () => {
               />
             ))}
           </ScrollView>
+
           <View style={styles.courseListContainer}>
             {courses.map((course) => (
-              <CourseList key={course.id} course={course} />
+              <CourseCard key={course.id} course={course} />
             ))}
           </View>
+
           <TouchableOpacity style={styles.exploreBtn}>
             <Text style={[styles.heading, { color: "white" }]}>
               Explore more

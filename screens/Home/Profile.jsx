@@ -123,7 +123,8 @@ const styles = ScaledSheet.create({
   overviewCardContainer: {
     marginTop: 15,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
+    gap: 25,
     paddingHorizontal: "28@s",
   },
   settingCardSection: {
@@ -132,12 +133,11 @@ const styles = ScaledSheet.create({
   },
   settingCardContainer: {
     height: "100%",
-    justifyContent: "center",
-    gap: 30,
+    justifyContent: "space-between",
     backgroundColor: ColorAccent.secondary,
     borderTopEndRadius: 70,
     borderTopStartRadius: 70,
     paddingHorizontal: 45,
-    paddingVertical: 40,
+    paddingVertical: 45,
   },
 });
