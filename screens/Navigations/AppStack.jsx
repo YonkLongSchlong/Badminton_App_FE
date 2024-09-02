@@ -18,16 +18,18 @@ const AppStack = () => {
       <Stack.Screen
         name="CourseDetails"
         component={CourseDetails}
-        options={{
+        options={(props) => ({
           headerTitleAlign: "center",
-          headerTitle: "Course Details",
+          headerBackVisible: false,
+          headerTitle: props.route.params.course.name,
+          // headerTitle: "",
           headerShadowVisible: false,
 
           headerTitleStyle: {
             fontFamily: "Bold",
-            fontSize: scale(16),
+            fontSize: scale(13),
           },
-        }}
+        })}
       />
     </Stack.Navigator>
   );

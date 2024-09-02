@@ -11,7 +11,7 @@ const LessonCard = (props) => {
         <TouchableOpacity>
           <Ionicons
             name="play-circle"
-            color={ColorAccent.tertiary}
+            color={ColorAccent.light_tertiary}
             size={scale(46)}
           />
         </TouchableOpacity>
@@ -43,7 +43,7 @@ const styles = ScaledSheet.create({
     gap: 10,
   },
   lessonInfoContainer: {
-    width: "70%",
+    width: "75%",
   },
   secondPart: {
     backgroundColor: ColorAccent.secondary,

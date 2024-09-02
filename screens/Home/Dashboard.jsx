@@ -39,7 +39,7 @@ const instructors = [
 const categories = [
   {
     id: 1,
-    name: "Popular",
+    name: "All",
   },
   {
     id: 2,
@@ -63,51 +63,51 @@ const courses = [
   {
     id: 1,
     lesson_quantity: 24,
-    name: "Getting started with badminton",
+    name: "The only badminton course you need",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna tempor incididunt ut labore et dolore magna aliqua tempor incididunt ut labore et dolore magna aliqua",
+      "New to badminton and eager to learn the ropes? Our “Getting started with badminton” course is the perfect starting point for you! This beginner-friendly course is designed to introduce you to the fundamentals of badminton in a supportive and engaging environment.",
     lessons: [
       {
         id: 1,
         name: "Introduction",
-        length: "2 Min 45 Sec",
+        length: "2 mins, 45 secs",
       },
       {
         id: 2,
         name: "How to get into badminton",
-        length: "2 Min 45 Sec",
+        length: "2 mins, 45 secs",
       },
       {
         id: 3,
         name: "Let's get start with how to hold the racket",
-        length: "2 Min 45 Sec",
+        length: "2 mins, 45 secs",
       },
       {
         id: 4,
         name: "Master your grip",
-        length: "2 Min 45 Sec",
+        length: "2 mins, 45 secs",
       },
       {
         id: 5,
         name: "Your first serve",
-        length: "2 Min 45 Sec",
+        length: "2 mins, 45 secs",
       },
       {
         id: 6,
         name: "Your first serve",
-        length: "2 Min 45 Sec",
+        length: "2 mins, 45 secs",
       },
       {
         id: 7,
         name: "Your first serve",
-        length: "2 Min 45 Sec",
+        length: "2 mins, 45 secs",
       },
     ],
   },
   {
     id: 2,
     lesson_quantity: 24,
-    name: "Getting started with badminton",
+    name: "The only badminton course you need to become a supreme competitor",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna tempor incididunt ut labore et dolore magna aliqua tempor incididunt ut labore et dolore magna aliqua",
   },
@@ -125,16 +125,26 @@ const courses = [
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna tempor incididunt ut labore et dolore magna aliqua tempor incididunt ut labore et dolore magna aliqua",
   },
+  {
+    id: 5,
+    lesson_quantity: 24,
+    name: "Getting started with badminton",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna tempor incididunt ut labore et dolore magna aliqua tempor incididunt ut labore et dolore magna aliqua",
+  },
 ];
 
 const Dashboard = () => {
-  const [chosenCategory, setChosenCategory] = useState("Popular");
+  const [chosenCategory, setChosenCategory] = useState("All");
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* USER GREETING SECTION */}
         <View style={styles.userSection}>
-          <Text style={styles.heading}>Hi, Batman</Text>
+          <View style={{ alignItems: "flex-end" }}>
+            <Text style={styles.heading}>Hi, Batman</Text>
+            <Text style={styles.text}>Let get you back on track</Text>
+          </View>
           <View>
             <Image
               style={styles.image}
@@ -147,7 +157,7 @@ const Dashboard = () => {
         <View style={styles.heroSection}>
           <View style={styles.headlineContainer}>
             <Text style={styles.heroHeadline}>
-              Discover How To Develop And Improve Your Skill
+              Discover How To Develope And Improve Your Skill
             </Text>
           </View>
           <View style={styles.heroImageContainer}>
@@ -161,8 +171,8 @@ const Dashboard = () => {
         {/* INSTRUCTOR LIST SECTION */}
         <View style={styles.instructorSection}>
           <View style={styles.instructorHeadlineContainer}>
-            <Text style={styles.heading}>Instructor</Text>
-            <Text style={([styles.text], { color: ColorAccent.tertiary })}>
+            <Text style={styles.heading}>Instructors</Text>
+            <Text style={[styles.text, { color: ColorAccent.tertiary }]}>
               See all
             </Text>
           </View>
@@ -179,8 +189,6 @@ const Dashboard = () => {
 
         {/* COURSES LIST SECTION */}
         <View style={styles.coursesSection}>
-          <Text style={styles.heading}>Courses</Text>
-
           <ScrollView
             contentContainerStyle={styles.categoryListContainer}
             horizontal
@@ -202,11 +210,13 @@ const Dashboard = () => {
             ))}
           </View>
 
-          <TouchableOpacity style={styles.exploreBtn}>
-            <Text style={[styles.heading, { color: "white" }]}>
-              Explore more
-            </Text>
-          </TouchableOpacity>
+          <View style={styles.exploreBtnContainer}>
+            <TouchableOpacity style={styles.exploreBtn}>
+              <Text style={[styles.subHeading, { color: "white" }]}>
+                Explore more
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -220,28 +230,33 @@ const styles = ScaledSheet.create({
     flex: 1,
     backgroundColor: "white",
     paddingHorizontal: 20,
+    paddingBottom: 10,
   },
   userSection: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
     gap: 15,
-    marginTop: 25,
+    marginTop: 30,
   },
   heading: {
     fontFamily: "Bold",
-    fontSize: "14@s",
+    fontSize: "12@s",
+  },
+  subHeading: {
+    fontFamily: "Bold",
+    fontSize: "12@s",
   },
   text: {
-    fontFamily: "Regular",
-    fontSize: "10@s",
+    fontFamily: "Semibold",
+    fontSize: "9@s",
   },
   imageContainer: {
-    borderRadius: "100",
+    borderRadius: 100,
   },
   image: {
-    width: "45@s",
-    height: "45@vs",
+    width: "47@s",
+    height: "47@vs",
     resizeMode: "contain",
   },
   heroSection: {
@@ -250,25 +265,26 @@ const styles = ScaledSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     gap: 10,
-    borderRadius: 10,
+    borderRadius: 5,
     paddingHorizontal: 40,
     paddingVertical: 15,
     backgroundColor: ColorAccent.tertiary,
   },
   headlineContainer: {
-    width: "70%",
+    width: "60%",
   },
   heroHeadline: {
     fontFamily: "Bold",
-    fontSize: "16@s",
+    fontSize: "14@s",
     color: "white",
   },
   heroImageContainer: {
-    width: "30%",
+    width: "40%",
+    justifyContent: "center",
     alignItems: "center",
   },
   heroImage: {
-    height: "80@vs",
+    height: "90@vs",
     resizeMode: "contain",
   },
   instructorSection: {
@@ -285,9 +301,9 @@ const styles = ScaledSheet.create({
     justifyContent: "space-between",
   },
   coursesSection: {
-    marginTop: 30,
+    marginTop: 25,
     paddingBottom: 20,
-    gap: 15,
+    gap: 10,
   },
   categoryListContainer: {
     gap: 15,
@@ -298,13 +314,19 @@ const styles = ScaledSheet.create({
     marginTop: 12,
     gap: 15,
   },
+  exploreBtnContainer: {
+    marginTop: 10,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   exploreBtn: {
-    flex: 1,
     flexDirection: "row",
-    borderRadius: 15,
+    borderRadius: 5,
     backgroundColor: ColorAccent.tertiary,
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 10,
+    paddingHorizontal: 50,
   },
 });

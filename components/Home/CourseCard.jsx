@@ -20,13 +20,14 @@ const CourseCard = (props) => {
           <Ionicons
             name="clipboard-outline"
             color={ColorAccent.tertiary}
-            size={scale(16)}
+            size={scale(12)}
           />
           <Text style={styles.text}>
             {props.course.lesson_quantity} Lessons
           </Text>
         </View>
-        <Text style={styles.heading} numberOfLines={1}>
+        <Text style={styles.text}>Coach: Michael</Text>
+        <Text style={styles.heading} numberOfLines={2}>
           {props.course.name}
         </Text>
       </View>
@@ -44,13 +45,14 @@ const styles = ScaledSheet.create({
   },
   imageContainer: {
     borderRadius: 10,
-    width: "65@s",
-    height: "65@s",
+    width: "75@s",
+    height: "75@s",
     backgroundColor: ColorAccent.secondary,
   },
   image: {},
   courseNameContainer: {
-    gap: 5,
+    width: "70%",
+    gap: 0,
   },
   quantityContainer: {
     flexDirection: "row",
@@ -59,10 +61,10 @@ const styles = ScaledSheet.create({
   },
   heading: {
     fontFamily: "Bold",
-    fontSize: "12@s",
+    fontSize: "11@s",
   },
   text: {
     fontFamily: "Medium",
-    fontSize: "10@s",
+    fontSize: "9@s",
   },
 });

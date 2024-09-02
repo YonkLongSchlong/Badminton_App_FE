@@ -5,15 +5,15 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 const SettingCard = (props) => {
   return (
-    <TouchableOpacity style={styles.container}>
-      <View style={styles.firstPart}>
-        <Ionicons name={props.icon} size={scale(22)} />
-        <Text style={styles.text}>{props.label}</Text>
-      </View>
-      <View>
-        <Ionicons name="chevron-forward" size={scale(22)} />
-      </View>
-    </TouchableOpacity>
+    <>
+      <TouchableOpacity style={styles.container}>
+        <View style={styles.firstPart}>
+          <Ionicons name={props.icon} size={scale(18)} />
+          <Text style={styles.text}>{props.label}</Text>
+        </View>
+      </TouchableOpacity>
+      {!props.last ? <View style={styles.separator} /> : null}
+    </>
   );
 };
 
@@ -33,6 +33,10 @@ const styles = ScaledSheet.create({
   },
   text: {
     fontFamily: "Bold",
-    fontSize: "13@s",
+    fontSize: "11@s",
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "black",
   },
 });

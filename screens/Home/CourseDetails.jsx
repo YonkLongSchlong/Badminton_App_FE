@@ -1,5 +1,12 @@
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React, { useState } from "react";
 import ColorAccent from "../../constant/Color.js";
 import { ScaledSheet } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -7,6 +14,7 @@ import LessonCard from "../../components/Course/LessonCard.jsx";
 
 const CourseDetails = (props) => {
   const { course } = props.route.params;
+  const [show, setShow] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -24,8 +32,16 @@ const CourseDetails = (props) => {
 
         {/* COURSE DESCRIPTION SECTION */}
         <View style={styles.courseDescriptionSection}>
-          <Text style={styles.heading}>Description</Text>
-          <Text style={styles.text}>{course.description}</Text>
+          <View>
+            <Text style={styles.text} numberOfLines={!show ? 3 : null}>
+              {course.description}
+            </Text>
+            <TouchableOpacity onPress={() => setShow(!show)}>
+              <Text style={styles.showText}>
+                {!show ? "Show more" : "Show less"}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* LESSON LIST SECTION */}
@@ -54,11 +70,10 @@ const styles = ScaledSheet.create({
   container: {
     flex: 1,
     backgroundColor: ColorAccent.primary,
-    // backgroundColor: "red",
   },
   scrollView: {
     paddingTop: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 25,
     paddingBottom: 100,
   },
   imageContainer: {
@@ -75,22 +90,19 @@ const styles = ScaledSheet.create({
   },
   heading: {
     fontFamily: "Bold",
-    fontSize: "14@s",
-  },
-  subHeading: {
-    fontFamily: "Bold",
-    fontSize: "10@s",
+    fontSize: "13@s",
   },
   text: {
-    fontFamily: "Regular",
-    fontSize: "11@s",
+    fontFamily: "Medium",
+    fontSize: "10@s",
   },
-  subText: {
-    fontFamily: "Regular",
-    fontSize: "8@s",
+  showText: {
+    fontFamily: "Semibold",
+    fontSize: "10@s",
+    color: ColorAccent.tertiary,
   },
   lessonListSection: {
-    marginTop: 25,
+    marginVertical: 25,
   },
   lessonListContainer: {
     gap: 15,
@@ -99,7 +111,14 @@ const styles = ScaledSheet.create({
     position: "absolute",
     left: 0,
     bottom: 0,
-    backgroundColor: ColorAccent.primary,
+    backgroundColor: "white",
+    // borderColor: "gray",
+    // borderTopWidth: StyleSheet.hairlineWidth,
+    // borderLeftWidth: StyleSheet.hairlineWidth,
+    // borderRightWidth: StyleSheet.hairlineWidth,
+    // borderBottomLeftRadius: 0,
+    // borderBottomRightRadius: 0,
+    // borderRadius: 20,
     width: "100%",
     paddingVertical: 20,
     paddingHorizontal: 20,

@@ -16,14 +16,14 @@ export default OverviewCard;
 const styles = ScaledSheet.create({
   container: {
     alignItems: "center",
-    paddingVertical: "15@s",
-    paddingHorizontal: "20@s",
-    borderRadius: 20,
+    paddingVertical: "10@s",
+    paddingHorizontal: "15@s",
+    borderRadius: 10,
     backgroundColor: ColorAccent.secondary,
   },
   number: {
     fontFamily: "Bold",
-    fontSize: "18@s",
+    fontSize: "16@s",
   },
   text: {
     fontFamily: "Regular",

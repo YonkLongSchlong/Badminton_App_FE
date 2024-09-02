@@ -1,4 +1,4 @@
-import { Image, Text, View } from "react-native";
+import { Image, ScrollView, Text, View } from "react-native";
 import React from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
@@ -9,47 +9,56 @@ import SettingCard from "../../components/Home/SettingCard.jsx";
 const Profile = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.userInfoSection}>
-        <View style={styles.avatarContainer}>
-          <Image
-            style={styles.avatar}
-            source={require("../../assets/4043232_avatar_batman_comics_hero_icon.png")}
-          />
-        </View>
-        <Text style={styles.username}>I'm Batman</Text>
-        <View style={styles.roleContainer}>
-          <View style={styles.roleWrapper}>
-            <View style={styles.roleImageContainer}>
+      <ScrollView>
+        <View style={styles.userInfoSection}>
+          <View style={styles.avatarContainer}>
+            <Image
+              style={styles.avatar}
+              source={require("../../assets/4043232_avatar_batman_comics_hero_icon.png")}
+            />
+          </View>
+          <Text style={styles.username}>I'm Batman</Text>
+          <View style={styles.roleContainer}>
+            <View style={styles.roleWrapper}>
               <Image
                 style={styles.roleImage}
                 source={require("../../assets/2828920.png")}
               />
+              <Text style={styles.roleText}>Participant</Text>
             </View>
-            <Text style={styles.roleText}>Participant</Text>
           </View>
         </View>
-      </View>
 
-      <View style={styles.overviewSection}>
-        <View>
-          <Text style={styles.heading}>Overview:</Text>
+        <View style={styles.overviewSection}>
+          <View>
+            <Text style={styles.heading}>Overview:</Text>
+          </View>
+          <View style={styles.overviewCardContainer}>
+            <OverviewCard />
+            <OverviewCard />
+            <OverviewCard />
+          </View>
         </View>
-        <View style={styles.overviewCardContainer}>
-          <OverviewCard />
-          <OverviewCard />
-          <OverviewCard />
-        </View>
-      </View>
 
-      <View style={styles.settingCardSection}>
-        <View style={styles.settingCardContainer}>
-          <SettingCard icon={"person-outline"} label="Profile" />
-          <SettingCard icon={"notifications-outline"} label="Notifications" />
-          <SettingCard icon={"card-outline"} label="Payment settings" />
-          <SettingCard icon={"calendar-outline"} label="Schedule" />
-          <SettingCard icon={"shield-checkmark-outline"} label="Password" />
+        <View style={styles.settingCardSection}>
+          <Text style={styles.heading}>Settings:</Text>
+          <View style={styles.settingCardContainer}>
+            <SettingCard icon={"person-outline"} label="Profile" />
+            <SettingCard icon={"mail-outline"} label="Email" />
+            <SettingCard icon={"shield-checkmark-outline"} label="Password" />
+            <SettingCard icon={"notifications-outline"} label="Notifications" />
+            <SettingCard icon={"card-outline"} label="Payment settings" />
+            <SettingCard
+              icon={"calendar-outline"}
+              label="Schedule"
+              last={true}
+            />
+          </View>
+          <View style={styles.settingCardContainer}>
+            <SettingCard icon={"log-out-outline"} label="Log out" last={true} />
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -74,70 +83,66 @@ const styles = ScaledSheet.create({
     alignItems: "center",
   },
   avatar: {
-    width: "150@s",
-    height: "150@s",
+    width: "110@s",
+    height: "110@s",
     resizeMode: "cover",
   },
   username: {
     marginTop: 5,
     fontFamily: "Bold",
-    fontSize: "20@s",
+    fontSize: "16@s",
   },
   roleContainer: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 15,
+    marginTop: 10,
   },
   roleWrapper: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    gap: 12,
     backgroundColor: ColorAccent.tertiary,
     paddingHorizontal: "18@s",
     paddingVertical: "6@vs",
     borderRadius: 20,
   },
-  roleImageContainer: {
-    position: "absolute",
-    left: 20,
-    bottom: 10,
-  },
   roleImage: {
-    width: "30@s",
-    height: "30@s",
+    width: "20@s",
+    height: "20@s",
   },
   roleText: {
-    marginLeft: "40@s",
     color: ColorAccent.primary,
     fontFamily: "Semibold",
-    fontSize: "12@s",
+    fontSize: "11@s",
   },
   overviewSection: {
-    marginTop: 20,
-    paddingHorizontal: 20,
+    marginTop: 15,
+    paddingHorizontal: 25,
   },
   heading: {
     fontFamily: "Bold",
-    fontSize: "14@s",
+    fontSize: "12@s",
   },
   overviewCardContainer: {
     marginTop: 15,
     flexDirection: "row",
     justifyContent: "center",
-    gap: 25,
-    paddingHorizontal: "28@s",
+    gap: 30,
   },
   settingCardSection: {
+    width: "full",
     marginTop: 25,
-    flex: 1,
+    marginBottom: 25,
+    paddingHorizontal: 25,
   },
   settingCardContainer: {
-    height: "100%",
     justifyContent: "space-between",
     backgroundColor: ColorAccent.secondary,
-    borderTopEndRadius: 70,
-    borderTopStartRadius: 70,
-    paddingHorizontal: 45,
-    paddingVertical: 45,
+    marginTop: 15,
+    paddingHorizontal: 25,
+    paddingVertical: 25,
+    borderRadius: 10,
+    gap: 20,
   },
 });
