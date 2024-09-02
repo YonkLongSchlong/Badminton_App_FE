@@ -26,7 +26,7 @@ const styles = ScaledSheet.create({
     backgroundColor: ColorAccent.secondary,
     paddingHorizontal: 10,
     paddingVertical: 7,
-    borderRadius: 10,
+    borderRadius: 8,
     marginBottom: 2,
   },
   image: {
@@ -36,6 +36,6 @@ const styles = ScaledSheet.create({
   },
   text: {
     fontFamily: "Semibold",
-    fontSize: "10@s",
+    fontSize: "9@s",
   },
 });
