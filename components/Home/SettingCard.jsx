@@ -4,9 +4,17 @@ import { scale, ScaledSheet } from "react-native-size-matters";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 const SettingCard = (props) => {
+  const handlePress = () => {
+    if (props.label === "Schedule") {
+      props.navigation.navigate("Schedule");
+    }else if(props.label === "Password") {
+      props.navigation.navigate("Password");
+    }
+  };
+
   return (
     <>
-      <TouchableOpacity style={styles.container}>
+      <TouchableOpacity style={styles.container} onPress={handlePress}>
         <View style={styles.firstPart}>
           <Ionicons name={props.icon} size={scale(18)} />
           <Text style={styles.text}>{props.label}</Text>

@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import OverviewCard from "../../components/Home/OverviewCard.jsx";
 import SettingCard from "../../components/Home/SettingCard.jsx";
 
-const Profile = () => {
+const Profile = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -45,13 +45,14 @@ const Profile = () => {
           <View style={styles.settingCardContainer}>
             <SettingCard icon={"person-outline"} label="Profile" />
             <SettingCard icon={"mail-outline"} label="Email" />
-            <SettingCard icon={"shield-checkmark-outline"} label="Password" />
+            <SettingCard icon={"shield-checkmark-outline"} label="Password" navigation={navigation}/>
             <SettingCard icon={"notifications-outline"} label="Notifications" />
             <SettingCard icon={"card-outline"} label="Payment settings" />
             <SettingCard
               icon={"calendar-outline"}
               label="Schedule"
               last={true}
+              navigation={navigation}
             />
           </View>
           <View style={styles.settingCardContainer}>
