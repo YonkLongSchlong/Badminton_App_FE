@@ -1,9 +1,11 @@
-import { View, TextInput, StyleSheet, Text } from "react-native";
+import { View, TextInput, Text } from "react-native";
 import React from "react";
 import { Controller } from "react-hook-form";
-import Colors from "../../constant/Color";
+import ColorAccent from "../../constant/Color.js";
+import { ScaledSheet } from "react-native-size-matters";
 
-export default function LoginTextInput(props) {
+
+export default function CustomTextInput(props) {
   return (
     <Controller
       control={props.control}
@@ -14,7 +16,7 @@ export default function LoginTextInput(props) {
           <View
             style={[
               styles.container,
-              { borderColor: error ? "red" : Colors.secondary },
+              { borderColor: error ? "red" : ColorAccent.secondary },
             ]}
           >
             <TextInput
@@ -32,26 +34,25 @@ export default function LoginTextInput(props) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   container: {
     marginTop: 5,
     alignItems: "center",
     borderWidth: 1,
-    borderRadius: 5,
     marginBottom: 10,
+    justifyContent: "center",
   },
   textInput: {
     paddingHorizontal: 10,
     paddingVertical: 10,
     width: "100%",
-    color: Colors.dark_gray,
-    // fontFamily: "regular",
+    backgroundColor: ColorAccent.primary,
+    borderRadius: 10,
   },
   errorText: {
     color: "red",
     marginHorizontal: 2,
     marginTop: 5,
-    // fontFamily: "regular",
     textAlign: "right",
   },
 });

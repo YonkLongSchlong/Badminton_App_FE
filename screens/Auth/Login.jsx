@@ -1,38 +1,52 @@
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View, ImageBackground } from "react-native";
 import React from "react";
 import { ScaledSheet } from "react-native-size-matters";
+import ColorAccent from "../../constant/Color.js";
+import { useForm } from "react-hook-form";
+import TextInput from "../../components/Input/TextInput";
 
-const Login = ({navigation}) => {
+const Login = ({ navigation }) => {
+  const { control } = useForm();
+
   return (
-    <View style={styles.container}>
-    <View style={styles.header}>
-      <Text style={styles.headerText}>Welcome back!</Text>
-      <Text style={styles.subHeaderText}>Let's get you back on track</Text>
-    </View>
-
-    <View style={styles.form}>
-      <TextInput placeholder="Username" style={styles.input} keyboardType="default"/>
-      <TextInput placeholder="Password" style={styles.input} secureTextEntry />
-
-      <TouchableOpacity style={styles.registerButton}>
-        <Text style={styles.registerButtonText}>Register</Text>
-      </TouchableOpacity>
-
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>Don't you have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-          <Text style={styles.signInText}>SIGN UP</Text>
-        </TouchableOpacity>
+    <ImageBackground source={require('../../assets/background.png')} style={styles.container} resizeMode="cover">
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Welcome back!</Text>
+        <Text style={styles.subHeaderText}>Let's get you back on track</Text>
       </View>
 
+      <View style={styles.form}>
+        <Text style={styles.label}>User name</Text>
+        <TextInput
+          name="User name"
+          control={control}
+          rules={{ required: "Please enter your user name" }}
+        />
+        <Text style={styles.label}>Password</Text>
+        <TextInput
+          name="Password"
+          control={control}
+          rules={{ required: "Please enter your password" }}
+          secure={true}
+        />
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Don't you have an account?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+            <Text style={styles.signInText}>SIGN UP</Text>
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={styles.signinButton}>
+          <Text style={styles.signinButtonText}>Sign in</Text>
+        </TouchableOpacity>
+      </View>
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
         <Text style={styles.instructorLoginText}>Forgot your password?</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
         <Text style={styles.instructorLoginText}>Login as instructor</Text>
       </TouchableOpacity>
-    </View>
-  </View>
+    </ImageBackground>
   );
 };
 
@@ -41,66 +55,56 @@ export default Login;
 const styles = ScaledSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f47c7c",
+    backgroundColor: ColorAccent.tertiary,
     justifyContent: "center",
     padding: 20,
   },
   header: {
     marginBottom: 30,
-    alignItems: "center",
   },
   headerText: {
-    fontSize: 28,
-    color: "#FFF",
-    fontWeight: "bold",
+    fontSize: "40@s",
+    color: ColorAccent.primary,
+    fontFamily: "Caveat-Bold",
   },
   subHeaderText: {
-    fontSize: 16,
-    color: "#FFF",
+    fontFamily: "Regular",
+    color: ColorAccent.primary,
   },
   form: {
-    backgroundColor: "#f5f5f5",
+    backgroundColor: ColorAccent.secondary,
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 20,
   },
-  input: {
-    backgroundColor: "#FFF",
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-    fontSize: 16,
-    marginBottom: 15,
-  },
-  registerButton: {
-    backgroundColor: "#f47c7c",
+  signinButton: {
+    backgroundColor: ColorAccent.tertiary,
     paddingVertical: 15,
-    borderRadius: 5,
+    borderRadius: 10,
     alignItems: "center",
     marginTop: 10,
+    width: "120@s",
   },
-  registerButtonText: {
-    color: "#FFF",
-    fontSize: 16,
-    fontWeight: "bold",
+  signinButtonText: {
+    color: ColorAccent.primary,
+    fontSize: "16@s",
+    fontFamily: "Bold",
   },
   footer: {
     flexDirection: "row",
-    justifyContent: "center",
     marginTop: 20,
   },
   footerText: {
-    fontSize: 14,
-    color: "#333",
+    fontSize: "12@s",
   },
   signInText: {
-    fontSize: 14,
-    color: "#f47c7c",
+    color: ColorAccent.tertiary,
     marginLeft: 5,
+    textDecorationLine: "underline",
   },
   instructorLoginText: {
-    fontSize: 14,
-    color: "#333",
+    fontSize: "12@s",
     textAlign: "center",
-    marginTop: 20,
+    marginTop: 10,
+    textDecorationLine: "underline"
   },
 });

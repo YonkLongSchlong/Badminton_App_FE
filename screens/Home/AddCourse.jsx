@@ -4,58 +4,58 @@ import { ScaledSheet } from "react-native-size-matters";
 import { useForm } from "react-hook-form";
 import TextInput from "../../components/Input/TextInput";
 
-const Password = () => {
+const AddCourse = () => {
   const { control } = useForm();
 
   return (
     <View style={styles.container}>
       <View style={styles.labelContainer}>
-        <Text style={styles.label}>Current Password </Text>
+        <Text style={styles.label}>Course name</Text>
         <Text style={styles.asterisk}>*</Text>
       </View>
       <TextInput
-        name="currentPassword"
+        name="courseName"
         control={control}
-        placeholder="Enter your current password"
-        rules={{ required: "Please enter your current password" }}
+        placeholder="Enter your course name"
+        rules={{ required: "Please enter your course name" }}
         secure={true}
         style={styles.input}
       />
 
       <View style={styles.labelContainer}>
-        <Text style={styles.label}>New Password </Text>
+        <Text style={styles.label}>Course Details</Text>
         <Text style={styles.asterisk}>*</Text>
       </View>
       <TextInput
-        name="newPassword"
+        name="courseDetails"
         control={control}
-        placeholder="Enter your new password"
-        rules={{ required: "Please enter your new password" }}
+        placeholder="Enter your course details"
+        rules={{ required: "Please enter your course details" }}
         secure={true}
         style={styles.input}
       />
 
       <View style={styles.labelContainer}>
-        <Text style={styles.label}>Confirm Password </Text>
+        <Text style={styles.label}>Price</Text>
         <Text style={styles.asterisk}>*</Text>
       </View>
       <TextInput
-        name="confirmPassword"
+        name="price"
         control={control}
-        placeholder="Enter your confirm password"
-        rules={{ required: "Please enter your confirm password" }}
+        placeholder="Enter your course price"
+        rules={{ required: "Please enter your course price" }}
         secure={true}
         style={styles.input}
       />
 
       <TouchableOpacity style={styles.button} disabled={true}>
-        <Text style={styles.buttonText}>Confirm</Text>
+        <Text style={styles.buttonText}>Create Course</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default Password;
+export default AddCourse;
 
 const styles = ScaledSheet.create({
   container: {
