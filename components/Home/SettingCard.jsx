@@ -9,6 +9,8 @@ const SettingCard = (props) => {
       props.navigation.navigate("Schedule");
     }else if(props.label === "Password") {
       props.navigation.navigate("Password");
+    }else if(props.label === "Profile") {
+      props.navigation.navigate("MyProfile");
     }
   };
 

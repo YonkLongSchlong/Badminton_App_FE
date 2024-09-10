@@ -43,7 +43,7 @@ const Profile = ({ navigation }) => {
         <View style={styles.settingCardSection}>
           <Text style={styles.heading}>Settings:</Text>
           <View style={styles.settingCardContainer}>
-            <SettingCard icon={"person-outline"} label="Profile" />
+            <SettingCard icon={"person-outline"} label="Profile" navigation={navigation}/>
             <SettingCard icon={"mail-outline"} label="Email" />
             <SettingCard icon={"shield-checkmark-outline"} label="Password" navigation={navigation}/>
             <SettingCard icon={"notifications-outline"} label="Notifications" />
