@@ -16,7 +16,9 @@ const CourseCard = (props) => {
     >
       <View style={styles.imageContainer}></View>
       <View style={styles.courseNameContainer}>
-        <View style={styles.quantityContainer}>
+
+        {/* Student view */}
+        {/* <View style={styles.quantityContainer}>
           <Ionicons
             name="clipboard-outline"
             color={ColorAccent.tertiary}
@@ -26,7 +28,23 @@ const CourseCard = (props) => {
             {props.course.lesson_quantity} Lessons
           </Text>
         </View>
-        <Text style={styles.text}>Coach: Michael</Text>
+        <Text style={styles.text}>Coach: Michael</Text> */}
+
+        {/* Coach view*/}
+        <View style={styles.quantityContainer}>
+          <View style={styles.numberLession}>
+            <Ionicons
+              name="clipboard-outline"
+              color={ColorAccent.tertiary}
+              size={scale(12)}
+            />
+            <Text style={styles.text}>
+              {props.course.lesson_quantity} Lessons
+            </Text>
+          </View>
+          <Text style={styles.status}>{props.course.status}</Text>
+        </View>
+
         <Text style={styles.heading} numberOfLines={2}>
           {props.course.name}
         </Text>
@@ -52,11 +70,15 @@ const styles = ScaledSheet.create({
   image: {},
   courseNameContainer: {
     width: "70%",
-    gap: 0,
+    gap: 5,
   },
   quantityContainer: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 5,
+  },
+  numberLession:{
+    flexDirection: "row",
     gap: 5,
   },
   heading: {
@@ -67,4 +89,9 @@ const styles = ScaledSheet.create({
     fontFamily: "Medium",
     fontSize: "9@s",
   },
+  status:{
+    fontFamily: "Medium",
+    fontSize: "9@s",
+    marginLeft: 150
+  }
 });

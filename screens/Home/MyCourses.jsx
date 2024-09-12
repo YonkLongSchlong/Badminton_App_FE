@@ -1,9 +1,17 @@
-import { ScrollView, TouchableOpacity, View, Text } from "react-native";
-import React from "react";
+import {
+  ScrollView,
+  TouchableOpacity,
+  View,
+  Text,
+  TextInput,
+} from "react-native";
+import React, { useState } from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
-import CourseCardCoach from "../../components/Home/CourseCardCoach.jsx";
+import CourseCard from "../../components/Home/CourseCard.jsx";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import ColorAccent from "../../constant/Color.js";
+import { Searchbar } from "react-native-paper";
 
 const courses = [
   {
@@ -118,58 +126,89 @@ const courses = [
 ];
 
 export default function MyCourses({ navigation }) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>My Courses</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("AddCourse")} style={styles.iconAddCourse}>
-            <MaterialIcons
-              name="post-add"
-              size={24}
-              color="black"
-            />
-          </TouchableOpacity>
+  const [searchQuery, setSearchQuery] = useState("");
+  const filteredCourses = courses.filter((course) =>
+    course.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+      </View>
+
+      {/* Thanh tìm kiếm */}
+      <Searchbar
+        placeholder="Search course"
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+        iconColor={ColorAccent.tertiary}
+        style={styles.searchBar}
+      />
+
+      {/* Danh sách khóa học */}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={true}
+      >
+        <View style={styles.courseListContainer}>
+          {filteredCourses.map((course) => (
+            <CourseCard key={course.id} course={course} />
+          ))}
         </View>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={true}
-        >
-          <View style={styles.courseListContainer}>
-            {courses.map((course) => (
-              <CourseCardCoach key={course.id} course={course} />
-            ))}
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    );
-  }
-  const styles = ScaledSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: "white",
-    },
-    header: {
-      height: 60, // Đặt chiều cao cho header
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "#f5f5f5",
-    },
-    headerText: {
-      fontSize: "18@s",
-      fontWeight: "bold",
-    },
-    iconAddCourse: {
-      position: "absolute",
-      right: 15,
-      
-    },
-    scrollView: {
-      flex: 1,
-    },
-    courseListContainer: {
-      paddingHorizontal: 5,
-      marginTop: 12,
-      gap: 15,
-    },
-  });
+      </ScrollView>
+
+      {/* Nút Add new course */}
+      <TouchableOpacity
+        onPress={() => navigation.navigate("AddCourse")}
+        style={styles.addCourse}
+      >
+        <MaterialIcons name="post-add" size={24} color="white" />
+        <Text style={styles.addButtonText}>Add new course</Text>
+      </TouchableOpacity>
+    </SafeAreaView>
+  );
+}
+
+const styles = ScaledSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: ColorAccent.primary,
+  },
+  header: {
+    height: 40,
+  },
+  searchBar: {
+    margin: "10@s",
+    borderRadius: "30@s",
+    elevation: 2,
+    backgroundColor: ColorAccent.primary,
+    borderWidth: 1,
+    borderColor: ColorAccent.tertiary,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  courseListContainer: {
+    paddingHorizontal: 5,
+    gap: 15,
+  },
+  addCourse: {
+    position: "absolute",
+    right: "10@s",
+    bottom: "20@s",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: ColorAccent.tertiary,
+    paddingVertical: "12@s",
+    paddingHorizontal: "15@s",
+    borderRadius: "5@s",
+  },
+  addButtonText: {
+    marginLeft: "8@s",
+    fontSize: "16@s",
+    color: ColorAccent.primary,
+    fontFamily: "Bold",
+  },
+});
