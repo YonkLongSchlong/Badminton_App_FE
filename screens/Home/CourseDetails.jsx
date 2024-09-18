@@ -1,7 +1,6 @@
 import {
   Image,
   ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -9,12 +8,12 @@ import {
 import React, { useState } from "react";
 import ColorAccent from "../../constant/Color.js";
 import { ScaledSheet } from "react-native-size-matters";
-import { SafeAreaView } from "react-native-safe-area-context";
 import LessonCard from "../../components/Course/LessonCard.jsx";
 
 const CourseDetails = (props) => {
   const { course } = props.route.params;
   const [show, setShow] = useState(false);
+  const { navigation } = props;
 
   return (
     <View style={styles.container}>
@@ -43,6 +42,10 @@ const CourseDetails = (props) => {
             </TouchableOpacity>
           </View>
         </View>
+        <View style={styles.priceWrapper}>
+          <Text style={styles.heading}>Price</Text>
+          <Text style={styles.heading}>255.000 đ</Text>
+        </View>
 
         {/* LESSON LIST SECTION */}
         <View style={styles.lessonListSection}>
@@ -55,10 +58,25 @@ const CourseDetails = (props) => {
       </ScrollView>
 
       {/* ACCESS BUTTON SECTION */}
-      <View style={styles.btnContainer}>
+      {/* Student View */}
+      {/* <View style={styles.btnContainer}>
         <TouchableOpacity style={styles.btn}>
           <Text style={styles.btnText}>Get Full Access - Đ 255.000</Text>
         </TouchableOpacity>
+      </View> */}
+
+      {/* Coach View */}
+      <View style={styles.rowContainer}>
+        <View style={styles.column}>
+          <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate("AddLesson")}>
+            <Text style={styles.btnText}>Add lesson</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.column}>
+          <TouchableOpacity style={styles.btn}>
+            <Text style={styles.btnText}>Publish</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -135,4 +153,19 @@ const styles = ScaledSheet.create({
     fontSize: "12@s",
     color: ColorAccent.primary,
   },
+  rowContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: "5@s",
+    gap: "10@s",
+    paddingHorizontal: "15@s"
+  },
+  column: {
+    flex: 1,
+  },
+  priceWrapper:{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: "5@s"
+  }
 });

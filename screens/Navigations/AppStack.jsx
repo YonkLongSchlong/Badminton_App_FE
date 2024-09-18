@@ -8,6 +8,7 @@ import Password from "../Setting/Password.jsx";
 import MyProfile from "../Setting/Profile/MyProfile.jsx";
 import EditProfile from "../Setting/Profile/EditProfile.jsx";
 import AddCourse from "../Home/AddCourse.jsx";
+import AddLesson from "../Home/AddLesson.jsx";
 import { scale } from "react-native-size-matters";
 
 const Stack = createNativeStackNavigator();
@@ -68,6 +69,19 @@ const AppStack = () => {
         options={() => ({
           headerTitleAlign: "center",
           headerTitle: "Add Course",
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            fontFamily: "Bold",
+            fontSize: scale(14),
+          },
+        })}
+      />
+      <Stack.Screen
+        name="AddLesson"
+        component={AddLesson}
+        options={() => ({
+          headerTitleAlign: "center",
+          headerTitle: "Add Lesson",
           headerShadowVisible: false,
           headerTitleStyle: {
             fontFamily: "Bold",

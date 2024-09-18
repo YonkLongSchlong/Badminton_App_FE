@@ -4,4 +4,6 @@ export default ColorAccent = {
   tertiary: "#E9897B",
   light_tertiary: "#EDD1CD",
   non_font: "#C3C3C3",
+  border: "#ccc",
+  bgCancelButton: "#ff4d4d"
 };
