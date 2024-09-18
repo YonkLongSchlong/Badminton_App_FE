@@ -3,7 +3,6 @@ import {
   TouchableOpacity,
   View,
   Text,
-  TextInput,
 } from "react-native";
 import React, { useState } from "react";
 import { ScaledSheet } from "react-native-size-matters";

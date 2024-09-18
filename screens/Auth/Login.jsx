@@ -4,7 +4,6 @@ import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import { useForm } from "react-hook-form";
 import TextInput from "../../components/Input/TextInput";
-import FormField from "../../components/Input/FormField";
 
 
 const Login = ({ navigation }) => {

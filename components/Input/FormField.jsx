@@ -11,6 +11,8 @@ export default function FormField({
   placeholder, 
   secure, 
   label, 
+  numberoflines,
+  multiline,
   showAsterisk = false 
 }) {
   return (
@@ -39,6 +41,8 @@ export default function FormField({
                 onChangeText={onChange}
                 placeholder={placeholder}
                 secureTextEntry={secure}
+                multiline={multiline}
+                numberOfLines={numberoflines}
               />
             </View>
             {error && <Text style={styles.errorText}>{error.message}</Text>}
@@ -76,6 +80,7 @@ const styles = ScaledSheet.create({
     paddingVertical: 10,
     width: '100%',
     backgroundColor: ColorAccent.primary,
+    textAlignVertical: "top",
   },
   errorText: {
     color: 'red',
