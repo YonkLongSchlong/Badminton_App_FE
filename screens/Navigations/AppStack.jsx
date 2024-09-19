@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DrawerNavigation from "./DrawerNavigation";
@@ -9,11 +9,13 @@ import MyProfile from "../Setting/Profile/MyProfile.jsx";
 import EditProfile from "../Setting/Profile/EditProfile.jsx";
 import AddCourse from "../Home/AddCourse.jsx";
 import AddLesson from "../Home/AddLesson.jsx";
+import PublicCourse from "../Home/PublicCourse.jsx";
 import { scale } from "react-native-size-matters";
 
 const Stack = createNativeStackNavigator();
 
 const AppStack = () => {
+
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -26,11 +28,8 @@ const AppStack = () => {
         component={CourseDetails}
         options={(props) => ({
           headerTitleAlign: "center",
-          // headerBackVisible: false,
           headerTitle: props.route.params.course.name,
-          // headerTitle: "",
           headerShadowVisible: false,
-
           headerTitleStyle: {
             fontFamily: "Bold",
             fontSize: scale(13),
@@ -89,7 +88,19 @@ const AppStack = () => {
           },
         })}
       />
-      
+      <Stack.Screen
+        name="PublicCourse"
+        component={PublicCourse}
+        options={() => ({
+          headerTitleAlign: "center",
+          headerTitle: "Public Course",
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            fontFamily: "Bold",
+            fontSize: scale(14),
+          },
+        })}
+      />
       <Stack.Screen
         name="MyProfile"
         component={MyProfile}

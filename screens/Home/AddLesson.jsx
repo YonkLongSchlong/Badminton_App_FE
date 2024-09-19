@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
-import * as ImagePicker from 'expo-image-picker';
-import { Video } from 'expo-av';
+import * as ImagePicker from "expo-image-picker";
+import { Video } from "expo-av";
 import FormField from "../../components/Input/FormField";
 import { useForm } from "react-hook-form";
 import ColorAccent from "../../constant/Color.js";
-
 
 const AddLesson = () => {
   const { control, setValue } = useForm();
@@ -34,13 +33,13 @@ const AddLesson = () => {
     <View style={styles.container}>
       {/* Title Input */}
       <FormField
-          control={control}
-          name="title"
-          label="Lesson Title"
-          showAsterisk={true}
-          placeholder="Enter lesson title"
-          rules={{ required: "Please enter lesson title" }}
-        />
+        control={control}
+        name="title"
+        label="Lesson Title"
+        showAsterisk={true}
+        placeholder="Enter lesson title"
+        rules={{ required: "Please enter lesson title" }}
+      />
 
       {/* Choose Video Button */}
       <TouchableOpacity style={styles.button} onPress={chooseVideo}>
@@ -49,20 +48,25 @@ const AddLesson = () => {
 
       {/* Video Preview */}
       {videoUri && (
-        <View style={styles.previewContainer}>
-          <Text style={styles.previewLabel}>Video Preview:</Text>
+        <View>
+          <View style={styles.previewWrapper}>
+            <Text style={styles.previewLabel}>Video Preview:</Text>
+            <TouchableOpacity style={styles.removeButton} onPress={removeVideo}>
+              <Text style={styles.buttonText}>Remove Video</Text>
+            </TouchableOpacity>
+          </View>
+
           <Video
             source={{ uri: videoUri }}
             style={styles.videoPreview}
             useNativeControls
             resizeMode="contain"
           />
-          {/* Remove Video Button */}
-          <TouchableOpacity style={styles.removeButton} onPress={removeVideo}>
-            <Text style={styles.removeButtonText}>Remove Video</Text>
-          </TouchableOpacity>
         </View>
       )}
+      <TouchableOpacity style={styles.addButton}>
+        <Text style={styles.buttonText}>Add Lesson</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -77,12 +81,12 @@ const styles = ScaledSheet.create({
   },
   label: {
     fontSize: "16@s",
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: "10@s",
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: "5@s",
     padding: "10@s",
     marginBottom: "20@s",
@@ -93,34 +97,42 @@ const styles = ScaledSheet.create({
     padding: "10@s",
     borderRadius: "5@s",
     marginBottom: "10@s",
-    alignItems: "center"
+    alignItems: "center",
   },
   buttonText: {
     color: ColorAccent.primary,
     fontSize: "16@s",
     fontWeight: "bold",
   },
-  previewContainer: {
-    marginTop: "20@s",
+  previewWrapper:{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
   },
   previewLabel: {
-    fontWeight: 'bold',
-    marginBottom: "10@s",
+    fontWeight: "bold",
   },
   videoPreview: {
-    width: '100%',
+    width: "100%",
     height: 200,
   },
   removeButton: {
     backgroundColor: ColorAccent.bgCancelButton,
     padding: "10@s",
     borderRadius: "10@s",
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: "10@s",
   },
-  removeButtonText: {
+  buttonText: {
     color: ColorAccent.primary,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+  },
+  addButton: {
+    backgroundColor: ColorAccent.tertiary,
+    padding: "15@s",
+    borderRadius: "10@s",
+    alignItems: "center",
+    marginTop: "10@s",
   },
 });

@@ -5,8 +5,8 @@ import AppStack from "./AppStack"
 const NavigationWrapper = () => {
   return (
     <NavigationContainer>
-      {/* <AuthStack/> */}
-      <AppStack/>
+      <AuthStack/>
+      {/* <AppStack/> */}
     </NavigationContainer>
   )
 }
