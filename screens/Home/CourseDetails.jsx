@@ -4,19 +4,55 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Modal,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import ColorAccent from "../../constant/Color.js";
 import { ScaledSheet } from "react-native-size-matters";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import LessonCard from "../../components/Course/LessonCard.jsx";
 
 const CourseDetails = (props) => {
   const { course } = props.route.params;
   const [show, setShow] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
   const { navigation } = props;
+
+  const toggleDropdown = () => setDropdownVisible(!dropdownVisible);
+
+  const handleDelete = () => {
+    console.log("Course deleted");
+    setDropdownVisible(false);
+  };
+
+  const handleUpdate = () => {
+    navigation.navigate("AddCourse", { course });
+    setDropdownVisible(false);
+  };
 
   return (
     <View style={styles.container}>
+      {/* Settings Icon */}
+      <TouchableOpacity style={styles.settingsIcon} onPress={toggleDropdown}>
+        <Ionicons
+          name="settings-outline"
+          size={24}
+          color={ColorAccent.primary}
+        />
+      </TouchableOpacity>
+
+      {/* Dropdown for settings */}
+      {dropdownVisible && (
+        <View style={styles.dropdownMenu}>
+          <TouchableOpacity style={styles.dropdownItem} onPress={handleUpdate}>
+            <Text style={styles.dropdownText}>Update Course</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.dropdownItem} onPress={handleDelete}>
+            <Text style={styles.dropdownText}>Delete Course</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -41,17 +77,23 @@ const CourseDetails = (props) => {
               </Text>
             </TouchableOpacity>
           </View>
+          
         </View>
         <View style={styles.priceWrapper}>
           <Text style={styles.heading}>Price</Text>
           <Text style={styles.heading}>255.000 đ</Text>
         </View>
+        
 
         {/* LESSON LIST SECTION */}
         <View style={styles.lessonListSection}>
           <View style={styles.lessonListContainer}>
             {course.lessons.map((lesson) => (
-              <LessonCard key={lesson.id} lesson={lesson} />
+              <LessonCard
+                navigation={navigation}
+                key={lesson.id}
+                lesson={lesson}
+              />
             ))}
           </View>
         </View>
@@ -68,12 +110,18 @@ const CourseDetails = (props) => {
       {/* Coach View */}
       <View style={styles.rowContainer}>
         <View style={styles.column}>
-          <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate("AddLesson")}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => navigation.navigate("AddLesson")}
+          >
             <Text style={styles.btnText}>Add lesson</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.column}>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => navigation.navigate("PublicCourse")}
+          >
             <Text style={styles.btnText}>Publish</Text>
           </TouchableOpacity>
         </View>
@@ -119,27 +167,46 @@ const styles = ScaledSheet.create({
     fontSize: "10@s",
     color: ColorAccent.tertiary,
   },
+  settingsIcon: {
+    position: "absolute",
+    top: 10,
+    right: 20,
+    zIndex: 100,
+    backgroundColor: ColorAccent.tertiary,
+    borderRadius: 50,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  dropdownMenu: {
+    position: "absolute",
+    top: 60,
+    right: 20,
+    backgroundColor: "white",
+    borderRadius: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+    zIndex: 1000,
+  },
+  dropdownItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  dropdownText: {
+    fontFamily: "Medium",
+    fontSize: "12@s",
+  },
   lessonListSection: {
     marginVertical: 25,
   },
   lessonListContainer: {
     gap: 15,
-  },
-  btnContainer: {
-    position: "absolute",
-    left: 0,
-    bottom: 0,
-    backgroundColor: "white",
-    // borderColor: "gray",
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderLeftWidth: StyleSheet.hairlineWidth,
-    // borderRightWidth: StyleSheet.hairlineWidth,
-    // borderBottomLeftRadius: 0,
-    // borderBottomRightRadius: 0,
-    // borderRadius: 20,
-    width: "100%",
-    paddingVertical: 20,
-    paddingHorizontal: 20,
   },
   btn: {
     backgroundColor: ColorAccent.tertiary,
@@ -156,9 +223,9 @@ const styles = ScaledSheet.create({
   rowContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: "5@s",
+    marginVertical: "5@s",
     gap: "10@s",
-    paddingHorizontal: "15@s"
+    paddingHorizontal: "15@s",
   },
   column: {
     flex: 1,

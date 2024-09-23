@@ -29,9 +29,9 @@ const AddCourse = () => {
       setSelectedImage(result.assets[0].uri); // Lưu đường dẫn ảnh đã chọn
     }
   };
-  const removeImage = () =>{
+  const removeImage = () => {
     setSelectedImage(null);
-  }
+  };
 
   // Update form value with selected date
   const handleDateChange = (event, selectedDate, setDate, setShow) => {
@@ -86,16 +86,20 @@ const AddCourse = () => {
         </TouchableOpacity>
 
         {selectedImage && (
-          <View style={styles.previewContainer}>
-            <Text style={styles.previewLabel}>Image Preview:</Text>
+          <View>
+            <View style={styles.previewWrapper}>
+              <Text style={styles.previewLabel}>Image Preview:</Text>
+              <TouchableOpacity
+                style={styles.removeButton}
+                onPress={removeImage}
+              >
+                <Text style={styles.removeButtonText}>Remove Image</Text>
+              </TouchableOpacity>
+            </View>
             <Image
               source={{ uri: selectedImage }}
               style={styles.imagePreview}
             />
-            {/* Remove Image Button */}
-            <TouchableOpacity style={styles.removeButton} onPress={removeImage}>
-              <Text style={styles.removeButtonText}>Remove Image</Text>
-            </TouchableOpacity>
           </View>
         )}
 
@@ -258,27 +262,24 @@ const styles = ScaledSheet.create({
     marginBottom: "10@s",
     alignItems: "center",
   },
-  previewContainer: {
-    marginTop: "20@s",
+  previewWrapper:{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
   },
   previewLabel: {
-    fontWeight: 'bold',
-    marginBottom: "20@s",
-  },
-  videoPreview: {
-    width: '100%',
-    height: "20@s",
+    fontWeight: "bold",
   },
   removeButton: {
-    backgroundColor: ColorAccent.bgCancelButton, 
+    backgroundColor: ColorAccent.bgCancelButton,
     padding: "10@s",
     borderRadius: "10@s",
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: "10@s",
   },
   removeButtonText: {
     color: ColorAccent.primary,
     fontSize: "16@s",
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

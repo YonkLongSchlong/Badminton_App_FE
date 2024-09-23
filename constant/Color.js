@@ -5,5 +5,6 @@ export default ColorAccent = {
   light_tertiary: "#EDD1CD",
   non_font: "#C3C3C3",
   border: "#ccc",
-  bgCancelButton: "#ff4d4d"
+  bgCancelButton: "#ff4d4d",
+  bgUpdateButton: "#FFCC33",
 };
