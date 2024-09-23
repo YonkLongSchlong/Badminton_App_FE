@@ -9,6 +9,7 @@ import MyProfile from "../Setting/Profile/MyProfile.jsx";
 import EditProfile from "../Setting/Profile/EditProfile.jsx";
 import AddCourse from "../Course/AddCourse.jsx";
 import AddLesson from "../Course/AddLesson.jsx";
+import WatchLesson from "../Course/WatchLesson.jsx";
 import PublicCourse from "../Course/PublicCourse.jsx";
 import { scale } from "react-native-size-matters";
 
@@ -85,6 +86,19 @@ const AppStack = () => {
           headerTitleStyle: {
             fontFamily: "Bold",
             fontSize: scale(14),
+          },
+        })}
+      />
+      <Stack.Screen
+        name="WatchLesson"
+        component={WatchLesson}
+        options={(props) => ({
+          headerTitleAlign: "center",
+          headerTitle: props.route.params.lesson.name,
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            fontFamily: "Bold",
+            fontSize: scale(13),
           },
         })}
       />

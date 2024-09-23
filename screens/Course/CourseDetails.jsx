@@ -4,8 +4,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Modal,
-  Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import ColorAccent from "../../constant/Color.js";
@@ -160,11 +158,11 @@ const styles = ScaledSheet.create({
   },
   text: {
     fontFamily: "Medium",
-    fontSize: "10@s",
+    fontSize: "12@s",
   },
   showText: {
     fontFamily: "Semibold",
-    fontSize: "10@s",
+    fontSize: "12@s",
     color: ColorAccent.tertiary,
   },
   settingsIcon: {

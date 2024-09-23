@@ -71,36 +71,50 @@ const courses = [
         id: 1,
         name: "Introduction",
         length: "2 mins, 45 secs",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
+        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4"
       },
       {
         id: 2,
         name: "How to get into badminton",
         length: "2 mins, 45 secs",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
+        videoUrl: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
       },
       {
         id: 3,
         name: "Let's get start with how to hold the racket",
         length: "2 mins, 45 secs",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
+        videoUrl: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
       },
       {
         id: 4,
         name: "Master your grip",
         length: "2 mins, 45 secs",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
+        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4"
       },
       {
         id: 5,
         name: "Your first serve",
         length: "2 mins, 45 secs",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
+        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4"
       },
       {
         id: 6,
         name: "Your first serve",
         length: "2 mins, 45 secs",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
+        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4"
       },
       {
         id: 7,
         name: "Your first serve",
         length: "2 mins, 45 secs",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
+        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4"
       },
     ],
   },

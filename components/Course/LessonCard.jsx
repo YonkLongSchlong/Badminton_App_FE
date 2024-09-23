@@ -3,8 +3,8 @@ import React from "react";
 import { scale, ScaledSheet } from "react-native-size-matters";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const LessonCard = (props) => {
   const { navigation } = props;
@@ -16,6 +16,9 @@ const LessonCard = (props) => {
             name="play-circle"
             color={ColorAccent.light_tertiary}
             size={scale(46)}
+            onPress={() =>
+              navigation.navigate("WatchLesson", { lesson: props.lesson })
+            }
           />
         </TouchableOpacity>
 
@@ -33,7 +36,10 @@ const LessonCard = (props) => {
       </TouchableOpacity> */}
 
       {/* Coach View */}
-      <TouchableOpacity style={styles.iconUpdate} onPress={() => navigation.navigate("AddLesson")}>
+      <TouchableOpacity
+        style={styles.iconUpdate}
+        onPress={() => navigation.navigate("AddLesson")}
+      >
         <FontAwesome6 name="edit" size={scale(14)} color="black" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.iconDelete}>
@@ -88,7 +94,7 @@ const styles = ScaledSheet.create({
     alignItems: "center",
     borderRadius: 100,
     padding: 6,
-    marginRight: 6
+    marginRight: 6,
   },
   iconDelete: {
     backgroundColor: ColorAccent.bgCancelButton,
@@ -96,6 +102,6 @@ const styles = ScaledSheet.create({
     alignItems: "center",
     borderRadius: 100,
     padding: 6,
-    marginRight: 6
-  }
+    marginRight: 6,
+  },
 });
