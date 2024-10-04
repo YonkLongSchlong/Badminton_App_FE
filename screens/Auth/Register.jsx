@@ -7,7 +7,10 @@ import FormField from "../../components/Input/FormField";
 
 
 const Register = ({ navigation }) => {
-  const { control } = useForm();
+  const { control, handleSubmit } = useForm();
+  const handleRegister = (data) => {
+    console.log(data); 
+  };
 
   return (
     <ImageBackground source={require('../../assets/background.png')} style={styles.container} resizeMode="cover">
@@ -50,7 +53,7 @@ const Register = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.signinButton}>
+        <TouchableOpacity style={styles.signinButton} onPress={handleSubmit(handleRegister)}>
           <Text style={styles.signinButtonText}>Register</Text>
         </TouchableOpacity>
       </View>

@@ -99,14 +99,14 @@ const CourseDetails = (props) => {
 
       {/* ACCESS BUTTON SECTION */}
       {/* Student View */}
-      {/* <View style={styles.btnContainer}>
+      <View style={styles.btnContainer}>
         <TouchableOpacity style={styles.btn}>
           <Text style={styles.btnText}>Get Full Access - Đ 255.000</Text>
         </TouchableOpacity>
-      </View> */}
+      </View>
 
       {/* Coach View */}
-      <View style={styles.rowContainer}>
+      {/* <View style={styles.rowContainer}>
         <View style={styles.column}>
           <TouchableOpacity
             style={styles.btn}
@@ -123,7 +123,7 @@ const CourseDetails = (props) => {
             <Text style={styles.btnText}>Publish</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -205,6 +205,10 @@ const styles = ScaledSheet.create({
   },
   lessonListContainer: {
     gap: 15,
+  },
+  btnContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 15,
   },
   btn: {
     backgroundColor: ColorAccent.tertiary,

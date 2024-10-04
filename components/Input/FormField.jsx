@@ -74,7 +74,7 @@ export default function FormField({
 
 const styles = ScaledSheet.create({
   wrapper: {
-    marginBottom: 15,
+    marginBottom: 10,
   },
   labelContainer: {
     flexDirection: 'row',
@@ -111,6 +111,6 @@ const styles = ScaledSheet.create({
   errorText: {
     color: 'red',
     marginTop: 5,
-    textAlign: 'right',
+    textAlign: 'left',
   },
 });
