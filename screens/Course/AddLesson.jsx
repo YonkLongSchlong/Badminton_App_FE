@@ -31,6 +31,7 @@ const AddLesson = () => {
 
   return (
     <View style={styles.container}>
+
       {/* Title Input */}
       <FormField
         control={control}
@@ -40,6 +41,19 @@ const AddLesson = () => {
         placeholder="Enter lesson title"
         rules={{ required: "Please enter lesson title" }}
       />
+
+      {/* Lesson Description */}
+      <FormField
+          name="lessonDescription"
+          control={control}
+          label="Lesson Description"
+          showAsterisk={true}
+          placeholder="Enter your lesson description"
+          rules={{ required: "Please enter your lesson description" }}
+          multiline={true}
+          numberoflines={5}
+          style={styles.multiLineInput}
+        />
 
       {/* Choose Video Button */}
       <TouchableOpacity style={styles.button} onPress={chooseVideo}>

@@ -76,7 +76,6 @@ const AddCourse = () => {
           showAsterisk={true}
           placeholder="Enter your course price"
           rules={{ required: "Please enter your course price" }}
-          secure={true}
         />
 
         {/* Course image */}

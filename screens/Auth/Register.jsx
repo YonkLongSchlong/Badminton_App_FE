@@ -3,10 +3,14 @@ import React from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import { useForm } from "react-hook-form";
-import TextInput from "../../components/Input/TextInput";
+import FormField from "../../components/Input/FormField";
+
 
 const Register = ({ navigation }) => {
-  const { control } = useForm();
+  const { control, handleSubmit } = useForm();
+  const handleRegister = (data) => {
+    console.log(data); 
+  };
 
   return (
     <ImageBackground source={require('../../assets/background.png')} style={styles.container} resizeMode="cover">
@@ -16,29 +20,29 @@ const Register = ({ navigation }) => {
       </View>
 
       <View style={styles.form}>
-        <Text style={styles.label}>User name</Text>
-        <TextInput
-          name="User name"
+        <FormField
           control={control}
+          name="username"
+          label="User name"
           rules={{ required: "Please enter your user name" }}
         />
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          name="Email"
+        <FormField
           control={control}
-          rules={{ required: "Please enter your email" }}
+          name="email"
+          label="Email"
+          rules={{ required: "Please enter your Email" }}
         />
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          name="Password"
+        <FormField
           control={control}
+          name="password"
+          label="Password"
           rules={{ required: "Please enter your password" }}
           secure={true}
         />
-        <Text style={styles.label}>Confirm password</Text>
-        <TextInput
-          name="ConfrimPassword"
+        <FormField
           control={control}
+          name="confirmPassword"
+          label=" Confirm password"
           rules={{ required: "Please enter your confirm password" }}
           secure={true}
         />
@@ -49,7 +53,7 @@ const Register = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.signinButton}>
+        <TouchableOpacity style={styles.signinButton} onPress={handleSubmit(handleRegister)}>
           <Text style={styles.signinButtonText}>Register</Text>
         </TouchableOpacity>
       </View>

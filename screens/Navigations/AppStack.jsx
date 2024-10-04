@@ -2,14 +2,15 @@ import { StyleSheet } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DrawerNavigation from "./DrawerNavigation";
-import CourseDetails from "../Home/CourseDetails.jsx";
+import CourseDetails from "../Course/CourseDetails.jsx";
 import Schedule from "../Setting/Schedule.jsx";
 import Password from "../Setting/Password.jsx";
 import MyProfile from "../Setting/Profile/MyProfile.jsx";
 import EditProfile from "../Setting/Profile/EditProfile.jsx";
-import AddCourse from "../Home/AddCourse.jsx";
-import AddLesson from "../Home/AddLesson.jsx";
-import PublicCourse from "../Home/PublicCourse.jsx";
+import AddCourse from "../Course/AddCourse.jsx";
+import AddLesson from "../Course/AddLesson.jsx";
+import WatchLesson from "../Course/WatchLesson.jsx";
+import PublicCourse from "../Course/PublicCourse.jsx";
 import { scale } from "react-native-size-matters";
 
 const Stack = createNativeStackNavigator();
@@ -85,6 +86,19 @@ const AppStack = () => {
           headerTitleStyle: {
             fontFamily: "Bold",
             fontSize: scale(14),
+          },
+        })}
+      />
+      <Stack.Screen
+        name="WatchLesson"
+        component={WatchLesson}
+        options={(props) => ({
+          headerTitleAlign: "center",
+          headerTitle: props.route.params.lesson.name,
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            fontFamily: "Bold",
+            fontSize: scale(13),
           },
         })}
       />

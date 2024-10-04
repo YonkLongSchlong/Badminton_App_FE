@@ -1,8 +1,9 @@
-import { View, TextInput, Text } from "react-native";
-import React from "react";
+import { View, TextInput, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
 import { Controller } from "react-hook-form";
-import ColorAccent from "../../constant/Color.js";
 import { ScaledSheet } from "react-native-size-matters";
+import { Ionicons } from "@expo/vector-icons"; 
+import ColorAccent from "../../constant/Color.js";
 
 export default function FormField({ 
   control, 
@@ -15,6 +16,12 @@ export default function FormField({
   multiline,
   showAsterisk = false 
 }) {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
   return (
     <View style={styles.wrapper}>
       {label && (
@@ -40,10 +47,22 @@ export default function FormField({
                 value={value}
                 onChangeText={onChange}
                 placeholder={placeholder}
-                secureTextEntry={secure}
+                secureTextEntry={secure && !isPasswordVisible}
                 multiline={multiline}
                 numberOfLines={numberoflines}
               />
+              {secure && (
+                <TouchableOpacity
+                  style={styles.iconContainer}
+                  onPress={togglePasswordVisibility}
+                >
+                  <Ionicons
+                    name={isPasswordVisible ? "eye-off" : "eye"}
+                    size={20}
+                    color={ColorAccent.secondary}
+                  />
+                </TouchableOpacity>
+              )}
             </View>
             {error && <Text style={styles.errorText}>{error.message}</Text>}
           </>
@@ -55,7 +74,7 @@ export default function FormField({
 
 const styles = ScaledSheet.create({
   wrapper: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   labelContainer: {
     flexDirection: 'row',
@@ -74,17 +93,24 @@ const styles = ScaledSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 10,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: ColorAccent.primary,
   },
   textInput: {
-    paddingVertical: 10,
-    width: '100%',
+    paddingTop: 10,
+    paddingBottom: 5,
+    flex: 1,
     backgroundColor: ColorAccent.primary,
     textAlignVertical: "top",
+  },
+  iconContainer: {
+    padding: 5,
   },
   errorText: {
     color: 'red',
     marginTop: 5,
-    textAlign: 'right',
+    textAlign: 'left',
   },
 });

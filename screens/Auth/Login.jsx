@@ -3,7 +3,7 @@ import React from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import { useForm } from "react-hook-form";
-import TextInput from "../../components/Input/TextInput";
+import FormField from "../../components/Input/FormField";
 
 
 const Login = ({ navigation }) => {
@@ -17,16 +17,16 @@ const Login = ({ navigation }) => {
       </View>
 
       <View style={styles.form}>
-        <Text style={styles.label}>User name</Text>
-        <TextInput
-          name="User name"
+        <FormField
           control={control}
+          name="User name"
+          label="User name"
           rules={{ required: "Please enter your user name" }}
         />
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          name="Password"
+        <FormField
           control={control}
+          name="Password"
+          label="Password"
           rules={{ required: "Please enter your password" }}
           secure={true}
         />
@@ -56,7 +56,7 @@ export default Login;
 const styles = ScaledSheet.create({
   container: {
     flex: 1,
-    backgroundColor: ColorAccent.tertiary,
+    backgroundColor: ColorAccent.primary,
     justifyContent: "center",
     padding: 20,
   },
