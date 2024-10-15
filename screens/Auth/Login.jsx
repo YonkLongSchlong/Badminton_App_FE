@@ -4,10 +4,22 @@ import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import { useForm } from "react-hook-form";
 import FormField from "../../components/Input/FormField";
-
+import { emailRegex, passwordRegex} from "../../constant/Regex";
+import { login } from "../../features/auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Login = ({ navigation }) => {
-  const { control } = useForm();
+  const { control, handleSubmit } = useForm();
+  const dispatch = useDispatch();
+
+  const handleLogin =  (data) => {
+      const user = {
+        ...data,
+        role: "user",
+      };
+       dispatch(login(user));
+    
+  };
 
   return (
     <ImageBackground source={require('../../assets/background.png')} style={styles.container} resizeMode="cover">
@@ -19,15 +31,32 @@ const Login = ({ navigation }) => {
       <View style={styles.form}>
         <FormField
           control={control}
-          name="User name"
-          label="User name"
-          rules={{ required: "Please enter your user name" }}
+          name="email"
+          label="Email"
+          rules={{
+            required: "Please enter your Email",
+            pattern: {
+              value: emailRegex,
+              message: "Invalid email",
+            },
+          }}
         />
         <FormField
           control={control}
-          name="Password"
+          name="password"
           label="Password"
-          rules={{ required: "Please enter your password" }}
+          rules={{
+            required: "Please enter your password",
+            maxLength: {
+              value: 24,
+              message: "Password can't be longer than 24 characters",
+            },
+            pattern: {
+              value: passwordRegex,
+              message:
+                "Password must contain at least 8 characters, an uppercase, a number and special characters",
+            },
+          }}
           secure={true}
         />
         <View style={styles.footer}>
@@ -37,7 +66,7 @@ const Login = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.signinButton} >
+        <TouchableOpacity style={styles.signinButton} onPress={handleSubmit(handleLogin)}>
           <Text style={styles.signinButtonText}>Sign in</Text>
         </TouchableOpacity>
       </View>
