@@ -12,6 +12,7 @@ import AddLesson from "../Course/AddLesson.jsx";
 import WatchLesson from "../Course/WatchLesson.jsx";
 import PublicCourse from "../Course/PublicCourse.jsx";
 import { scale } from "react-native-size-matters";
+import Login from "../Auth/Login.jsx";
 
 const Stack = createNativeStackNavigator();
 

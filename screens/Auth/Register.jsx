@@ -1,49 +1,104 @@
-import { Text, TouchableOpacity, View, ImageBackground } from "react-native";
-import React from "react";
+import { Text, TouchableOpacity, View, ImageBackground, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import { useForm } from "react-hook-form";
 import FormField from "../../components/Input/FormField";
-
+import { emailRegex, passwordRegex, usernameRegex } from "../../constant/Regex";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser, resetState } from "../../features/user/userSlice.js";
 
 const Register = ({ navigation }) => {
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, watch } = useForm();
+  const pwd = watch("password");
+  const dispatch = useDispatch();
+
   const handleRegister = (data) => {
-    console.log(data); 
+    const { confirmPassword, ...registerData } = data;
+    registerData.role = "user";
+    dispatch(registerUser(registerData));
   };
 
+  const { message } = useSelector((state) => state?.user);
+
+  useEffect(() => {
+    if (message === "OTP sent to email successfully") {
+      Alert.alert("OTP sent to email successfully");
+    } else if (message === "Failed to send OTP") {
+      Alert.alert("Failed to send OTP");
+      dispatch(resetState());
+    }
+  }, [message, dispatch]);
+
   return (
-    <ImageBackground source={require('../../assets/background.png')} style={styles.container} resizeMode="cover">
+    <ImageBackground
+      source={require("../../assets/background.png")}
+      style={styles.container}
+      resizeMode="cover"
+    >
       <View style={styles.header}>
         <Text style={styles.headerText}>Let's get started !</Text>
-        <Text style={styles.subHeaderText}>Create an account to start your journey</Text>
+        <Text style={styles.subHeaderText}>
+          Create an account to start your journey
+        </Text>
       </View>
 
       <View style={styles.form}>
         <FormField
           control={control}
-          name="username"
+          name="user_name"
           label="User name"
-          rules={{ required: "Please enter your user name" }}
+          rules={{
+            required: "Please enter your user name",
+            maxLength: {
+              value: 24,
+              message: "Username can't be longer than 24 characters",
+            },
+            pattern: {
+              value: usernameRegex,
+              message: "Username can't not contain special characters",
+            },
+          }}
         />
         <FormField
           control={control}
           name="email"
           label="Email"
-          rules={{ required: "Please enter your Email" }}
+          rules={{
+            required: "Please enter your Email",
+            pattern: {
+              value: emailRegex,
+              message: "Invalid email",
+            },
+          }}
         />
         <FormField
           control={control}
           name="password"
           label="Password"
-          rules={{ required: "Please enter your password" }}
+          rules={{
+            required: "Please enter your password",
+            maxLength: {
+              value: 24,
+              message: "Password can't be longer than 24 characters",
+            },
+            pattern: {
+              value: passwordRegex,
+              message:
+                "Password must contain at least 8 characters, an uppercase, a number and special characters",
+            },
+          }}
           secure={true}
         />
         <FormField
           control={control}
           name="confirmPassword"
           label=" Confirm password"
-          rules={{ required: "Please enter your confirm password" }}
+          rules={{
+            required: "Please enter confirm password",
+            validate: (value) =>
+              value === pwd || "Confirm password does not match",
+          }}
           secure={true}
         />
         <View style={styles.footer}>
@@ -53,7 +108,10 @@ const Register = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.signinButton} onPress={handleSubmit(handleRegister)}>
+        <TouchableOpacity
+          style={styles.signinButton}
+          onPress={handleSubmit(handleRegister)}
+        >
           <Text style={styles.signinButtonText}>Register</Text>
         </TouchableOpacity>
       </View>
@@ -105,7 +163,7 @@ const styles = ScaledSheet.create({
   },
   footer: {
     flexDirection: "row",
-    marginTop: 20,
+    marginTop: 10,
   },
   footerText: {
     fontSize: "12@s",
@@ -119,6 +177,19 @@ const styles = ScaledSheet.create({
     fontSize: "12@s",
     textAlign: "center",
     marginTop: 10,
-    textDecorationLine: "underline"
+    textDecorationLine: "underline",
   },
+  // textInput: {
+  //   borderRadius: "10@s",
+  //   paddingVertical: "8@s",
+  //   paddingHorizontal: "10@s",
+  //   marginBottom: "15@s",
+  //   fontSize: "14@s",
+  //   backgroundColor: ColorAccent.primary,
+  // },
+  // label: {
+  //   fontSize: '14@s',
+  //   color: '#333',
+  //   marginBottom: 5
+  // },
 });

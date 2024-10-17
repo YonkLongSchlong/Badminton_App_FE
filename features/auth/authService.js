@@ -1,26 +1,52 @@
 import axios from "axios";
-import { base_url } from "../../utils/base_url";
 import { config } from "../../utils/axiosconfig";
 import * as SecureStore from "expo-secure-store";
 
-const register = async (user) => {
-  const response = await axios.post(`${base_url}users/register`, user);
+const login = async (user) => {
+  const response = await axios.post(
+    process.env.EXPO_PUBLIC_BASE_URL + `auth/login`,
+    user
+  );
+  if (response.data) {
+    await SecureStore.setItemAsync(
+      "user",
+      JSON.stringify(response.data.person)
+    );
+    await SecureStore.setItemAsync(
+      "token",
+      JSON.stringify(response.data.token)
+    );
+  }
   return response.data;
 };
 
-const login = async (user) => {
-  const response = await axios.post(`${base_url}users/login`, user);
-  if (response.data) {
-    SecureStore.setItemAsync("User", JSON.stringify(response.data));
-  }
-  if (response.data.token) {
-    SecureStore.setItemAsync("token", JSON.stringify(response.data));
-  }
+const forgotPassword = async (data) => {
+  const response = await axios.post(
+    process.env.EXPO_PUBLIC_BASE_URL + `auth/forgot-password`,
+    data
+  );
+  return response.data;
+};
+
+const resetPassword = async (data) => {
+  const response = await axios.post(
+    process.env.EXPO_PUBLIC_BASE_URL + `auth/reset-password`,
+    data
+  );
+  return response.data;
+};
+
+const logout = async () => {
+  const response = await axios.post(
+    process.env.EXPO_PUBLIC_BASE_URL + `auth/logout`
+  );
   return response.data;
 };
 
 const authService = {
-  register,
   login,
+  forgotPassword,
+  resetPassword,
+  logout,
 };
 export default authService;
