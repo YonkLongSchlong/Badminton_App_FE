@@ -1,20 +1,34 @@
-import { Text, TouchableOpacity, View, ImageBackground } from "react-native";
-import { Pressable, TextInput } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import React, { useState } from "react";
+import { Text, TouchableOpacity, View, ImageBackground, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import { useForm } from "react-hook-form";
 import FormField from "../../components/Input/FormField";
 import { emailRegex, passwordRegex, usernameRegex } from "../../constant/Regex";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser, resetState } from "../../features/user/userSlice.js";
 
 const Register = ({ navigation }) => {
   const { control, handleSubmit, watch } = useForm();
   const pwd = watch("password");
+  const dispatch = useDispatch();
 
   const handleRegister = (data) => {
-    console.log(data);
+    const { confirmPassword, ...registerData } = data;
+    registerData.role = "user";
+    dispatch(registerUser(registerData));
   };
+
+  const { message } = useSelector((state) => state?.user);
+
+  useEffect(() => {
+    if (message === "OTP sent to email successfully") {
+      Alert.alert("OTP sent to email successfully");
+    } else if (message === "Failed to send OTP") {
+      Alert.alert("Failed to send OTP");
+      dispatch(resetState());
+    }
+  }, [message, dispatch]);
 
   return (
     <ImageBackground
@@ -32,7 +46,7 @@ const Register = ({ navigation }) => {
       <View style={styles.form}>
         <FormField
           control={control}
-          name="username"
+          name="user_name"
           label="User name"
           rules={{
             required: "Please enter your user name",

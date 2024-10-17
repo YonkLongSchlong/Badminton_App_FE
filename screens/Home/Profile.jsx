@@ -1,12 +1,56 @@
-import { Image, ScrollView, Text, View } from "react-native";
-import React from "react";
+import { Alert, Image, ScrollView, Text, View } from "react-native";
+import React, {useEffect} from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import { SafeAreaView } from "react-native-safe-area-context";
 import OverviewCard from "../../components/Home/OverviewCard.jsx";
 import SettingCard from "../../components/Home/SettingCard.jsx";
+import { useSelector, useDispatch } from "react-redux";
+import { logout, resetState } from "../../features/auth/authSlice.js";
+import * as SecureStore from "expo-secure-store";
+import useAuth from "../../hooks/useAuth.js";
 
 const Profile = ({ navigation }) => {
+  const dispatch = useDispatch()
+  const {user,token } = useAuth();
+  console.log("User", user);
+
+  const reSetSecureStore =  async () =>{
+    await SecureStore.deleteItemAsync("token");
+    await SecureStore.deleteItemAsync("user");
+  }
+
+  const handleLogout =() => {
+    dispatch(logout());
+  };
+
+
+  const userState = useSelector((state) => state?.auth);
+  console.log("User state:",userState);
+
+  const { message } = useSelector((state) => state?.auth);
+  console.log("Message:", message);
+
+  useEffect(() => {
+    if (message === "Logout successful") {
+      reSetSecureStore();
+      Alert.alert("Logout successful");
+    } else if (message === "Logout fail") {
+      dispatch(resetState());
+      Alert.alert("Logout fail !!!");
+    }
+  }, [message]);
+
+  
+
+  // const {logout} = useAuth();
+
+  // const handleLogout = async () => {
+  //   await logout();
+  //   Alert.alert("Logout successful");
+  // };
+
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -43,20 +87,33 @@ const Profile = ({ navigation }) => {
         <View style={styles.settingCardSection}>
           <Text style={styles.heading}>Settings:</Text>
           <View style={styles.settingCardContainer}>
-            <SettingCard icon={"person-outline"} label="Profile" navigation={navigation}/>
-            <SettingCard icon={"mail-outline"} label="Email" />
-            <SettingCard icon={"shield-checkmark-outline"} label="Password" navigation={navigation}/>
-            <SettingCard icon={"notifications-outline"} label="Notifications" />
-            <SettingCard icon={"card-outline"} label="Payment settings" />
             <SettingCard
-              icon={"calendar-outline"}
+              icon="person-outline"
+              label="Profile"
+              onPress={() => navigation.navigate("MyProfile")}
+            />
+            <SettingCard icon="mail-outline" label="Email" />
+            <SettingCard
+              icon="shield-checkmark-outline"
+              label="Password"
+              onPress={() => navigation.navigate("Password")} 
+            />
+            <SettingCard icon="notifications-outline" label="Notifications" />
+            <SettingCard icon="card-outline" label="Payment settings" />
+            <SettingCard
+              icon="calendar-outline"
               label="Schedule"
               last={true}
-              navigation={navigation}
+              onPress={() => navigation.navigate("Schedule")} 
             />
           </View>
           <View style={styles.settingCardContainer}>
-            <SettingCard icon={"log-out-outline"} label="Log out" last={true} />
+            <SettingCard
+              icon="log-out-outline"
+              label="Log out"
+              last={true}
+              onPress={handleLogout}
+            />
           </View>
         </View>
       </ScrollView>

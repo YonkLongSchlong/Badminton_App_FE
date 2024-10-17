@@ -1,28 +1,42 @@
-import { Text, TouchableOpacity, View, ImageBackground } from "react-native";
-import React from "react";
+import { Text, TouchableOpacity, View, ImageBackground, Alert } from "react-native";
+import React, {useState,useEffect} from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import { useForm } from "react-hook-form";
 import FormField from "../../components/Input/FormField";
-import { emailRegex, passwordRegex} from "../../constant/Regex";
-import { login } from "../../features/auth/authSlice";
+import { emailRegex, passwordRegex } from "../../constant/Regex";
+import { login, resetState } from "../../features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const Login = ({ navigation }) => {
   const { control, handleSubmit } = useForm();
   const dispatch = useDispatch();
 
-  const handleLogin =  (data) => {
-      const user = {
-        ...data,
-        role: "user",
-      };
-       dispatch(login(user));
-    
+  const handleLogin = (data) => {
+    const user = {
+      ...data,
+      role: "user",
+    };
+    dispatch(login(user));
   };
 
+  const { message } = useSelector((state) => state?.auth);
+
+  useEffect(() => {
+    if (message === "Login successful") {
+      Alert.alert("Login successful");
+    } else if (message === "Login fail") {
+      Alert.alert("Login fail");
+      dispatch(resetState());
+    }
+  }, [message, dispatch]);
+
   return (
-    <ImageBackground source={require('../../assets/background.png')} style={styles.container} resizeMode="cover">
+    <ImageBackground
+      source={require("../../assets/background.png")}
+      style={styles.container}
+      resizeMode="cover"
+    >
       <View style={styles.header}>
         <Text style={styles.headerText}>Welcome back!</Text>
         <Text style={styles.subHeaderText}>Let's get you back on track</Text>
@@ -66,7 +80,10 @@ const Login = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.signinButton} onPress={handleSubmit(handleLogin)}>
+        <TouchableOpacity
+          style={styles.signinButton}
+          onPress={handleSubmit(handleLogin)}
+        >
           <Text style={styles.signinButtonText}>Sign in</Text>
         </TouchableOpacity>
       </View>
@@ -135,6 +152,6 @@ const styles = ScaledSheet.create({
     fontSize: "12@s",
     textAlign: "center",
     marginTop: 10,
-    textDecorationLine: "underline"
+    textDecorationLine: "underline",
   },
 });

@@ -1,13 +1,13 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import authService from "./authService";
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import * as SecureStore from "expo-secure-store";
+import userService from "./userService";
 
 const getUserFromSecureStore = SecureStore.getItemAsync("User")
   ? SecureStore.getItemAsync("User")
   : null;
 
 const initialState = {
-  user: getUserFromSecureStore,
+  user: null,
   isError: false,
   isLoading: false,
   isSuccess: false,
@@ -18,12 +18,14 @@ export const registerUser = createAsyncThunk(
   "auth/register",
   async (user, thunkAPI) => {
     try {
-      return await authService.register(user);
+      return await userService.register(user);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
+
+export const resetState = createAction("Reset_all");
 
 export const userSlice = createSlice({
   name: "user",
@@ -38,14 +40,16 @@ export const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.createdUser = action.payload;
+        state.message = "OTP sent to email successfully";
+        state.otp = action.payload;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = action.error;
+        state.message = "Failed to send OTP";
       })
+      .addCase(resetState, () => initialState);
   },
 });
 

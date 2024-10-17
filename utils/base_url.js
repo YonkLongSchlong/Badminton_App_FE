@@ -1,1 +1,0 @@
-// export const base_url = "http://192.168.2.4:3000/api/v1/"

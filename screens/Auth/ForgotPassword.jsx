@@ -4,9 +4,23 @@ import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import FormField from "../../components/Input/FormField";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { forgotPassword } from "../../features/auth/authSlice.js";
 
 const ForgotPassword = ({ navigation }) => {
-  const { control } = useForm();
+
+  const { control , handleSubmit } = useForm();
+  const dispatch = useDispatch();
+
+  const authState = useSelector((state)=> state?.auth);
+  console.log("Auth state:", authState);
+
+
+  const handleForgotPassword = (email) =>{
+    dispatch(forgotPassword(email));
+  }
+
+  // () => navigation.navigate("VerifyOTP")
 
   return (
     <View style={styles.container}>
@@ -20,7 +34,7 @@ const ForgotPassword = ({ navigation }) => {
 
       <View style={styles.formContainer}>
         <FormField
-          name="otp"
+          name="email"
           control={control}
           placeholder="Enter your email address"
           rules={{ required: "Please enter your email address" }}
@@ -28,7 +42,7 @@ const ForgotPassword = ({ navigation }) => {
         />
       </View>
 
-      <TouchableOpacity style={styles.submitButton} onPress={() => navigation.navigate("VerifyOTP")}>
+      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit(handleForgotPassword)}>
         <Text style={styles.submitText}>Send OTP</Text>
       </TouchableOpacity>
     </View>

@@ -1,14 +1,16 @@
-import { NavigationContainer } from '@react-navigation/native'
-import AuthStack from "./AuthStack"
-import AppStack from "./AppStack"
+import { NavigationContainer } from "@react-navigation/native";
+import AuthStack from "./AuthStack";
+import AppStack from "./AppStack";
+import useAuth from "../../hooks/useAuth";
 
 const NavigationWrapper = () => {
+  const { user, token } = useAuth();
+
   return (
     <NavigationContainer>
-      <AuthStack/>
-      {/* <AppStack/> */}
+      {token !== null && user !== null ? <AppStack /> : <AuthStack />}
     </NavigationContainer>
-  )
-}
+  );
+};
 
-export default NavigationWrapper
+export default NavigationWrapper;
