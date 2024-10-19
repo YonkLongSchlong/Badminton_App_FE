@@ -1,13 +1,32 @@
-import React, { useState, useRef } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from "react-native";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  registerUser,
+  resetState,
+  verifyOTP,
+} from "../../features/auth/authSlice.js";
 
+const VerifyOTP = ({ navigation, route }) => {
+  const { registerData } = route.params;
+  console.log("Register data:", registerData);
 
-const VerifyOTP = ({ navigation }) => {
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const inputRefs = useRef(new Array(6).fill(null));
+  const dispatch = useDispatch();
+
+  const authState = useSelector((state) => state?.auth);
+  console.log("Auth state", authState);
 
   const handleOtpChange = (text, index) => {
     const newOtp = [...otp];
@@ -27,6 +46,37 @@ const VerifyOTP = ({ navigation }) => {
     }
   };
 
+  const handleBackSignUp = () => {
+    dispatch(resetState());
+    navigation.navigate("Register");
+  };
+
+  const handleVerifyOTP = () => {
+    const fullOtp = otp.join("");
+    const verificationData = {
+      otp: fullOtp,
+      ...registerData,
+    };
+    console.log(verificationData);
+    dispatch(verifyOTP(verificationData));
+  };
+
+  const { message } = useSelector((state) => state?.auth);
+  console.log("Message:", message);
+
+  const handleResendCode = () => {
+    dispatch(registerUser(registerData));
+  };
+
+  useEffect(() => {
+    if (message === "User created successfully") {
+      navigation.navigate("Login");
+    } else if (message === "Failed verify OTP") {
+      Alert.alert("Failed verify OTP");
+      dispatch(resetState());
+    }
+  }, [message, dispatch]);
+
   return (
     <View style={styles.container}>
       <Image source={require("../..//assets/otp.png")} style={styles.image} />
@@ -34,7 +84,9 @@ const VerifyOTP = ({ navigation }) => {
       <Text style={styles.subtitle}>
         We have sent you an One Time PassCode to your email address:
       </Text>
-      <Text style={styles.email}>mail@gmail.com</Text>
+      <Text style={styles.email}>
+      {registerData?.email || "mail@gmail.com"}
+      </Text>
 
       <View style={styles.otpContainer}>
         {otp.map((digit, index) => (
@@ -54,7 +106,7 @@ const VerifyOTP = ({ navigation }) => {
       <View style={styles.wrapper}>
         <View>
           <Text style={styles.didntGetCode}>Didn't get the code?</Text>
-          <TouchableOpacity style={styles.btnResend}>
+          <TouchableOpacity style={styles.btnResend} onPress={handleResendCode}>
             <Text style={styles.resend}>Resend Code</Text>
           </TouchableOpacity>
         </View>
@@ -66,15 +118,20 @@ const VerifyOTP = ({ navigation }) => {
           size={70}
         >
           {({ remainingTime }) => (
-            <Text style={styles.timer}>{`${Math.floor(
-              remainingTime / 60
-            )}:${(remainingTime % 60).toString().padStart(2, "0")}`}</Text>
+            <Text style={styles.timer}>{`${Math.floor(remainingTime / 60)}:${(
+              remainingTime % 60
+            )
+              .toString()
+              .padStart(2, "0")}`}</Text>
           )}
         </CountdownCircleTimer>
       </View>
 
-      <TouchableOpacity style={styles.submitButton}  onPress={() => navigation.navigate("Login")}>
+      <TouchableOpacity style={styles.submitButton} onPress={handleVerifyOTP}>
         <Text style={styles.submitText}>Verify OTP</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleBackSignUp}>
+        <Text style={styles.back}>Back to sign up</Text>
       </TouchableOpacity>
     </View>
   );
@@ -125,13 +182,13 @@ const styles = ScaledSheet.create({
     textAlign: "center",
     fontSize: "18@s",
     marginHorizontal: "5@s",
-    borderRadius: "10@s", 
+    borderRadius: "10@s",
     backgroundColor: ColorAccent.primary,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    elevation: 5, 
+    elevation: 5,
   },
   wrapper: {
     flexDirection: "row",
@@ -145,12 +202,12 @@ const styles = ScaledSheet.create({
     color: "#888",
     marginBottom: "5@s",
   },
-  btnResend:{
+  btnResend: {
     borderWidth: 1,
     padding: 5,
     alignItems: "center",
     borderColor: ColorAccent.tertiary,
-    borderRadius: 10
+    borderRadius: 10,
   },
   resend: {
     fontSize: "14@s",
@@ -164,19 +221,25 @@ const styles = ScaledSheet.create({
   submitButton: {
     backgroundColor: ColorAccent.tertiary,
     padding: "12@s",
-    borderRadius: "25@s", 
+    borderRadius: "25@s",
     width: "80%",
     alignItems: "center",
-    shadowColor: ColorAccent.tertiary, 
+    shadowColor: ColorAccent.tertiary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 5,
-    elevation: 6, 
+    elevation: 6,
   },
   submitText: {
     color: ColorAccent.primary,
     fontSize: "18@s",
     fontWeight: "bold",
+  },
+  back: {
+    fontSize: "12@s",
+    textAlign: "center",
+    marginTop: 10,
+    textDecorationLine: "underline",
   },
 });
 

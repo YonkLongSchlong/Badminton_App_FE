@@ -34,6 +34,17 @@ export const forgotPassword = createAsyncThunk(
   }
 );
 
+export const verifyOTP = createAsyncThunk(
+  "auth/verify-otp",
+  async (data, thunkAPI) => {
+    try {
+      return await authService.verifyOTP(data);
+    }catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const resetPassword = createAsyncThunk(
   "auth/reset-password",
   async (data, thunkAPI) => {
@@ -52,6 +63,17 @@ export const logout = createAsyncThunk("auth/logout", async (thunkAPI) => {
     return thunkAPI.rejectWithValue(error);
   }
 });
+
+export const registerUser = createAsyncThunk(
+  "auth/register-user",
+  async (user, thunkAPI) => {
+    try {
+      return await authService.registerUser(user);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 
 export const resetState = createAction("Reset_all");
 
@@ -77,6 +99,22 @@ export const authSlice = createSlice({
       state.user = null;
       state.message = "Login fail";
     })
+    .addCase(verifyOTP.pending, (state) => {
+      state.isLoading = true;
+    })
+    .addCase(verifyOTP.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isSuccess = true;
+      state.message = "User created successfully";
+      state.createdUser = action.payload;
+    })
+    .addCase(verifyOTP.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = "Failed verify OTP";
+    })
     .addCase(forgotPassword.pending, (state) => {
       state.isLoading = true;
     })
@@ -84,14 +122,14 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.isSuccess = true;
-      state.message = "OTP sent to email successfully";
+      state.message = "OTP sent to email";
       state.otp = action.payload;
     })
     .addCase(forgotPassword.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = "Failed to send OTP";
+      state.message = "Failed send OTP to email";
     })
     .addCase(resetPassword.pending, (state) => {
       state.isLoading = true;
@@ -123,6 +161,22 @@ export const authSlice = createSlice({
       state.isError = true;
       state.isSuccess = false;
       state.message = "Logout fail";
+    })
+    .addCase(registerUser.pending, (state) => {
+      state.isLoading = true;
+    })
+    .addCase(registerUser.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isSuccess = true;
+      state.message = "OTP sent to email successfully";
+      state.otp = action.payload;
+    })
+    .addCase(registerUser.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = "Failed to send OTP";
     })
     .addCase(resetState, () => initialState);
   },

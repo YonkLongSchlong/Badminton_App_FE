@@ -6,29 +6,35 @@ import { useForm } from "react-hook-form";
 import FormField from "../../components/Input/FormField";
 import { emailRegex, passwordRegex, usernameRegex } from "../../constant/Regex";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser, resetState } from "../../features/user/userSlice.js";
+import { registerUser, resetState } from "../../features/auth/authSlice.js";
 
 const Register = ({ navigation }) => {
   const { control, handleSubmit, watch } = useForm();
+  const [registerData, setRegisterData] = useState(null);
+
   const pwd = watch("password");
   const dispatch = useDispatch();
 
   const handleRegister = (data) => {
     const { confirmPassword, ...registerData } = data;
     registerData.role = "user";
+    setRegisterData(registerData);
     dispatch(registerUser(registerData));
   };
 
-  const { message } = useSelector((state) => state?.user);
+  const { message } = useSelector((state) => state?.auth);
+  console.log("Message:",message);
 
   useEffect(() => {
     if (message === "OTP sent to email successfully") {
       Alert.alert("OTP sent to email successfully");
+      navigation.navigate("VerifyOTP", { registerData })
     } else if (message === "Failed to send OTP") {
       Alert.alert("Failed to send OTP");
       dispatch(resetState());
     }
   }, [message, dispatch]);
+
 
   return (
     <ImageBackground
