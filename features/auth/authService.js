@@ -1,5 +1,4 @@
 import axios from "axios";
-import { config } from "../../utils/axiosconfig";
 import * as SecureStore from "expo-secure-store";
 
 const login = async (user) => {
@@ -17,6 +16,14 @@ const login = async (user) => {
       JSON.stringify(response.data.token)
     );
   }
+  return response.data;
+};
+
+const verifyOTP = async (data) => {
+  const response = await axios.post(
+    process.env.EXPO_PUBLIC_BASE_URL + `auth/verify-otp`,
+    data
+  );
   return response.data;
 };
 
@@ -43,10 +50,20 @@ const logout = async () => {
   return response.data;
 };
 
+const registerUser = async (user) => {
+  const response = await axios.post(
+    process.env.EXPO_PUBLIC_BASE_URL + `users/register`,
+    user
+  );
+  return response.data;
+};
+
 const authService = {
   login,
+  verifyOTP,
   forgotPassword,
   resetPassword,
   logout,
+  registerUser,
 };
 export default authService;

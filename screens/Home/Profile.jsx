@@ -1,5 +1,5 @@
 import { Alert, Image, ScrollView, Text, View } from "react-native";
-import React, {useEffect} from "react";
+import React, {useContext, useEffect} from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -7,49 +7,37 @@ import OverviewCard from "../../components/Home/OverviewCard.jsx";
 import SettingCard from "../../components/Home/SettingCard.jsx";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, resetState } from "../../features/auth/authSlice.js";
+import AuthContext from "../../context/AuthContext.js";
 import * as SecureStore from "expo-secure-store";
-import useAuth from "../../hooks/useAuth.js";
+
 
 const Profile = ({ navigation }) => {
+  const {clearAuthData} = useContext(AuthContext);
   const dispatch = useDispatch()
-  const {user,token } = useAuth();
-  console.log("User", user);
 
   const reSetSecureStore =  async () =>{
     await SecureStore.deleteItemAsync("token");
     await SecureStore.deleteItemAsync("user");
   }
 
-  const handleLogout =() => {
-    dispatch(logout());
+  const handleLogout = () => {
+     dispatch(logout());
   };
 
 
-  const userState = useSelector((state) => state?.auth);
-  console.log("User state:",userState);
-
+  // const userState = useSelector((state) => state?.auth);
   const { message } = useSelector((state) => state?.auth);
-  console.log("Message:", message);
 
   useEffect(() => {
     if (message === "Logout successful") {
       reSetSecureStore();
+      clearAuthData();
       Alert.alert("Logout successful");
     } else if (message === "Logout fail") {
       dispatch(resetState());
       Alert.alert("Logout fail !!!");
     }
   }, [message]);
-
-  
-
-  // const {logout} = useAuth();
-
-  // const handleLogout = async () => {
-  //   await logout();
-  //   Alert.alert("Logout successful");
-  // };
-
 
   return (
     <SafeAreaView style={styles.container}>

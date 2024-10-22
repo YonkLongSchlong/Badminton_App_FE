@@ -6,6 +6,7 @@ import Register from "../Auth/Register"
 import VerifyOTP from "../Auth/VerifyOTP"
 import ForgotPassword from "../Auth/ForgotPassword"
 import GettingStarted from "../Auth/GettingStarted"
+import ResetPassword from '../Auth/ResetPassword';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,7 @@ const AuthStack = () => {
       <Stack.Screen name='Register' component={Register}/>
       <Stack.Screen name='ForgotPassword' component={ForgotPassword}/>
       <Stack.Screen name='VerifyOTP' component={VerifyOTP}/>
+      <Stack.Screen name='ResetPassword' component={ResetPassword}/>
     </Stack.Navigator>
   )
 }

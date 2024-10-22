@@ -1,5 +1,5 @@
 import { Text, TouchableOpacity, View, ImageBackground, Alert } from "react-native";
-import React, {useState,useEffect} from "react";
+import React, {useContext, useEffect} from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import { useForm } from "react-hook-form";
@@ -7,9 +7,11 @@ import FormField from "../../components/Input/FormField";
 import { emailRegex, passwordRegex } from "../../constant/Regex";
 import { login, resetState } from "../../features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import AuthContext from "../../context/AuthContext.js";
 
 const Login = ({ navigation }) => {
   const { control, handleSubmit } = useForm();
+  const {storeAuthData} = useContext(AuthContext);
   const dispatch = useDispatch();
 
   const handleLogin = (data) => {
@@ -20,10 +22,13 @@ const Login = ({ navigation }) => {
     dispatch(login(user));
   };
 
-  const { message } = useSelector((state) => state?.auth);
+  const {message} = useSelector((state) => state?.auth);
+
+  const userState = useSelector((state) => state?.auth?.user);
 
   useEffect(() => {
     if (message === "Login successful") {
+      storeAuthData(userState.person,userState.token);
       Alert.alert("Login successful");
     } else if (message === "Login fail") {
       Alert.alert("Login fail");
