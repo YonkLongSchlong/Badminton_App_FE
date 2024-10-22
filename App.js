@@ -3,10 +3,9 @@ import { StyleSheet, Text, View } from "react-native";
 import "./gesture-handler";
 import NavigationWrapper from "./screens/Navigations/NavigationWrapper";
 import { useFonts } from "expo-font";
-import { useEffect } from "react";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
-
+import { AuthProvider } from "./context/AuthContext";
 
 export default function App() {
   const [loaded, error] = useFonts({
@@ -18,20 +17,17 @@ export default function App() {
     Bold: require("./assets/fonts/Quicksand-Bold.ttf"),
   });
 
-  // useEffect(() => {
-  //   if (loaded || error) {
-  //     SplashScreen.hideAsync();
-  //   }
-  // }, [loaded, error]);
 
   if (!loaded && !error) {
     return null;
   }
 
   return (
-    <Provider store={store}>
-      <NavigationWrapper />
-    </Provider>
+    <AuthProvider>
+      <Provider store={store}>
+        <NavigationWrapper />
+      </Provider>
+    </AuthProvider>
   );
 }
 

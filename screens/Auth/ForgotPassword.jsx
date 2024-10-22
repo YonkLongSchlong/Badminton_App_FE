@@ -14,7 +14,6 @@ const ForgotPassword = ({ navigation }) => {
   const [forgotPasswordData,setForgotPasswordData] = useState(null);
 
   const { message } = useSelector((state) => state?.auth);
-  console.log("Message:", message);
 
   useEffect(() => {
     if (message === "OTP sent to email") {
