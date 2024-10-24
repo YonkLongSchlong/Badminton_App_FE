@@ -29,8 +29,11 @@ const Register = ({ navigation }) => {
     if (message === "OTP sent to email successfully") {
       Alert.alert("OTP sent to email successfully");
       navigation.navigate("VerifyOTP", { registerData })
-    } else if (message === "Failed to send OTP") {
-      Alert.alert("Failed to send OTP");
+    } else if (message === "Network Error") {
+      Alert.alert("Internal Server Error");
+      dispatch(resetState());
+    }else if (message === "Request failed with status code 400") {
+      Alert.alert("User with this email already exist");
       dispatch(resetState());
     }
   }, [message, dispatch]);

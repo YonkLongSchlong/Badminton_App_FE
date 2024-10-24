@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk,createAction } from "@reduxjs/toolkit";
+import * as SecureStore from "expo-secure-store";
 import authService from "./authService";
 
 const initialState = {
@@ -14,7 +15,8 @@ export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
   try {
     return await authService.login(user);
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const message = error.message || "Network Error";
+    return thunkAPI.rejectWithValue(message);
   }
 });
 
@@ -24,7 +26,8 @@ export const forgotPassword = createAsyncThunk(
     try {
       return await authService.forgotPassword(data);
     }catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      const message = error.message || "Network Error";
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -35,7 +38,8 @@ export const verifyOTP = createAsyncThunk(
     try {
       return await authService.verifyOTP(data);
     }catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      const message = error.message || "Network Error";
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -46,7 +50,8 @@ export const resetPassword = createAsyncThunk(
     try {
       return await authService.resetPassword(data);
     } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      const message = error.message || "Network Error";
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -55,7 +60,8 @@ export const logout = createAsyncThunk("auth/logout", async (thunkAPI) => {
   try {
     return await authService.logout();
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    const message = error.message || "Network Error";
+    return thunkAPI.rejectWithValue(message);
   }
 });
 
@@ -65,7 +71,8 @@ export const registerUser = createAsyncThunk(
     try {
       return await authService.registerUser(user);
     } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      const message = error.message || "Network Error";
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -171,7 +178,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = "Failed to send OTP";
+      state.message = action.payload;
     })
     .addCase(resetState, () => initialState);
   },

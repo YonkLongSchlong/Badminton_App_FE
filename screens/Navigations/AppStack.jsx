@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import React from "react";
+import React, {useEffect} from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DrawerNavigation from "./DrawerNavigation";
 import CourseDetails from "../Course/CourseDetails.jsx";
@@ -12,11 +12,17 @@ import AddLesson from "../Course/AddLesson.jsx";
 import WatchLesson from "../Course/WatchLesson.jsx";
 import PublicCourse from "../Course/PublicCourse.jsx";
 import { scale } from "react-native-size-matters";
-import Login from "../Auth/Login.jsx";
+import { useDispatch } from "react-redux";
+import { loadUserFromSecureStore } from "../../features/user/userSlice.js";
 
 const Stack = createNativeStackNavigator();
 
 const AppStack = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(loadUserFromSecureStore());
+  }, [dispatch]);
+
 
   return (
     <Stack.Navigator>

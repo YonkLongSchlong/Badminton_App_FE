@@ -31,7 +31,7 @@ const Login = ({ navigation }) => {
       storeAuthData(userState.person,userState.token);
       Alert.alert("Login successful");
     } else if (message === "Login fail") {
-      Alert.alert("Login fail");
+      Alert.alert("Invalid email or password");
       dispatch(resetState());
     }
   }, [message, dispatch]);

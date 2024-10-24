@@ -24,9 +24,10 @@ const Profile = ({ navigation }) => {
      dispatch(logout());
   };
 
-
-  // const userState = useSelector((state) => state?.auth);
+  const {user} = useSelector((state) => state?.user);
   const { message } = useSelector((state) => state?.auth);
+
+  const avatarSrc = user?.avatar === null ? require("../../assets/4043232_avatar_batman_comics_hero_icon.png") : user?.avatar;
 
   useEffect(() => {
     if (message === "Logout successful") {
@@ -46,10 +47,10 @@ const Profile = ({ navigation }) => {
           <View style={styles.avatarContainer}>
             <Image
               style={styles.avatar}
-              source={require("../../assets/4043232_avatar_batman_comics_hero_icon.png")}
+              source={avatarSrc}
             />
           </View>
-          <Text style={styles.username}>I'm Batman</Text>
+          <Text style={styles.username}>{user?.user_name}</Text>
           <View style={styles.roleContainer}>
             <View style={styles.roleWrapper}>
               <Image
