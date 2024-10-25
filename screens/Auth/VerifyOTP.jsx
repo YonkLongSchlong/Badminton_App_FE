@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -13,20 +13,14 @@ import ColorAccent from "../../constant/Color.js";
 import { useDispatch, useSelector } from "react-redux";
 import {
   registerUser,
-  resetState,
   verifyOTP,
 } from "../../features/auth/authSlice.js";
 
 const VerifyOTP = ({ navigation, route }) => {
   const { registerData } = route.params;
-  console.log("Register data:", registerData);
-
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const inputRefs = useRef(new Array(6).fill(null));
   const dispatch = useDispatch();
-
-  const authState = useSelector((state) => state?.auth);
-  console.log("Auth state", authState);
 
   const handleOtpChange = (text, index) => {
     const newOtp = [...otp];
@@ -47,7 +41,6 @@ const VerifyOTP = ({ navigation, route }) => {
   };
 
   const handleBackSignUp = () => {
-    dispatch(resetState());
     navigation.navigate("Register");
   };
 
@@ -58,24 +51,39 @@ const VerifyOTP = ({ navigation, route }) => {
       ...registerData,
     };
     console.log(verificationData);
-    dispatch(verifyOTP(verificationData));
+    dispatch(verifyOTP(verificationData))
+      .unwrap()
+      .then(() => {
+        Alert.alert(
+          "OTP Verification Successful",
+          "Your OTP has been verified. You are now logged in!",[
+            {
+              text: "OK",
+              onPress: () => navigation.navigate("Login"),
+            },
+          ]
+        );
+      })
+      .catch((error) => {
+        if (error === "Request failed with status code 400") {
+          Alert.alert(
+            "Invalid OTP",
+            "The OTP you entered is incorrect. Please try again."
+          );
+        } else if (error === "Network Error") {
+          Alert.alert(
+            "Server Error",
+            "There was a problem with the server. Please try again later."
+          );
+        } else {
+          Alert.alert("Error", error || "An unknown error occurred.");
+        }
+      });
   };
-
-  const { message } = useSelector((state) => state?.auth);
-  console.log("Message:", message);
 
   const handleResendCode = () => {
     dispatch(registerUser(registerData));
   };
-
-  useEffect(() => {
-    if (message === "User created successfully") {
-      navigation.navigate("Login");
-    } else if (message === "Failed verify OTP") {
-      Alert.alert("Failed verify OTP");
-      dispatch(resetState());
-    }
-  }, [message, dispatch]);
 
   return (
     <View style={styles.container}>
@@ -85,7 +93,7 @@ const VerifyOTP = ({ navigation, route }) => {
         We have sent you an One Time PassCode to your email address:
       </Text>
       <Text style={styles.email}>
-      {registerData?.email || "mail@gmail.com"}
+        {registerData?.email || "mail@gmail.com"}
       </Text>
 
       <View style={styles.otpContainer}>

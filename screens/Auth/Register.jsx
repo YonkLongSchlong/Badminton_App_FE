@@ -1,12 +1,18 @@
-import { Text, TouchableOpacity, View, ImageBackground, Alert } from "react-native";
-import React, { useState, useEffect } from "react";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  ImageBackground,
+  Alert,
+} from "react-native";
+import React, { useState } from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import { useForm } from "react-hook-form";
 import FormField from "../../components/Input/FormField";
 import { emailRegex, passwordRegex, usernameRegex } from "../../constant/Regex";
-import { useDispatch, useSelector } from "react-redux";
-import { registerUser, resetState } from "../../features/auth/authSlice.js";
+import { useDispatch } from "react-redux";
+import { registerUser } from "../../features/auth/authSlice.js";
 
 const Register = ({ navigation }) => {
   const { control, handleSubmit, watch } = useForm();
@@ -19,22 +25,31 @@ const Register = ({ navigation }) => {
     const { confirmPassword, ...registerData } = data;
     registerData.role = "user";
     setRegisterData(registerData);
-    dispatch(registerUser(registerData));
+
+    dispatch(registerUser(registerData))
+      .unwrap()
+      .then(() => {
+        Alert.alert(
+          "Registration Successful",
+          "An OTP has been sent to your email for verification.",
+          [
+            {
+              text: "OK",
+              onPress: () => navigation.navigate("VerifyOTP", { registerData }),
+            },
+          ]
+        );
+      })
+      .catch((error) => {
+        if (error === "Request failed with status code 400") {
+          Alert.alert("User Already Exists", "User with this email already exists.");
+        } else if (error === "Network Error") {
+          Alert.alert("Server Error", "There was a problem with the server. Please try again later.");
+        } else {
+          Alert.alert("Error", error || "An unknown error occurred.");
+        }
+      });
   };
-
-  const { message } = useSelector((state) => state?.auth);
-  console.log("Message:",message);
-
-  useEffect(() => {
-    if (message === "OTP sent to email successfully") {
-      Alert.alert("OTP sent to email successfully");
-      navigation.navigate("VerifyOTP", { registerData })
-    } else if (message === "Failed to send OTP") {
-      Alert.alert("Failed to send OTP");
-      dispatch(resetState());
-    }
-  }, [message, dispatch]);
-
 
   return (
     <ImageBackground

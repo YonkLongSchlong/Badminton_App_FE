@@ -5,20 +5,60 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import ColorAccent from "../../../constant/Color.js";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Picker } from "@react-native-picker/picker";
+import { useDispatch, useSelector } from "react-redux";
+import { updateProfile } from "../../../features/user/userSlice.js";
 
 const EditProfile = ({ navigation }) => {
-  const [fullName, setFullName] = useState("I'm Batman");
-  const [dateOfBirth, setDateOfBirth] = useState(new Date(2003, 7, 8)); // 08/08/2003
-  const [gender, setGender] = useState("Men");
+  const { user } = useSelector((state) => state?.user);
+  const dispatch = useDispatch();
+
+  const [fullName, setFullName] = useState(user?.user_name);
+  const [dateOfBirth, setDateOfBirth] = useState(
+    user?.dob === null ? new Date(user?.created_at) : new Date(user?.dob)
+  );
+  const [gender, setGender] = useState(
+    user?.gender === null ? "Other" : user?.gender
+  );
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const handleSave = () => {
-    // Lưu thông tin cập nhật
-    Alert.alert(
-      "Profile Updated",
-      "Your profile has been successfully updated!"
-    );
-    navigation.goBack();
+  const handleUpdateProfile = () => {
+    const updatedUser = {
+      email: user?.email,
+      user_name: fullName,
+      dob: dateOfBirth.toISOString(),
+      gender: gender,
+      role: user?.role,
+    };
+
+    dispatch(updateProfile({ updatedUser, userId: user?.id }))
+      .unwrap()
+      .then(() => {
+        Alert.alert(
+          "Profile Updated",
+          "Your profile has been successfully updated!"
+        );
+        navigation.goBack();
+      })
+      .catch((error) => {
+        if (!error.response) {
+          // Lỗi mạng hoặc lỗi không có phản hồi từ server
+          Alert.alert("Network Error", "Please check your internet connection.");
+        } else {
+          // Lỗi từ server với phản hồi cụ thể
+          const { status, data } = error.response;
+
+          if (status === 400) {
+            Alert.alert("Invalid Data", data?.message || "Your input is invalid.");
+          } else if (status === 404) {
+            Alert.alert("Not Found", "User not found.");
+          } else if (status === 500) {
+            Alert.alert("Server Error", "There was a problem with the server.");
+          } else {
+            // Các lỗi khác
+            Alert.alert("Error", data?.message || "An unknown error occurred.");
+          }
+        }
+      });
   };
 
   const showDatePickerModal = () => {
@@ -70,7 +110,7 @@ const EditProfile = ({ navigation }) => {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+      <TouchableOpacity style={styles.saveButton} onPress={handleUpdateProfile}>
         <AntDesign name="save" size={24} color="white" />
         <Text style={styles.saveButtonText}>Save</Text>
       </TouchableOpacity>

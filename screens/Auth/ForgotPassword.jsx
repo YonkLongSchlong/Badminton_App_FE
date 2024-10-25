@@ -1,29 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import FormField from "../../components/Input/FormField";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { forgotPassword, resetState } from "../../features/auth/authSlice.js";
+import { useDispatch } from "react-redux";
+import { forgotPassword } from "../../features/auth/authSlice.js";
 import { emailRegex } from "../../constant/Regex.js";
 
 const ForgotPassword = ({ navigation }) => {
   const { control, handleSubmit } = useForm();
   const dispatch = useDispatch();
-  const [forgotPasswordData,setForgotPasswordData] = useState(null);
-
-  const { message } = useSelector((state) => state?.auth);
-
-  useEffect(() => {
-    if (message === "OTP sent to email") {
-      Alert.alert("OTP sent to email");
-      navigation.navigate("ResetPassword", { forgotPasswordData });
-    } else if (message === "Failed send OTP to email") {
-      Alert.alert("Failed send OTP to email");
-      dispatch(resetState());
-    }
-  }, [message, dispatch]);
+  const [forgotPasswordData, setForgotPasswordData] = useState(null);
 
   const handleForgotPassword = (dataForm) => {
     const data = {
@@ -31,8 +19,36 @@ const ForgotPassword = ({ navigation }) => {
       role: "user",
     };
     setForgotPasswordData(data);
-    console.log("Data:", data);
-    dispatch(forgotPassword(data));
+    dispatch(forgotPassword(data))
+      .unwrap()
+      .then(() => {
+        Alert.alert(
+          "Success",
+          "If your email is registered, you will receive a link to reset your password shortly.",
+          [
+            {
+              text: "OK",
+              onPress: () =>
+                navigation.navigate("ResetPassword", { forgotPasswordData }),
+            },
+          ]
+        );
+      })
+      .catch((error) => {
+        if (error === "Request failed with status code 404") {
+          Alert.alert(
+            "User Not Found",
+            "We couldn't find an account associated with that email address. Please check and try again."
+          );
+        } else if (error === "Network Error") {
+          Alert.alert(
+            "Server Error",
+            "There was a problem with the server. Please try again later."
+          );
+        } else {
+          Alert.alert("Error", error || "An unknown error occurred.");
+        }
+      });
   };
 
   return (

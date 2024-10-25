@@ -5,13 +5,31 @@ import React, { useState } from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import * as ImagePicker from "expo-image-picker";
+import { useSelector } from "react-redux";
 
 const MyProfile = ({ navigation }) => {
+  const { user } = useSelector((state) => state?.user);
+  console.log("User in myprofile:", user);
+  const dob =
+    user?.dob === null
+      ? new Date(user?.created_at).toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })
+      : new Date(user?.dob).toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
   const [avatar, setAvatar] = useState(
-    require("../../../assets/4043232_avatar_batman_comics_hero_icon.png")
+    user?.avatar === null
+      ? require("../../../assets/4043232_avatar_batman_comics_hero_icon.png")
+      : user?.avatar
   );
-  const [newAvatar, setNewAvatar] = useState(null); // Lưu ảnh mới chọn
+  const [newAvatar, setNewAvatar] = useState(null);
 
+  const gender = user?.gender === null ? "Other" : user?.gender;
   const selectAvatar = async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -38,8 +56,8 @@ const MyProfile = ({ navigation }) => {
 
   const saveAvatar = () => {
     if (newAvatar) {
-      setAvatar(newAvatar); // Cập nhật ảnh avatar
-      setNewAvatar(null); // Đặt lại trạng thái ảnh mới
+      setAvatar(newAvatar);
+      setNewAvatar(null);
       Alert.alert("Success", "Avatar has been updated!");
     }
   };
@@ -50,7 +68,7 @@ const MyProfile = ({ navigation }) => {
         <TouchableOpacity style={styles.avatarContainer} onPress={selectAvatar}>
           <Image
             style={styles.avatar}
-            source={newAvatar ? newAvatar : avatar} // Hiển thị ảnh mới nếu đã chọn
+            source={newAvatar ? newAvatar : avatar}
           />
           <Ionicons
             name="image-outline"
@@ -64,15 +82,15 @@ const MyProfile = ({ navigation }) => {
       <View style={styles.infoContainer}>
         <View style={styles.infoWrapper}>
           <Text style={styles.label}>Full name:</Text>
-          <Text style={styles.infoText}>I'm Batman</Text>
+          <Text style={styles.infoText}>{user?.user_name}</Text>
         </View>
         <View style={styles.infoWrapper}>
           <Text style={styles.label}>Date of birth:</Text>
-          <Text style={styles.infoText}>08/08/2003</Text>
+          <Text style={styles.infoText}>{dob}</Text>
         </View>
         <View style={styles.infoWrapper}>
           <Text style={styles.label}>Gender:</Text>
-          <Text style={styles.infoText}>Men</Text>
+          <Text style={styles.infoText}>{gender}</Text>
         </View>
 
         <TouchableOpacity

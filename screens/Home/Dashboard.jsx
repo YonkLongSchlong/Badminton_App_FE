@@ -7,6 +7,7 @@ import InstructorCard from "../../components/Home/InstructorCard.jsx";
 import CourseCategoryCard from "../../components/Home/CourseCategoryCard.jsx";
 import CourseCard from "../../components/Home/CourseCard.jsx";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
 
 const instructors = [
   {
@@ -150,19 +151,23 @@ const courses = [
 
 const Dashboard = () => {
   const [chosenCategory, setChosenCategory] = useState("All");
+  const {user} = useSelector((state) => state?.user);
+  const avatarSrc = user?.avatar === null ? require("../../assets/4043232_avatar_batman_comics_hero_icon.png") : user?.avatar;
+  
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* USER GREETING SECTION */}
         <View style={styles.userSection}>
           <View style={{ alignItems: "flex-end" }}>
-            <Text style={styles.heading}>Hi, Batman</Text>
+            <Text style={styles.heading}>Hi, {user?.user_name}</Text>
             <Text style={styles.text}>Let get you back on track</Text>
           </View>
           <View>
             <Image
               style={styles.image}
-              source={require("../../assets/4043232_avatar_batman_comics_hero_icon.png")}
+              source={avatarSrc}
             ></Image>
           </View>
         </View>
