@@ -56,7 +56,7 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
-export const logout = createAsyncThunk("auth/logout", async (thunkAPI) => {
+export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
   try {
     return await authService.logout();
   } catch (error) {
@@ -77,8 +77,6 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-export const resetState = createAction("Reset_all");
-
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -90,16 +88,15 @@ export const authSlice = createSlice({
     })
     .addCase(login.fulfilled, (state, action) => {
       state.isLoading = false;
+      state.isError = false;
       state.isSuccess = true;
       state.user = action.payload;
-      state.message = "Login successful";
     })
     .addCase(login.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.user = null;
-      state.message = "Login fail";
+      state.message = action.payload;
     })
     .addCase(verifyOTP.pending, (state) => {
       state.isLoading = true;
@@ -108,14 +105,13 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.isSuccess = true;
-      state.message = "User created successfully";
       state.createdUser = action.payload;
     })
     .addCase(verifyOTP.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = "Failed verify OTP";
+      state.message = action.payload;
     })
     .addCase(forgotPassword.pending, (state) => {
       state.isLoading = true;
@@ -124,14 +120,13 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.isSuccess = true;
-      state.message = "OTP sent to email";
       state.otp = action.payload;
     })
     .addCase(forgotPassword.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = "Failed send OTP to email";
+      state.message = action.payload;
     })
     .addCase(resetPassword.pending, (state) => {
       state.isLoading = true;
@@ -141,28 +136,27 @@ export const authSlice = createSlice({
       state.isError = false;
       state.isSuccess = true;
       state.user = action.payload;
-      state.message = "Update password successfully";
     })
     .addCase(resetPassword.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = "Update password fail";
+      state.message = action.payload;
     })
     .addCase(logout.pending, (state) => {
       state.isLoading = true;
     })
     .addCase(logout.fulfilled, (state, action) => {
       state.isLoading = false;
+      state.isError = false;
       state.isSuccess = true;
       state.user = null;
-      state.message = "Logout successful";
     })
     .addCase(logout.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = "Logout fail";
+      state.message = action.payload;
     })
     .addCase(registerUser.pending, (state) => {
       state.isLoading = true;
@@ -171,7 +165,6 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.isSuccess = true;
-      state.message = "OTP sent to email successfully";
       state.otp = action.payload;
     })
     .addCase(registerUser.rejected, (state, action) => {
@@ -180,7 +173,6 @@ export const authSlice = createSlice({
       state.isSuccess = false;
       state.message = action.payload;
     })
-    .addCase(resetState, () => initialState);
   },
 });
 

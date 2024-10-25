@@ -1,45 +1,60 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import FormField from "../../components/Input/FormField";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
-  forgotPassword,
   resetPassword,
 } from "../../features/auth/authSlice.js";
 import { otpRegex, passwordRegex } from "../../constant/Regex.js";
 
 const ResetPassword = ({ navigation, route }) => {
   const { forgotPasswordData } = route.params;
-  console.log("ForgotPassword Data:", forgotPasswordData);
   const { control, handleSubmit } = useForm();
 
-    const dispatch = useDispatch();
-
-    const {message} = useSelector((state)=> state?.auth);
-    console.log("Message:",message);
-
-    useEffect(() => {
-      if (message === "Update password successfully") {
-        Alert.alert("Update password successfully");
-        navigation.navigate("Login")
-      } else if (message === "Update password fail") {
-        Alert.alert("Update password fail");
-        dispatch(resetState());
-      }
-    }, [message, dispatch]);
-
-
+  const dispatch = useDispatch();
 
   const handleResetPassword = (dataForm) => {
     const data = {
       ...dataForm,
-      ...forgotPasswordData
+      ...forgotPasswordData,
     };
-    console.log("Data:", data);
-    dispatch(resetPassword(data));
+    dispatch(resetPassword(data))
+      .unwrap()
+      .then(() => {
+        Alert.alert(
+          "Successful",
+          "Your password has been reset successfully.",
+          [
+            {
+              text: "OK",
+              onPress: () => navigation.navigate("Login"),
+            },
+          ]
+        );
+      })
+      .catch((error) => {
+        if (error === "Request failed with status code 400") {
+          Alert.alert(
+            "Invalid credentials",
+            "The OTP you entered is incorrect. Please try again."
+          );
+        } else if (error === "Request failed with status code 404") {
+          Alert.alert(
+            "User Not Found",
+            "No account associated with this information was found. Please check and try again."
+          );
+        } else if (error === "Network Error") {
+          Alert.alert(
+            "Server Error",
+            "There was a problem with the server. Please try again later."
+          );
+        } else {
+          Alert.alert("Error", error || "An unknown error occurred.");
+        }
+      });
   };
 
   return (
@@ -49,7 +64,9 @@ const ResetPassword = ({ navigation, route }) => {
       <Text style={styles.subtitle}>
         We have sent you an One Time PassCode to your email address:
       </Text>
-      <Text style={styles.email}>{forgotPasswordData?.email || "mail@gmail.com"}</Text>
+      <Text style={styles.email}>
+        {forgotPasswordData?.email || "mail@gmail.com"}
+      </Text>
 
       <View style={styles.formContainer}>
         <FormField

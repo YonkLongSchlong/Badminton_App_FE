@@ -1,54 +1,61 @@
 import { Alert, Image, ScrollView, Text, View } from "react-native";
-import React, {useContext, useEffect} from "react";
+import React, { useContext } from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import { SafeAreaView } from "react-native-safe-area-context";
 import OverviewCard from "../../components/Home/OverviewCard.jsx";
 import SettingCard from "../../components/Home/SettingCard.jsx";
 import { useSelector, useDispatch } from "react-redux";
-import { logout, resetState } from "../../features/auth/authSlice.js";
+import { logout } from "../../features/auth/authSlice.js";
 import AuthContext from "../../context/AuthContext.js";
 import * as SecureStore from "expo-secure-store";
 
-
 const Profile = ({ navigation }) => {
-  const {clearAuthData} = useContext(AuthContext);
-  const dispatch = useDispatch()
+  const { clearAuthData } = useContext(AuthContext);
+  const dispatch = useDispatch();
 
-  const reSetSecureStore =  async () =>{
+  const reSetSecureStore = async () => {
     await SecureStore.deleteItemAsync("token");
     await SecureStore.deleteItemAsync("user");
-  }
-
-  const handleLogout = () => {
-     dispatch(logout());
   };
 
-  const {user} = useSelector((state) => state?.user);
-  const { message } = useSelector((state) => state?.auth);
+  const handleLogout = () => {
+    dispatch(logout())
+      .unwrap()
+      .then(() => {
+        reSetSecureStore();
+        clearAuthData();
+        Alert.alert(
+          "Logout Successful",
+          "You have been logged out successfully."
+        );
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+        if (error === "Network Error") {
+          Alert.alert(
+            "Server Error",
+            "There was a problem with the server. Please try again later."
+          );
+        } else {
+          Alert.alert("Error", error || "An unknown error occurred.");
+        }
+      });
+  };
 
-  const avatarSrc = user?.avatar === null ? require("../../assets/4043232_avatar_batman_comics_hero_icon.png") : user?.avatar;
+  const { user } = useSelector((state) => state?.user);
 
-  useEffect(() => {
-    if (message === "Logout successful") {
-      reSetSecureStore();
-      clearAuthData();
-      Alert.alert("Logout successful");
-    } else if (message === "Logout fail") {
-      dispatch(resetState());
-      Alert.alert("Logout fail !!!");
-    }
-  }, [message]);
+  const avatarSrc =
+    user?.avatar === null
+      ? require("../../assets/4043232_avatar_batman_comics_hero_icon.png")
+      : user?.avatar;
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.userInfoSection}>
           <View style={styles.avatarContainer}>
-            <Image
-              style={styles.avatar}
-              source={avatarSrc}
-            />
+            <Image style={styles.avatar} source={avatarSrc} />
           </View>
           <Text style={styles.username}>{user?.user_name}</Text>
           <View style={styles.roleContainer}>
@@ -85,7 +92,7 @@ const Profile = ({ navigation }) => {
             <SettingCard
               icon="shield-checkmark-outline"
               label="Password"
-              onPress={() => navigation.navigate("Password")} 
+              onPress={() => navigation.navigate("Password")}
             />
             <SettingCard icon="notifications-outline" label="Notifications" />
             <SettingCard icon="card-outline" label="Payment settings" />
@@ -93,7 +100,7 @@ const Profile = ({ navigation }) => {
               icon="calendar-outline"
               label="Schedule"
               last={true}
-              onPress={() => navigation.navigate("Schedule")} 
+              onPress={() => navigation.navigate("Schedule")}
             />
           </View>
           <View style={styles.settingCardContainer}>

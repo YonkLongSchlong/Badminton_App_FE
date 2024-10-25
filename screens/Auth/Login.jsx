@@ -1,17 +1,23 @@
-import { Text, TouchableOpacity, View, ImageBackground, Alert } from "react-native";
-import React, {useContext, useEffect} from "react";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  ImageBackground,
+  Alert,
+} from "react-native";
+import React, { useContext } from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import { useForm } from "react-hook-form";
 import FormField from "../../components/Input/FormField";
 import { emailRegex, passwordRegex } from "../../constant/Regex";
-import { login, resetState } from "../../features/auth/authSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../features/auth/authSlice";
+import { useDispatch } from "react-redux";
 import AuthContext from "../../context/AuthContext.js";
 
 const Login = ({ navigation }) => {
   const { control, handleSubmit } = useForm();
-  const {storeAuthData} = useContext(AuthContext);
+  const { storeAuthData } = useContext(AuthContext);
   const dispatch = useDispatch();
 
   const handleLogin = (data) => {
@@ -19,22 +25,30 @@ const Login = ({ navigation }) => {
       ...data,
       role: "user",
     };
-    dispatch(login(user));
+    dispatch(login(user))
+      .unwrap()
+      .then((userState) => {
+        storeAuthData(userState.person, userState.token);
+        Alert.alert(
+          "Login successful",
+          "You have been logged in successfully."
+        );
+      })
+      .catch((error) => {
+        if (error === "Request failed with status code 400") {
+          Alert.alert("Invalid Credentials", "Invalid email or password.");
+        } else if (error === "Request failed with status code 404") {
+          Alert.alert("User Not Found", "The user does not exist.");
+        } else if (error === "Network Error") {
+          Alert.alert(
+            "Server Error",
+            "There was a problem with the server. Please try again later."
+          );
+        } else {
+          Alert.alert("Error", error || "An unknown error occurred.");
+        }
+      });
   };
-
-  const {message} = useSelector((state) => state?.auth);
-
-  const userState = useSelector((state) => state?.auth?.user);
-
-  useEffect(() => {
-    if (message === "Login successful") {
-      storeAuthData(userState.person,userState.token);
-      Alert.alert("Login successful");
-    } else if (message === "Login fail") {
-      Alert.alert("Invalid email or password");
-      dispatch(resetState());
-    }
-  }, [message, dispatch]);
 
   return (
     <ImageBackground
