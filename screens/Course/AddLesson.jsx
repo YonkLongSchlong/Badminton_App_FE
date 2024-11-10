@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import * as ImagePicker from "expo-image-picker";
 import { Video } from "expo-av";
-import FormField from "../../components/Input/FormField";
 import { useForm } from "react-hook-form";
 import ColorAccent from "../../constant/Color.js";
 
@@ -31,19 +30,18 @@ const AddLesson = () => {
 
   return (
     <View style={styles.container}>
-
       {/* Title Input */}
-      <FormField
+      {/* <FormField
         control={control}
         name="title"
         label="Lesson Title"
         showAsterisk={true}
         placeholder="Enter lesson title"
         rules={{ required: "Please enter lesson title" }}
-      />
+      /> */}
 
       {/* Lesson Description */}
-      <FormField
+      {/* <FormField
           name="lessonDescription"
           control={control}
           label="Lesson Description"
@@ -53,7 +51,7 @@ const AddLesson = () => {
           multiline={true}
           numberoflines={5}
           style={styles.multiLineInput}
-        />
+        /> */}
 
       {/* Choose Video Button */}
       <TouchableOpacity style={styles.button} onPress={chooseVideo}>
@@ -118,10 +116,10 @@ const styles = ScaledSheet.create({
     fontSize: "16@s",
     fontWeight: "bold",
   },
-  previewWrapper:{
+  previewWrapper: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center"
+    alignItems: "center",
   },
   previewLabel: {
     fontWeight: "bold",

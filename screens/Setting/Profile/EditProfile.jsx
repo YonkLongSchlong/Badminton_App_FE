@@ -1,177 +1,303 @@
+import { useMutation } from "@tanstack/react-query";
+import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import {
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
+import EditTextInput from "../../../components/Input/EditTextInput";
+import Color from "../../../constant/Color";
+import userStore from "../../../store/userStore";
 import { ScaledSheet } from "react-native-size-matters";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import ColorAccent from "../../../constant/Color.js";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import { Picker } from "@react-native-picker/picker";
-import { useDispatch, useSelector } from "react-redux";
-import { updateProfile } from "../../../features/user/userSlice.js";
+import { Camera } from "lucide-react-native";
+import { errorToast, successToast } from "../../../utils/toastConfig";
+import updateUser from "../../../hooks/User/updateUser";
+import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import Checkbox from "expo-checkbox";
+import updateAvatar from "../../../hooks/User/updateAvatar";
 
-const EditProfile = ({ navigation }) => {
-  const { user } = useSelector((state) => state?.user);
-  const dispatch = useDispatch();
-
-  const [fullName, setFullName] = useState(user?.user_name);
-  const [dateOfBirth, setDateOfBirth] = useState(
-    user?.dob === null ? new Date(user?.created_at) : new Date(user?.dob)
+export default function Edit({navigation}) {
+  const user = userStore((state) => state.user);
+  const token = userStore((state) => state.token);
+  const setUser = userStore((state) => state.setUser);
+  const [firstName, setFirstName] = useState(user.firstName);
+  const [lastName, setLastName] = useState(user.lastName);
+  const [email, setEmail] = useState(user.email);
+  const [dob, setDob] = useState(new Date(user.dob));
+  const [gender, setGender] = useState(user.gender === null ? "Male" : "Female");
+  const [isMale, setIsMale] = useState(user.gender === "Male" ? true : false);
+  const [isFemale, setIsFemale] = useState(
+    user.gender === "Female" ? true : false
   );
-  const [gender, setGender] = useState(
-    user?.gender === null ? "Other" : user?.gender
-  );
-  const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const handleUpdateProfile = () => {
-    const updatedUser = {
-      email: user?.email,
-      user_name: fullName,
-      dob: dateOfBirth.toISOString(),
-      gender: gender,
-      role: user?.role,
-    };
+  const updateMutation = useMutation({
+    mutationFn: updateUser,
+    onSuccess: (data) => {
+      if (data.status === 400 || data.status === 404) {
+        errorToast(data.msg);
+      } else {
+        setUser(data.data);
+        navigation.navigate("Profile");
+        successToast("Update profile", data.msg);
+      }
+    },
+    onError: (data) => {
+      errorToast(data.message);
+    },
+  });
 
-    dispatch(updateProfile({ updatedUser, userId: user?.id }))
-      .unwrap()
-      .then(() => {
-        Alert.alert(
-          "Profile Updated",
-          "Your profile has been successfully updated!"
-        );
-        navigation.goBack();
-      })
-      .catch((error) => {
-        if (!error.response) {
-          // Lỗi mạng hoặc lỗi không có phản hồi từ server
-          Alert.alert("Network Error", "Please check your internet connection.");
-        } else {
-          // Lỗi từ server với phản hồi cụ thể
-          const { status, data } = error.response;
-
-          if (status === 400) {
-            Alert.alert("Invalid Data", data?.message || "Your input is invalid.");
-          } else if (status === 404) {
-            Alert.alert("Not Found", "User not found.");
-          } else if (status === 500) {
-            Alert.alert("Server Error", "There was a problem with the server.");
-          } else {
-            // Các lỗi khác
-            Alert.alert("Error", data?.message || "An unknown error occurred.");
-          }
-        }
-      });
+  const handleUpdate = () => {
+    const id = user.id;
+    isMale ? setGender("Male") : setGender("Female");
+    updateMutation.mutate({
+      id,
+      firstName,
+      lastName,
+      email,
+      dob,
+      gender,
+      token,
+      setUser,
+    });
   };
 
-  const showDatePickerModal = () => {
-    setShowDatePicker(true);
+  const avatarMutation = useMutation({
+    mutationFn: updateAvatar,
+    onSuccess: async (data) => {
+      if (data.status === 400 || data.status === 404) {
+        errorToast(data.msg);
+      } else {
+        setUser(data.data)
+        navigation.navigate("Profile");
+        successToast("Update avatar", data.msg);
+      }
+    },
+    onError: (data) => {
+      errorToast(data.message);
+    },
+  });
+
+  const handleUploadImage = async () => {
+    const status = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status) {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        quality: 1,
+      });
+      handleUpdateImage(user, token, result);
+    }
+  };
+
+  const handleUpdateImage = async (user, token, result) => {
+    if (!result.canceled) {
+      const fileMime = result.assets[0].type;
+      const fileType = result.assets[0].uri.split(".").pop();
+
+    const options = {
+      uri: `${result.assets[0].uri}`,
+      name: `${user.id}-${Date.now().toString()}.${fileType}`,
+      type: `${fileMime}/${fileType}`,
+    };
+
+    let formData = new FormData();
+    formData.append("image", options);
+
+    const id = user.id;
+      avatarMutation.mutate({ id, formData, token });
+    }
+  };
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setDob(currentDate);
+  };
+
+  const showMode = () => {
+    DateTimePickerAndroid.open({
+      value: dob,
+      onChange,
+      mode: "date",
+    });
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Full name:</Text>
-        <TextInput
-          style={styles.input}
-          value={fullName}
-          onChangeText={(text) => setFullName(text)}
-        />
-      </View>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      automaticallyAdjustKeyboardInsets={true}
+    >
+      <StatusBar style="dark" />
 
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Date of birth:</Text>
-        <TouchableOpacity onPress={showDatePickerModal} style={styles.input}>
-          <Text>{dateOfBirth.toDateString()}</Text>
-        </TouchableOpacity>
-        {showDatePicker && (
-          <DateTimePicker
-            value={dateOfBirth}
-            mode="date"
-            display="default"
-            onChange={(event, selectedDate) => {
-              const currentDate = selectedDate || dateOfBirth;
-              setShowDatePicker(false);
-              setDateOfBirth(currentDate);
-            }}
-          />
-        )}
-      </View>
+      {/* ------------ AVATAR SECTION ------------- */}
+      <View style={styles.avatarContainer}>
+        <View style={styles.avatarBorder}>
+          {user.avatar == null ? (
+            <Image
+              style={styles.avatar}
+              source={
+                user.avatar == null
+                  ? require("../../../assets/4043232_avatar_batman_comics_hero_icon.png")
+                  : { uri: user.avatar }
+              }
+            />
+          ) : (
+            <Image style={styles.avatar} source={{ uri: user.avatar }} />
+          )}
 
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Gender:</Text>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={gender}
-            onValueChange={(itemValue) => setGender(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Men" value="Men" />
-            <Picker.Item label="Women" value="Women" />
-            <Picker.Item label="Other" value="Other" />
-          </Picker>
+          <TouchableOpacity style={styles.addBtn} onPress={handleUploadImage}>
+            <Camera size={24} color={Color.primary} />
+          </TouchableOpacity>
         </View>
       </View>
 
-      <TouchableOpacity style={styles.saveButton} onPress={handleUpdateProfile}>
-        <AntDesign name="save" size={24} color="white" />
-        <Text style={styles.saveButtonText}>Save</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+      {/* ------------ INPUT SECTION ------------- */}
+      <View style={styles.inputContainer}>
+        <EditTextInput
+          label={"First name"}
+          ecrypted={false}
+          value={firstName}
+          setValue={setFirstName}
+          editable={true}
+        />
+        <EditTextInput
+          label={"Last name"}
+          ecrypted={false}
+          value={lastName}
+          setValue={setLastName}
+          editable={true}
+        />
+        <EditTextInput
+          label={"Email"}
+          ecrypted={false}
+          value={email}
+          setValue={setEmail}
+          editable={true}
+        />
+        <TouchableOpacity onPress={showMode}>
+          <EditTextInput
+            label={"Date of birth"}
+            ecrypted={false}
+            value={dob.toLocaleDateString("it-IT")}
+            setValue={setDob}
+            editable={false}
+          />
+        </TouchableOpacity>
+        <View style={styles.checkboxContainer}>
+          <View style={styles.checkboxSection}>
+            <Checkbox
+              style={styles.checkbox}
+              value={isMale}
+              onValueChange={() => {
+                setIsFemale(false);
+                setIsMale(true);
+                setGender("Male");
+              }}
+              color={isMale ? Color.tertiary : undefined}
+            />
+            <Text style={styles.checkboxText}>Male</Text>
+          </View>
+          <View style={styles.checkboxSection}>
+            <Checkbox
+              style={styles.checkbox}
+              value={isFemale}
+              onValueChange={() => {
+                setIsFemale(true);
+                setIsMale(false);
+                setGender("Female");
+              }}
+              color={isFemale ? Color.tertiary : undefined}
+            />
+            <Text style={styles.checkboxText}>Female</Text>
+          </View>
+        </View>
+      </View>
 
-export default EditProfile;
+      {/* ------------ UPDATE BUTTON ------------- */}
+      <TouchableOpacity style={styles.updateBtn} onPress={handleUpdate}>
+        <Text style={styles.btnText}>Update</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  );
+}
 
 const styles = ScaledSheet.create({
   container: {
     flex: 1,
-    backgroundColor: ColorAccent.primary,
-    padding: "20@s",
+    flexDirection: "column",
+    backgroundColor: Color.primary,
   },
-  header: {
-    fontSize: "18@s",
-    fontFamily: "Bold",
-    marginBottom: "20@s",
-    textAlign: "center",
-    color: "#000",
+  avatarContainer: {
+    marginTop: 30,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  inputGroup: {
-    marginBottom: "20@s",
-  },
-  label: {
-    fontSize: "14@s",
-    marginBottom: "5@s",
-    fontFamily: "Regular",
-    color: "#555",
-  },
-  input: {
-    backgroundColor: "white",
-    padding: "10@s",
-    borderRadius: "5@s",
-    fontSize: "14@s",
+  avatarBorder: {
+    borderWidth: 4,
     borderColor: ColorAccent.tertiary,
-    borderWidth: "1@s",
+    borderRadius: 164,
+    width: "123@s",
+    height: "123@s",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  pickerContainer: {
-    backgroundColor: "white",
-    borderRadius: "5@s",
-    borderWidth: "1@s",
-    borderColor: ColorAccent.tertiary,
+  avatar: {
+    width: "110@s",
+    height: "110@s",
+    borderRadius: 150,
+    resizeMode: "cover",
   },
-  picker: {
-    height: "40@s",
+  addBtn: {
+    backgroundColor: Color.tertiary,
+    padding: 10,
+    borderRadius: 70,
+    position: "absolute",
+    bottom: -10,
+    right: 20,
   },
-  saveButton: {
+  inputContainer: {
+    marginVertical: 50,
+    gap: 15,
+    paddingHorizontal: 30,
+  },
+  checkboxContainer: {
+    marginTop: 20,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: ColorAccent.tertiary,
-    paddingVertical: "12@s",
-    borderRadius: "5@s",
-    marginTop: "20@s",
+    gap: 100,
   },
-  saveButtonText: {
-    marginLeft: "8@s",
-    fontSize: "16@s",
-    color: "white",
+  checkboxSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  checkbox: {
+    backgroundColor: Color.primary,
+    borderRadius: 10,
+    padding: 10,
+    fontSize: "10@s",
+    borderColor: Color.white,
+    borderWidth: 1,
+  },
+  checkboxText: {
     fontFamily: "Bold",
+    fontSize: "11@s",
+  },
+  updateBtn: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 30,
+    paddingVertical: 15,
+    backgroundColor: Color.tertiary,
+    borderRadius: 10,
+  },
+  btnText: {
+    fontFamily: "Bold",
+    fontSize: "12@s",
+    color: Color.primary,
   },
 });

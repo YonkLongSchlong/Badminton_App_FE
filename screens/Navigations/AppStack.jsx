@@ -1,29 +1,20 @@
 import { StyleSheet } from "react-native";
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DrawerNavigation from "./DrawerNavigation";
 import CourseDetails from "../Course/CourseDetails.jsx";
 import Schedule from "../Setting/Schedule.jsx";
 import Password from "../Setting/Password.jsx";
-import MyProfile from "../Setting/Profile/MyProfile.jsx";
 import EditProfile from "../Setting/Profile/EditProfile.jsx";
 import AddCourse from "../Course/AddCourse.jsx";
 import AddLesson from "../Course/AddLesson.jsx";
 import WatchLesson from "../Course/WatchLesson.jsx";
 import PublicCourse from "../Course/PublicCourse.jsx";
 import { scale } from "react-native-size-matters";
-import { useDispatch } from "react-redux";
-import { loadUserFromSecureStore } from "../../features/user/userSlice.js";
 
 const Stack = createNativeStackNavigator();
 
 const AppStack = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(loadUserFromSecureStore());
-  }, [dispatch]);
-
-
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -115,19 +106,6 @@ const AppStack = () => {
         options={() => ({
           headerTitleAlign: "center",
           headerTitle: "Public Course",
-          headerShadowVisible: false,
-          headerTitleStyle: {
-            fontFamily: "Bold",
-            fontSize: scale(14),
-          },
-        })}
-      />
-      <Stack.Screen
-        name="MyProfile"
-        component={MyProfile}
-        options={() => ({
-          headerTitleAlign: "center",
-          headerTitle: "My Profile",
           headerShadowVisible: false,
           headerTitleStyle: {
             fontFamily: "Bold",

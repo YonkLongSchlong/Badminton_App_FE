@@ -1,12 +1,11 @@
 import { NavigationContainer } from "@react-navigation/native";
 import AuthStack from "./AuthStack";
 import AppStack from "./AppStack";
-import { useContext } from "react";
-import AuthContext from "../../context/AuthContext";
-
+import userStore from "../../store/userStore";
 
 const NavigationWrapper = () => {
-  const { token, user } = useContext(AuthContext);
+  const token = userStore((state) => state.token);
+  const user = userStore((state) => state.user);
 
   return (
     <NavigationContainer>

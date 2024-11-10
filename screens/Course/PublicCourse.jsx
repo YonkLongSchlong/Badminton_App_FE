@@ -2,16 +2,14 @@ import { Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import { useForm } from "react-hook-form";
-import FormField from "../../components/Input/FormField";
 import ColorAccent from "../../constant/Color.js";
-
 
 const PublicCourse = () => {
   const { control } = useForm();
 
   return (
     <View style={styles.container}>
-      <FormField
+      {/* <FormField
         name="registerStartDate"
         control={control}
         label="Register Start Date"
@@ -34,7 +32,7 @@ const PublicCourse = () => {
         showAsterisk={true}
         placeholder="Enter maximum student quantity"
         rules={{ required: "Please enter maximum ttudent quantity" }}
-      />
+      /> */}
 
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Public Couse</Text>

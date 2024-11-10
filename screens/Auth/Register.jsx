@@ -1,216 +1,181 @@
-import {
-  Text,
-  TouchableOpacity,
-  View,
-  ImageBackground,
-  Alert,
-} from "react-native";
-import React, { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import React from "react";
 import { ScaledSheet } from "react-native-size-matters";
-import ColorAccent from "../../constant/Color.js";
 import { useForm } from "react-hook-form";
-import FormField from "../../components/Input/FormField";
-import { emailRegex, passwordRegex, usernameRegex } from "../../constant/Regex";
-import { useDispatch } from "react-redux";
-import { registerUser } from "../../features/auth/authSlice.js";
+import Color from "../../constant/Color.js";
+import InputField from "../../components/Input/InputField.jsx";
+import { emailRules, passwordRules } from "../../utils/inputRules.js";
+import { useMutation } from "@tanstack/react-query";
+import register from "../../hooks/Auth/registerHooks.js";
+import { errorToast, successToast } from "../../utils/toastConfig.js";
+import { StatusBar } from "expo-status-bar";
 
-const Register = ({ navigation }) => {
-  const { control, handleSubmit, watch } = useForm();
-  const [registerData, setRegisterData] = useState(null);
+export default Register = ({ navigation }) => {
+  const { control, handleSubmit } = useForm();
+  const registerMutation = useMutation({
+    mutationFn: register,
+    onSuccess: (data) => {
+      if (data.status === 400 || data.status === 404) {
+        errorToast(data.msg);
+      } else {
+        navigation.navigate("Login");
+        successToast("Account create successfully", data.msg);
+      }
+    },
+    onError: (data) => {
+      errorToast(data.message);
+    },
+  });
 
-  const pwd = watch("password");
-  const dispatch = useDispatch();
-
-  const handleRegister = (data) => {
-    const { confirmPassword, ...registerData } = data;
-    registerData.role = "user";
-    setRegisterData(registerData);
-
-    dispatch(registerUser(registerData))
-      .unwrap()
-      .then(() => {
-        Alert.alert(
-          "Registration Successful",
-          "An OTP has been sent to your email for verification.",
-          [
-            {
-              text: "OK",
-              onPress: () => navigation.navigate("VerifyOTP", { registerData }),
-            },
-          ]
-        );
-      })
-      .catch((error) => {
-        if (error === "Request failed with status code 400") {
-          Alert.alert("User Already Exists", "User with this email already exists.");
-        } else if (error === "Network Error") {
-          Alert.alert("Server Error", "There was a problem with the server. Please try again later.");
-        } else {
-          Alert.alert("Error", error || "An unknown error occurred.");
-        }
-      });
+  const handleRegister = async ({ email, password }) => {
+    registerMutation.mutate({ email, password });
   };
 
   return (
-    <ImageBackground
-      source={require("../../assets/background.png")}
-      style={styles.container}
-      resizeMode="cover"
-    >
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Let's get started !</Text>
-        <Text style={styles.subHeaderText}>
-          Create an account to start your journey
-        </Text>
-      </View>
-
-      <View style={styles.form}>
-        <FormField
-          control={control}
-          name="user_name"
-          label="User name"
-          rules={{
-            required: "Please enter your user name",
-            maxLength: {
-              value: 24,
-              message: "Username can't be longer than 24 characters",
-            },
-            pattern: {
-              value: usernameRegex,
-              message: "Username can't not contain special characters",
-            },
-          }}
-        />
-        <FormField
-          control={control}
-          name="email"
-          label="Email"
-          rules={{
-            required: "Please enter your Email",
-            pattern: {
-              value: emailRegex,
-              message: "Invalid email",
-            },
-          }}
-        />
-        <FormField
-          control={control}
-          name="password"
-          label="Password"
-          rules={{
-            required: "Please enter your password",
-            maxLength: {
-              value: 24,
-              message: "Password can't be longer than 24 characters",
-            },
-            pattern: {
-              value: passwordRegex,
-              message:
-                "Password must contain at least 8 characters, an uppercase, a number and special characters",
-            },
-          }}
-          secure={true}
-        />
-        <FormField
-          control={control}
-          name="confirmPassword"
-          label=" Confirm password"
-          rules={{
-            required: "Please enter confirm password",
-            validate: (value) =>
-              value === pwd || "Confirm password does not match",
-          }}
-          secure={true}
-        />
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Already have an account?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={styles.signInText}>SIGN IN</Text>
-          </TouchableOpacity>
+    <>
+      <StatusBar style="light" />
+      <View style={styles.background} />
+      <View style={styles.container}>
+        {/* ----------- HEADER ----------- */}
+        <View style={styles.headerWrapper}>
+          <Text style={styles.header}>Let's get started!</Text>
+          <Text style={styles.subHeader}>
+            Create an account and start your journey
+          </Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.signinButton}
-          onPress={handleSubmit(handleRegister)}
-        >
-          <Text style={styles.signinButtonText}>Register</Text>
-        </TouchableOpacity>
+        {/* ----------- REGISTER FORM ----------- */}
+        <View style={styles.loginWrapper}>
+          <InputField
+            name={"email"}
+            control={control}
+            placeholder={"Enter your email"}
+            label={"Email"}
+            rules={emailRules}
+            secure={false}
+          />
+          <InputField
+            name={"password"}
+            control={control}
+            placeholder={"Enter your password"}
+            label={"Password"}
+            rules={passwordRules}
+            secure={true}
+          />
+          <InputField
+            name={"confirmPassword"}
+            control={control}
+            placeholder={"Confirm your password"}
+            label={"Confirm password"}
+            rules={passwordRules}
+            secure={true}
+          />
+
+          <View style={styles.registerLinkWrapper}>
+            <Text style={styles.registerText}>Already have an account?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text style={styles.registerLink}>SIGN IN</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.loginBtnWrapper}>
+            <TouchableOpacity
+              style={styles.loginBtn}
+              onPress={handleSubmit(handleRegister)}
+            >
+              <Text style={styles.loginText}>Register</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-        <Text style={styles.instructorLoginText}>Login as instructor</Text>
-      </TouchableOpacity>
-    </ImageBackground>
+    </>
   );
 };
-
-export default Register;
 
 const styles = ScaledSheet.create({
   container: {
     flex: 1,
-    backgroundColor: ColorAccent.tertiary,
     justifyContent: "center",
-    padding: 20,
+    alignItems: "center",
+    paddingHorizontal: 35,
+  },
+  background: {
+    position: "absolute",
+    height: "57%",
+    width: "100%",
+    backgroundColor: Color.tertiary,
+    borderBottomRightRadius: 100,
+    borderBottomLeftRadius: 100,
+  },
+  headerWrapper: {
+    width: "100%",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    marginBottom: 50,
   },
   header: {
-    marginBottom: 30,
-  },
-  headerText: {
-    fontSize: "40@s",
-    color: ColorAccent.primary,
+    width: "100%",
     fontFamily: "Caveat-Bold",
+    fontSize: "32@s",
+    color: "white",
   },
-  subHeaderText: {
-    fontFamily: "Regular",
-    color: ColorAccent.primary,
+  subHeader: {
+    fontFamily: "Medium",
+    fontSize: "11@s",
+    paddingLeft: 5,
+    color: "white",
   },
-  form: {
-    backgroundColor: ColorAccent.secondary,
-    padding: 20,
+  loginWrapper: {
+    flexDirection: "column",
+    backgroundColor: Color.secondary,
+    width: "100%",
     borderRadius: 20,
+    paddingVertical: 50,
+    paddingHorizontal: 30,
   },
-  signinButton: {
-    backgroundColor: ColorAccent.tertiary,
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: "center",
+  registerLinkWrapper: {
     marginTop: 10,
-    width: "120@s",
-  },
-  signinButtonText: {
-    color: ColorAccent.primary,
-    fontSize: "16@s",
-    fontFamily: "Bold",
-  },
-  footer: {
     flexDirection: "row",
-    marginTop: 10,
+    alignItems: "center",
+    gap: 5,
   },
-  footerText: {
-    fontSize: "12@s",
+  registerText: {
+    fontFamily: "Semibold",
+    fontSize: "10@s",
   },
-  signInText: {
-    color: ColorAccent.tertiary,
-    marginLeft: 5,
+  registerLink: {
+    fontFamily: "Bold",
+    color: Color.tertiary,
     textDecorationLine: "underline",
+    fontSize: "10@s",
   },
-  instructorLoginText: {
-    fontSize: "12@s",
-    textAlign: "center",
+  loginBtnWrapper: {
     marginTop: 10,
-    textDecorationLine: "underline",
+    flexDirection: "row",
+    justifyContent: "flex-start",
   },
-  // textInput: {
-  //   borderRadius: "10@s",
-  //   paddingVertical: "8@s",
-  //   paddingHorizontal: "10@s",
-  //   marginBottom: "15@s",
-  //   fontSize: "14@s",
-  //   backgroundColor: ColorAccent.primary,
-  // },
-  // label: {
-  //   fontSize: '14@s',
-  //   color: '#333',
-  //   marginBottom: 5
-  // },
+  loginBtn: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: "25@s",
+    paddingVertical: "10@vs",
+    borderRadius: 10,
+    backgroundColor: Color.tertiary,
+  },
+  loginText: {
+    fontFamily: "Bold",
+    color: "white",
+  },
+  bottomLinkWrapper: {
+    marginTop: 20,
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 8,
+  },
+  bottomLink: {
+    fontFamily: "Bold",
+    textDecorationLine: "underline",
+    fontSize: "10@s",
+  },
 });

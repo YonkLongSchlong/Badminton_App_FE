@@ -7,7 +7,7 @@ import InstructorCard from "../../components/Home/InstructorCard.jsx";
 import CourseCategoryCard from "../../components/Home/CourseCategoryCard.jsx";
 import CourseCard from "../../components/Home/CourseCard.jsx";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useSelector } from "react-redux";
+import { StatusBar } from "expo-status-bar";
 
 const instructors = [
   {
@@ -72,50 +72,59 @@ const courses = [
         id: 1,
         name: "Introduction",
         length: "2 mins, 45 secs",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
-        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4"
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
+        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
       },
       {
         id: 2,
         name: "How to get into badminton",
         length: "2 mins, 45 secs",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
-        videoUrl: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
+        videoUrl:
+          "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
       },
       {
         id: 3,
         name: "Let's get start with how to hold the racket",
         length: "2 mins, 45 secs",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
-        videoUrl: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
+        videoUrl:
+          "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
       },
       {
         id: 4,
         name: "Master your grip",
         length: "2 mins, 45 secs",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
-        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4"
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
+        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
       },
       {
         id: 5,
         name: "Your first serve",
         length: "2 mins, 45 secs",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
-        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4"
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
+        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
       },
       {
         id: 6,
         name: "Your first serve",
         length: "2 mins, 45 secs",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
-        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4"
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
+        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
       },
       {
         id: 7,
         name: "Your first serve",
         length: "2 mins, 45 secs",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
-        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4"
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
+        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
       },
     ],
   },
@@ -151,28 +160,31 @@ const courses = [
 
 const Dashboard = () => {
   const [chosenCategory, setChosenCategory] = useState("All");
-  const {user} = useSelector((state) => state?.user);
-  const avatarSrc = user?.avatar === null ? require("../../assets/4043232_avatar_batman_comics_hero_icon.png") : user?.avatar;
-  
+  const user = userStore((state) => state.user);
+
+  const avatarSrc =
+    user.avatar === null
+      ? require("../../assets/4043232_avatar_batman_comics_hero_icon.png")
+      : {uri: user.avatar};
+  const userFullName = user.firstName && user.lastName === null ? "User" : `${user.firstName} ${user.lastName}`;
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar style="dark" />
+
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* USER GREETING SECTION */}
+        {/* ----------- USER GREETING SECTION ----------- */}
         <View style={styles.userSection}>
           <View style={{ alignItems: "flex-end" }}>
-            <Text style={styles.heading}>Hi, {user?.user_name}</Text>
+            <Text style={styles.heading}>Hi, {userFullName}</Text>
             <Text style={styles.text}>Let get you back on track</Text>
           </View>
-          <View>
-            <Image
-              style={styles.image}
-              source={avatarSrc}
-            ></Image>
+          <View style={styles.imageContainer}>
+            <Image style={styles.image} source={avatarSrc}></Image>
           </View>
         </View>
 
-        {/* HERO SECTION */}
+        {/* ----------- HERO SECTION ----------- */}
         <View style={styles.heroSection}>
           <View style={styles.headlineContainer}>
             <Text style={styles.heroHeadline}>
@@ -187,7 +199,7 @@ const Dashboard = () => {
           </View>
         </View>
 
-        {/* INSTRUCTOR LIST SECTION */}
+        {/* ----------- INSTRUCTOR LIST SECTION ----------- */}
         <View style={styles.instructorSection}>
           <View style={styles.instructorHeadlineContainer}>
             <Text style={styles.heading}>Instructors</Text>
@@ -206,7 +218,7 @@ const Dashboard = () => {
           </ScrollView>
         </View>
 
-        {/* COURSES LIST SECTION */}
+        {/* ----------- COURSES LIST SECTION ----------- */}
         <View style={styles.coursesSection}>
           <ScrollView
             contentContainerStyle={styles.categoryListContainer}
@@ -255,7 +267,7 @@ const styles = ScaledSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
-    gap: 15,
+    gap: 18,
     marginTop: 30,
   },
   heading: {
@@ -271,12 +283,14 @@ const styles = ScaledSheet.create({
     fontSize: "9@s",
   },
   imageContainer: {
-    borderRadius: 100,
+    marginRight: 3,
+    borderRadius: 150,
   },
   image: {
-    width: "47@s",
-    height: "47@vs",
-    resizeMode: "contain",
+    width: "45@s",
+    height: "45@s",
+    borderRadius: 150,
+    resizeMode: "cover",
   },
   heroSection: {
     marginTop: 15,

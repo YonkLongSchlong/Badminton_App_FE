@@ -1,16 +1,18 @@
-import { Text, View, Image, TouchableOpacity  } from "react-native";
+import { Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
-import AntDesign from '@expo/vector-icons/AntDesign';
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { StatusBar } from "expo-status-bar";
 
-const GettingStarted = ({navigation}) => {
+const GettingStarted = ({ navigation }) => {
   return (
     <View style={styles.container}>
+       <StatusBar style="dark" />
       <Text style={styles.title}>Court Companion</Text>
 
       <Image
-        source={require("../..//assets/badminton-player.png")}
+        source={require("../../assets/badminton-player.png")}
         style={styles.image}
       />
 
@@ -22,7 +24,7 @@ const GettingStarted = ({navigation}) => {
         style={styles.button}
         onPress={() => navigation.navigate("Register")}
       >
-          <AntDesign name="arrowright" size={24} color="white" />
+        <AntDesign name="arrowright" size={24} color="white" />
       </TouchableOpacity>
     </View>
   );
@@ -36,7 +38,7 @@ const styles = ScaledSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#FFF",
-    padding: 20,
+    paddingHorizontal: 25,
   },
   title: {
     fontSize: "40@s",
@@ -44,16 +46,16 @@ const styles = ScaledSheet.create({
     marginBottom: 20,
   },
   image: {
-    width: "300@s",
-    height: "300@s",
+    width: "250@s",
+    height: "250@s",
     resizeMode: "cover",
     marginBottom: 20,
   },
   subtitle: {
-    fontSize: "16@s",
+    fontSize: "13@s",
     textAlign: "center",
-    marginBottom: 40,
-    fontFamily: "Medium"
+    marginVertical: 40,
+    fontFamily: "Semibold",
   },
   button: {
     width: "52@s",
@@ -62,7 +64,7 @@ const styles = ScaledSheet.create({
     overflow: "hidden",
     backgroundColor: ColorAccent.tertiary,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   buttonText: {
     fontSize: "24@s",

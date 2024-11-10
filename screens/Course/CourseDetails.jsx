@@ -1,10 +1,4 @@
-import {
-  Image,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import ColorAccent from "../../constant/Color.js";
 import { ScaledSheet } from "react-native-size-matters";
@@ -31,26 +25,6 @@ const CourseDetails = (props) => {
 
   return (
     <View style={styles.container}>
-      {/* Settings Icon */}
-      <TouchableOpacity style={styles.settingsIcon} onPress={toggleDropdown}>
-        <Ionicons
-          name="settings-outline"
-          size={24}
-          color={ColorAccent.primary}
-        />
-      </TouchableOpacity>
-
-      {/* Dropdown for settings */}
-      {dropdownVisible && (
-        <View style={styles.dropdownMenu}>
-          <TouchableOpacity style={styles.dropdownItem} onPress={handleUpdate}>
-            <Text style={styles.dropdownText}>Update Course</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.dropdownItem} onPress={handleDelete}>
-            <Text style={styles.dropdownText}>Delete Course</Text>
-          </TouchableOpacity>
-        </View>
-      )}
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -65,23 +39,19 @@ const CourseDetails = (props) => {
 
         {/* COURSE DESCRIPTION SECTION */}
         <View style={styles.courseDescriptionSection}>
-          <View>
-            <Text style={styles.text} numberOfLines={!show ? 3 : null}>
-              {course.description}
+          <Text style={styles.text} numberOfLines={!show ? 3 : null}>
+            {course.description}
+          </Text>
+          <TouchableOpacity onPress={() => setShow(!show)}>
+            <Text style={styles.showText}>
+              {!show ? "Show more" : "Show less"}
             </Text>
-            <TouchableOpacity onPress={() => setShow(!show)}>
-              <Text style={styles.showText}>
-                {!show ? "Show more" : "Show less"}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          
+          </TouchableOpacity>
         </View>
         <View style={styles.priceWrapper}>
           <Text style={styles.heading}>Price</Text>
           <Text style={styles.heading}>255.000 đ</Text>
         </View>
-        
 
         {/* LESSON LIST SECTION */}
         <View style={styles.lessonListSection}>
@@ -98,32 +68,11 @@ const CourseDetails = (props) => {
       </ScrollView>
 
       {/* ACCESS BUTTON SECTION */}
-      {/* Student View */}
       <View style={styles.btnContainer}>
         <TouchableOpacity style={styles.btn}>
           <Text style={styles.btnText}>Get Full Access - Đ 255.000</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Coach View */}
-      {/* <View style={styles.rowContainer}>
-        <View style={styles.column}>
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => navigation.navigate("AddLesson")}
-          >
-            <Text style={styles.btnText}>Add lesson</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.column}>
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => navigation.navigate("PublicCourse")}
-          >
-            <Text style={styles.btnText}>Publish</Text>
-          </TouchableOpacity>
-        </View>
-      </View> */}
     </View>
   );
 };
@@ -150,19 +99,20 @@ const styles = ScaledSheet.create({
   },
   courseDescriptionSection: {
     marginTop: 15,
-    gap: 5,
+    gap: 3,
+    width: "100%",
   },
   heading: {
     fontFamily: "Bold",
     fontSize: "13@s",
   },
   text: {
-    fontFamily: "Medium",
-    fontSize: "12@s",
+    fontFamily: "Semibold",
+    fontSize: "11@s",
   },
   showText: {
     fontFamily: "Semibold",
-    fontSize: "12@s",
+    fontSize: "11@s",
     color: ColorAccent.tertiary,
   },
   settingsIcon: {
@@ -232,9 +182,9 @@ const styles = ScaledSheet.create({
   column: {
     flex: 1,
   },
-  priceWrapper:{
+  priceWrapper: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: "5@s"
-  }
+    marginTop: 15,
+  },
 });

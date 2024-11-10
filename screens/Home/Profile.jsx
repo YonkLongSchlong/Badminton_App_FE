@@ -1,63 +1,46 @@
-import { Alert, Image, ScrollView, Text, View } from "react-native";
-import React, { useContext } from "react";
+import { Image, ScrollView, Text, View } from "react-native";
+import React from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
 import { SafeAreaView } from "react-native-safe-area-context";
 import OverviewCard from "../../components/Home/OverviewCard.jsx";
 import SettingCard from "../../components/Home/SettingCard.jsx";
-import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../../features/auth/authSlice.js";
-import AuthContext from "../../context/AuthContext.js";
-import * as SecureStore from "expo-secure-store";
+import userStore from "../../store/userStore.js";
+import { StatusBar } from "expo-status-bar";
+
 
 const Profile = ({ navigation }) => {
-  const { clearAuthData } = useContext(AuthContext);
-  const dispatch = useDispatch();
+  const logout = userStore((state) => state.logout);
+  const user = userStore((state) => state.user);
 
-  const reSetSecureStore = async () => {
-    await SecureStore.deleteItemAsync("token");
-    await SecureStore.deleteItemAsync("user");
-  };
+  const handleLogout = async () => {
+    await logout();
+  }
 
-  const handleLogout = () => {
-    dispatch(logout())
-      .unwrap()
-      .then(() => {
-        reSetSecureStore();
-        clearAuthData();
-        Alert.alert(
-          "Logout Successful",
-          "You have been logged out successfully."
-        );
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-        if (error === "Network Error") {
-          Alert.alert(
-            "Server Error",
-            "There was a problem with the server. Please try again later."
-          );
-        } else {
-          Alert.alert("Error", error || "An unknown error occurred.");
-        }
-      });
-  };
-
-  const { user } = useSelector((state) => state?.user);
-
-  const avatarSrc =
-    user?.avatar === null
-      ? require("../../assets/4043232_avatar_batman_comics_hero_icon.png")
-      : user?.avatar;
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar style="dark" />
       <ScrollView>
         <View style={styles.userInfoSection}>
+          {/* ------------ AVATAR SECTION ------------- */}
           <View style={styles.avatarContainer}>
-            <Image style={styles.avatar} source={avatarSrc} />
+            <Image
+              style={styles.avatar}
+              source={
+                user.avatar == null
+                  ? require("../../assets/4043232_avatar_batman_comics_hero_icon.png")
+                  : { uri: user.avatar }
+              }
+            />
           </View>
-          <Text style={styles.username}>{user?.user_name}</Text>
+
+          {/* ------------ USERNAME SECTION ------------- */}
+          <Text style={styles.username}>
+            {user.firstName} {user.lastName}
+          </Text>
+
+          {/* ------------ ROLE SECTION ------------- */}
           <View style={styles.roleContainer}>
             <View style={styles.roleWrapper}>
               <Image
@@ -69,6 +52,7 @@ const Profile = ({ navigation }) => {
           </View>
         </View>
 
+        {/* ------------ OVERVIEW SECTION ------------- */}
         <View style={styles.overviewSection}>
           <View>
             <Text style={styles.heading}>Overview:</Text>
@@ -80,15 +64,15 @@ const Profile = ({ navigation }) => {
           </View>
         </View>
 
+        {/* ------------ SETTING CARDS SECTIONS------------- */}
         <View style={styles.settingCardSection}>
           <Text style={styles.heading}>Settings:</Text>
           <View style={styles.settingCardContainer}>
             <SettingCard
               icon="person-outline"
               label="Profile"
-              onPress={() => navigation.navigate("MyProfile")}
+              onPress={() => navigation.navigate("EditProfile")}
             />
-            <SettingCard icon="mail-outline" label="Email" />
             <SettingCard
               icon="shield-checkmark-outline"
               label="Password"
@@ -103,6 +87,8 @@ const Profile = ({ navigation }) => {
               onPress={() => navigation.navigate("Schedule")}
             />
           </View>
+
+          {/* ------------ LOGOUT BUTTON ------------- */}
           <View style={styles.settingCardContainer}>
             <SettingCard
               icon="log-out-outline"
@@ -125,13 +111,15 @@ const styles = ScaledSheet.create({
     backgroundColor: ColorAccent.primary,
   },
   userInfoSection: {
-    marginTop: 30,
+    marginTop: 60,
     alignItems: "center",
     justifyContent: "center",
   },
   avatarContainer: {
-    borderRadius: 160,
+    borderRadius: 164,
     borderWidth: 5,
+    width: "123@s",
+    height: "123@s",
     borderColor: ColorAccent.tertiary,
     justifyContent: "center",
     alignItems: "center",
@@ -139,6 +127,7 @@ const styles = ScaledSheet.create({
   avatar: {
     width: "110@s",
     height: "110@s",
+    borderRadius: 150,
     resizeMode: "cover",
   },
   username: {

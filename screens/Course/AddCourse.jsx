@@ -2,7 +2,7 @@ import { Text, View, TouchableOpacity, ScrollView, Image } from "react-native";
 import React, { useState } from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import { useForm } from "react-hook-form";
-import FormField from "../../components/Input/FormField";
+
 import * as ImagePicker from "expo-image-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import ColorAccent from "../../constant/Color.js";
@@ -46,17 +46,17 @@ const AddCourse = () => {
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Course Name */}
-        <FormField
+        {/* <FormField
           control={control}
           name="courseName"
           label="Course Name"
           showAsterisk={true}
           placeholder="Enter your course name"
           rules={{ required: "Please enter your course name" }}
-        />
+        /> */}
 
         {/* Course Detail */}
-        <FormField
+        {/* <FormField
           name="courseDetail"
           control={control}
           label="Course Detail"
@@ -66,17 +66,17 @@ const AddCourse = () => {
           multiline={true}
           numberoflines={5}
           style={styles.multiLineInput}
-        />
+        /> */}
 
         {/* Price */}
-        <FormField
+        {/* <FormField
           name="price"
           control={control}
           label="Price"
           showAsterisk={true}
           placeholder="Enter your course price"
           rules={{ required: "Please enter your course price" }}
-        />
+        /> */}
 
         {/* Course image */}
 
@@ -157,22 +157,22 @@ const AddCourse = () => {
         {/* Category and Type */}
         <View style={styles.rowContainer}>
           <View style={styles.column}>
-            <FormField
+            {/* <FormField
               name="category"
               control={control}
               label="Category"
               showAsterisk={true}
               rules={{ required: "Please enter your category name" }}
-            />
+            /> */}
           </View>
           <View style={styles.column}>
-            <FormField
+            {/* <FormField
               name="type"
               control={control}
               label="Type"
               showAsterisk={true}
               rules={{ required: "Please enter your type name" }}
-            />
+            /> */}
           </View>
         </View>
 
@@ -261,10 +261,10 @@ const styles = ScaledSheet.create({
     marginBottom: "10@s",
     alignItems: "center",
   },
-  previewWrapper:{
+  previewWrapper: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center"
+    alignItems: "center",
   },
   previewLabel: {
     fontWeight: "bold",

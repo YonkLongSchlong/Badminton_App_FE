@@ -7,4 +7,5 @@ export default ColorAccent = {
   border: "#ccc",
   bgCancelButton: "#ff4d4d",
   bgUpdateButton: "#FFCC33",
+  black: "#000000",
 };

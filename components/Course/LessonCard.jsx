@@ -30,20 +30,8 @@ const LessonCard = (props) => {
         </View>
       </View>
 
-      {/* Student View */}
-      {/* <TouchableOpacity style={styles.secondPart}>
+      <TouchableOpacity style={styles.secondPart}>
         <MaterialIcons name="lock-outline" size={scale(14)} color="black" />
-      </TouchableOpacity> */}
-
-      {/* Coach View */}
-      <TouchableOpacity
-        style={styles.iconUpdate}
-        onPress={() => navigation.navigate("AddLesson")}
-      >
-        <FontAwesome6 name="edit" size={scale(14)} color="black" />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.iconDelete}>
-        <AntDesign name="delete" size={scale(14)} color="black" />
       </TouchableOpacity>
     </View>
   );

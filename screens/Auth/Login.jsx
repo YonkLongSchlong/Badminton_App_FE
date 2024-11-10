@@ -1,176 +1,180 @@
-import {
-  Text,
-  TouchableOpacity,
-  View,
-  ImageBackground,
-  Alert,
-} from "react-native";
-import React, { useContext } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import React from "react";
 import { ScaledSheet } from "react-native-size-matters";
-import ColorAccent from "../../constant/Color.js";
 import { useForm } from "react-hook-form";
-import FormField from "../../components/Input/FormField";
-import { emailRegex, passwordRegex } from "../../constant/Regex";
-import { login } from "../../features/auth/authSlice";
-import { useDispatch } from "react-redux";
-import AuthContext from "../../context/AuthContext.js";
+import InputField from "../../components/Input/InputField.jsx";
+import { emailRules, passwordRules } from "../../utils/inputRules.js";
+import Color from "../../constant/Color.js";
+import { useMutation } from "@tanstack/react-query";
+import { errorToast, successToast } from "../../utils/toastConfig.js";
+import login from "../../hooks/Auth/loginHooks.js";
+import { StatusBar } from "expo-status-bar";
 
-const Login = ({ navigation }) => {
+export default Login = ({ navigation }) => {
   const { control, handleSubmit } = useForm();
-  const { storeAuthData } = useContext(AuthContext);
-  const dispatch = useDispatch();
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: (data, variables) => {
+      if (data.status === 400 || data.status === 404) {
+        errorToast(data.msg);
+      } else {
+        navigation.navigate("VerifyOTP", { email: variables.email });
+        successToast("OTP authenticate", data.msg);
+      }
+    },
+    onError: (data) => {
+      errorToast(data.message);
+    },
+  });
 
-  const handleLogin = (data) => {
-    const user = {
-      ...data,
-      role: "user",
-    };
-    dispatch(login(user))
-      .unwrap()
-      .then((userState) => {
-        storeAuthData(userState.person, userState.token);
-        Alert.alert(
-          "Login successful",
-          "You have been logged in successfully."
-        );
-      })
-      .catch((error) => {
-        if (error === "Request failed with status code 400") {
-          Alert.alert("Invalid Credentials", "Invalid email or password.");
-        } else if (error === "Request failed with status code 404") {
-          Alert.alert("User Not Found", "The user does not exist.");
-        } else if (error === "Network Error") {
-          Alert.alert(
-            "Server Error",
-            "There was a problem with the server. Please try again later."
-          );
-        } else {
-          Alert.alert("Error", error || "An unknown error occurred.");
-        }
-      });
+  const handleLogin = ({ email, password }) => {
+    loginMutation.mutate({ email, password });
   };
 
   return (
-    <ImageBackground
-      source={require("../../assets/background.png")}
-      style={styles.container}
-      resizeMode="cover"
-    >
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Welcome back!</Text>
-        <Text style={styles.subHeaderText}>Let's get you back on track</Text>
-      </View>
-
-      <View style={styles.form}>
-        <FormField
-          control={control}
-          name="email"
-          label="Email"
-          rules={{
-            required: "Please enter your Email",
-            pattern: {
-              value: emailRegex,
-              message: "Invalid email",
-            },
-          }}
-        />
-        <FormField
-          control={control}
-          name="password"
-          label="Password"
-          rules={{
-            required: "Please enter your password",
-            maxLength: {
-              value: 24,
-              message: "Password can't be longer than 24 characters",
-            },
-            pattern: {
-              value: passwordRegex,
-              message:
-                "Password must contain at least 8 characters, an uppercase, a number and special characters",
-            },
-          }}
-          secure={true}
-        />
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't you have an account?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-            <Text style={styles.signInText}>SIGN UP</Text>
-          </TouchableOpacity>
+    <>
+      <StatusBar style="light" />
+      <View style={styles.background} />
+      <View style={styles.container}>
+        {/* ----------- HEADER ----------- */}
+        <View style={styles.headerWrapper}>
+          <Text style={styles.header}>Welcome back!</Text>
+          <Text style={styles.subHeader}>Let's get you back on track</Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.signinButton}
-          onPress={handleSubmit(handleLogin)}
-        >
-          <Text style={styles.signinButtonText}>Sign in</Text>
-        </TouchableOpacity>
+        {/* ----------- LOGIN FORM ----------- */}
+        <View style={styles.loginWrapper}>
+          <InputField
+            name={"email"}
+            control={control}
+            placeholder={"Enter your email"}
+            label={"Email"}
+            rules={emailRules}
+            secure={false}
+          />
+          <InputField
+            name={"password"}
+            control={control}
+            placeholder={"Enter your password"}
+            label={"Password"}
+            rules={passwordRules}
+            secure={true}
+          />
+
+          <View style={styles.registerLinkWrapper}>
+            <Text style={styles.registerText}>Don't have an account?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+              <Text style={styles.registerLink}>SIGN UP</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.loginBtnWrapper}>
+            <TouchableOpacity
+              style={styles.loginBtn}
+              onPress={handleSubmit(handleLogin)}
+            >
+              <Text style={styles.loginText}>Log in</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* ----------- BOTTOM LINKS ----------- */}
+        <View style={styles.bottomLinkWrapper}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ForgotPassword")}
+          >
+            <Text style={styles.bottomLink}>Forgot your password?</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-        <Text style={styles.instructorLoginText}>Forgot your password?</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-        <Text style={styles.instructorLoginText}>Login as instructor</Text>
-      </TouchableOpacity>
-    </ImageBackground>
+    </>
   );
 };
-
-export default Login;
 
 const styles = ScaledSheet.create({
   container: {
     flex: 1,
-    backgroundColor: ColorAccent.primary,
     justifyContent: "center",
-    padding: 20,
+    alignItems: "center",
+    paddingHorizontal: 35,
+  },
+  background: {
+    position: "absolute",
+    height: "54%",
+    width: "100%",
+    backgroundColor: Color.tertiary,
+    borderBottomRightRadius: 100,
+    borderBottomLeftRadius: 100,
+  },
+  headerWrapper: {
+    width: "100%",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    marginBottom: 50,
   },
   header: {
-    marginBottom: 30,
-  },
-  headerText: {
-    fontSize: "40@s",
-    color: ColorAccent.primary,
+    width: "100%",
     fontFamily: "Caveat-Bold",
+    fontSize: "32@s",
+    color: "white",
   },
-  subHeaderText: {
-    fontFamily: "Regular",
-    color: ColorAccent.primary,
+  subHeader: {
+    fontFamily: "Medium",
+    fontSize: "11@s",
+    paddingLeft: 5,
+    color: "white",
   },
-  form: {
-    backgroundColor: ColorAccent.secondary,
-    padding: 20,
+  loginWrapper: {
+    flexDirection: "column",
+    backgroundColor: Color.secondary,
+    width: "100%",
     borderRadius: 20,
+    paddingVertical: 50,
+    paddingHorizontal: 30,
   },
-  signinButton: {
-    backgroundColor: ColorAccent.tertiary,
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: "center",
+  registerLinkWrapper: {
     marginTop: 10,
-    width: "120@s",
-  },
-  signinButtonText: {
-    color: ColorAccent.primary,
-    fontSize: "16@s",
-    fontFamily: "Bold",
-  },
-  footer: {
     flexDirection: "row",
-    marginTop: 20,
+    alignItems: "center",
+    gap: 5,
   },
-  footerText: {
-    fontSize: "12@s",
+  registerText: {
+    fontFamily: "Semibold",
+    fontSize: "10@s",
   },
-  signInText: {
-    color: ColorAccent.tertiary,
-    marginLeft: 5,
+  registerLink: {
+    fontFamily: "Bold",
+    color: Color.tertiary,
     textDecorationLine: "underline",
+    fontSize: "10@s",
   },
-  instructorLoginText: {
-    fontSize: "12@s",
-    textAlign: "center",
+  loginBtnWrapper: {
     marginTop: 10,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+  },
+  loginBtn: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: "25@s",
+    paddingVertical: "10@vs",
+    borderRadius: 10,
+    backgroundColor: Color.tertiary,
+  },
+  loginText: {
+    fontFamily: "Bold",
+    color: "white",
+  },
+  bottomLinkWrapper: {
+    marginTop: 20,
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 8,
+  },
+  bottomLink: {
+    fontFamily: "Bold",
     textDecorationLine: "underline",
+    fontSize: "10@s",
   },
 });

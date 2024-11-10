@@ -1,147 +1,82 @@
-import React, { useState, useRef } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  Alert,
-} from "react-native";
-import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
+import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
-import ColorAccent from "../../constant/Color.js";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  registerUser,
-  verifyOTP,
-} from "../../features/auth/authSlice.js";
+import InputField from "../../components/Input/InputField.jsx";
+import Color from "../../constant/Color.js";
+import { otpRules } from "../../utils/inputRules.js";
+import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import { errorToast, successToast } from "../../utils/toastConfig.js";
+import otp from "../../hooks/Auth/otpHooks.js";
+import userStore from "../../store/userStore.js";
 
-const VerifyOTP = ({ navigation, route }) => {
-  const { registerData } = route.params;
-  const [otp, setOtp] = useState(new Array(6).fill(""));
-  const inputRefs = useRef(new Array(6).fill(null));
-  const dispatch = useDispatch();
+export default VerifyOTP = ({ navigation, route }) => {
+  const { email } = route.params;
+  const { control, handleSubmit } = useForm();
+  const setUser = userStore((state) => state.setUser);
+  const setToken = userStore((state) => state.setToken);
 
-  const handleOtpChange = (text, index) => {
-    const newOtp = [...otp];
-    newOtp[index] = text;
-    setOtp(newOtp);
-
-    if (text && index < 5) {
-      inputRefs.current[index + 1].focus();
-    }
-  };
-
-  const handleKeyPress = (e, index) => {
-    if (e.nativeEvent.key === "Backspace" && otp[index] === "") {
-      if (index > 0) {
-        inputRefs.current[index - 1].focus();
+  const otpMutation = useMutation({
+    mutationFn: otp,
+    onSuccess: async (data) => {
+      if (data.status === 400 || data.status === 404) {
+        errorToast(data.msg);
+      } else {
+        await setUser(data.data.user);
+        await setToken(data.data.token);
+        successToast("OTP authenticate", data.msg);
       }
-    }
-  };
+    },
+    onError: (data) => {
+      console.log(data.message);
 
-  const handleBackSignUp = () => {
-    navigation.navigate("Register");
-  };
+      errorToast(data.message);
+    },
+  });
 
-  const handleVerifyOTP = () => {
-    const fullOtp = otp.join("");
-    const verificationData = {
-      otp: fullOtp,
-      ...registerData,
-    };
-    console.log(verificationData);
-    dispatch(verifyOTP(verificationData))
-      .unwrap()
-      .then(() => {
-        Alert.alert(
-          "OTP Verification Successful",
-          "Your OTP has been verified. You are now logged in!",[
-            {
-              text: "OK",
-              onPress: () => navigation.navigate("Login"),
-            },
-          ]
-        );
-      })
-      .catch((error) => {
-        if (error === "Request failed with status code 400") {
-          Alert.alert(
-            "Invalid OTP",
-            "The OTP you entered is incorrect. Please try again."
-          );
-        } else if (error === "Network Error") {
-          Alert.alert(
-            "Server Error",
-            "There was a problem with the server. Please try again later."
-          );
-        } else {
-          Alert.alert("Error", error || "An unknown error occurred.");
-        }
-      });
-  };
-
-  const handleResendCode = () => {
-    dispatch(registerUser(registerData));
+  const handleVerifyOtp = ({ otp }) => {
+    otpMutation.mutate({ email, otp });
   };
 
   return (
-    <View style={styles.container}>
-      <Image source={require("../..//assets/otp.png")} style={styles.image} />
-      <Text style={styles.title}>Enter your Verification Code</Text>
-      <Text style={styles.subtitle}>
-        We have sent you an One Time PassCode to your email address:
-      </Text>
-      <Text style={styles.email}>
-        {registerData?.email || "mail@gmail.com"}
-      </Text>
-
-      <View style={styles.otpContainer}>
-        {otp.map((digit, index) => (
-          <TextInput
-            ref={(ref) => (inputRefs.current[index] = ref)}
-            key={index}
-            style={styles.otpInput}
-            keyboardType="number-pad"
-            maxLength={1}
-            value={digit}
-            onChangeText={(text) => handleOtpChange(text, index)}
-            onKeyPress={(e) => handleKeyPress(e, index)}
-          />
-        ))}
-      </View>
-
-      <View style={styles.wrapper}>
-        <View>
-          <Text style={styles.didntGetCode}>Didn't get the code?</Text>
-          <TouchableOpacity style={styles.btnResend} onPress={handleResendCode}>
-            <Text style={styles.resend}>Resend Code</Text>
-          </TouchableOpacity>
+    <>
+      <View style={styles.background} />
+      <View style={styles.container}>
+        {/* ----------- HEADER ----------- */}
+        <View style={styles.headerWrapper}>
+          <Text style={styles.header}>Let's get started!</Text>
+          <Text style={styles.subHeader}>Enter your OTP to login</Text>
         </View>
-        <CountdownCircleTimer
-          isPlaying
-          duration={150}
-          colors={[ColorAccent.tertiary]}
-          onComplete={() => alert("OTP Expired")}
-          size={70}
-        >
-          {({ remainingTime }) => (
-            <Text style={styles.timer}>{`${Math.floor(remainingTime / 60)}:${(
-              remainingTime % 60
-            )
-              .toString()
-              .padStart(2, "0")}`}</Text>
-          )}
-        </CountdownCircleTimer>
-      </View>
 
-      <TouchableOpacity style={styles.submitButton} onPress={handleVerifyOTP}>
-        <Text style={styles.submitText}>Verify OTP</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleBackSignUp}>
-        <Text style={styles.back}>Back to sign up</Text>
-      </TouchableOpacity>
-    </View>
+        {/* ----------- OTP FORM ----------- */}
+        <View style={styles.loginWrapper}>
+          <InputField
+            name={"otp"}
+            control={control}
+            placeholder={"Enter your OTP"}
+            label={"OTP"}
+            rules={otpRules}
+            secure={false}
+          />
+
+          <View style={styles.registerLinkWrapper}>
+            <Text style={styles.registerText}>Didn't receive a otp?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text style={styles.registerLink}>RESEND OTP</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.loginBtnWrapper}>
+            <TouchableOpacity
+              style={styles.loginBtn}
+              onPress={handleSubmit(handleVerifyOtp)}
+            >
+              <Text style={styles.loginText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </>
   );
 };
 
@@ -150,105 +85,86 @@ const styles = ScaledSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: ColorAccent.primary,
-    paddingHorizontal: "20@s",
+    paddingTop: 30,
+    paddingHorizontal: 35,
   },
-  image: {
-    width: "180@s",
-    height: "180@s",
-    resizeMode: "cover",
-    marginBottom: "20@s",
-  },
-  title: {
-    fontSize: "22@s",
-    fontWeight: "bold",
-    marginBottom: "10@s",
-    color: "#333",
-  },
-  subtitle: {
-    fontSize: "14@s",
-    color: "#666",
-    textAlign: "center",
-    marginBottom: "5@s",
-  },
-  email: {
-    fontSize: "16@s",
-    fontWeight: "bold",
-    color: ColorAccent.tertiary,
-    marginBottom: "20@s",
-  },
-  otpContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: "20@s",
-  },
-  otpInput: {
-    borderWidth: 1,
-    borderColor: ColorAccent.tertiary,
-    width: "45@s",
-    height: "45@s",
-    textAlign: "center",
-    fontSize: "18@s",
-    marginHorizontal: "5@s",
-    borderRadius: "10@s",
-    backgroundColor: ColorAccent.primary,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 5,
-  },
-  wrapper: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  background: {
+    position: "absolute",
+    height: "55%",
     width: "100%",
-    alignItems: "center",
-    marginBottom: "30@s",
+    backgroundColor: Color.tertiary,
+    borderBottomRightRadius: 100,
+    borderBottomLeftRadius: 100,
   },
-  didntGetCode: {
-    fontSize: "14@s",
-    color: "#888",
-    marginBottom: "5@s",
+  headerWrapper: {
+    width: "100%",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    marginBottom: 50,
   },
-  btnResend: {
-    borderWidth: 1,
-    padding: 5,
-    alignItems: "center",
-    borderColor: ColorAccent.tertiary,
-    borderRadius: 10,
+  header: {
+    width: "100%",
+    fontFamily: "Caveat-Bold",
+    fontSize: "32@s",
+    color: "white",
   },
-  resend: {
-    fontSize: "14@s",
-    color: ColorAccent.tertiary,
-    fontWeight: "bold",
+  subHeader: {
+    fontFamily: "Medium",
+    fontSize: "11@s",
+    paddingLeft: 5,
+    color: "white",
   },
-  timer: {
-    fontSize: "20@s",
-    color: ColorAccent.tertiary,
+  loginWrapper: {
+    flexDirection: "column",
+    backgroundColor: Color.secondary,
+    width: "100%",
+    borderRadius: 20,
+    paddingVertical: 50,
+    paddingHorizontal: 30,
   },
-  submitButton: {
-    backgroundColor: ColorAccent.tertiary,
-    padding: "12@s",
-    borderRadius: "25@s",
-    width: "80%",
-    alignItems: "center",
-    shadowColor: ColorAccent.tertiary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.4,
-    shadowRadius: 5,
-    elevation: 6,
-  },
-  submitText: {
-    color: ColorAccent.primary,
-    fontSize: "18@s",
-    fontWeight: "bold",
-  },
-  back: {
-    fontSize: "12@s",
-    textAlign: "center",
+  registerLinkWrapper: {
     marginTop: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+  },
+  registerText: {
+    fontFamily: "Semibold",
+    fontSize: "10@s",
+  },
+  registerLink: {
+    fontFamily: "Bold",
+    color: Color.tertiary,
     textDecorationLine: "underline",
+    fontSize: "10@s",
+  },
+  loginBtnWrapper: {
+    marginTop: 10,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+  },
+  loginBtn: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: "25@s",
+    paddingVertical: "10@vs",
+    borderRadius: 10,
+    backgroundColor: Color.tertiary,
+  },
+  loginText: {
+    fontFamily: "Bold",
+    color: "white",
+  },
+  bottomLinkWrapper: {
+    marginTop: 20,
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 8,
+  },
+  bottomLink: {
+    fontFamily: "Bold",
+    textDecorationLine: "underline",
+    fontSize: "10@s",
   },
 });
-
-export default VerifyOTP;
