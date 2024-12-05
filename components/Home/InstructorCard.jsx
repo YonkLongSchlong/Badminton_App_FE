@@ -3,15 +3,19 @@ import React from "react";
 import { ScaledSheet } from "react-native-size-matters";
 
 const InstructorList = (props) => {
+  const avatarSrc =
+    props.coach.avatar === null
+      ? require("../../assets/avatar.png")
+      : { uri: props.coach.avatar };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.imageContainer}>
-        <Image
-          style={styles.image}
-          source={require("../../assets/avatar.png")}
-        />
+        <Image style={styles.image} source={avatarSrc} />
       </TouchableOpacity>
-      <Text style={styles.text}>{props.instructor.name}</Text>
+      <Text style={styles.text}>
+        {props.coach.firstName + " " + props.coach.lastName}
+      </Text>
     </View>
   );
 };

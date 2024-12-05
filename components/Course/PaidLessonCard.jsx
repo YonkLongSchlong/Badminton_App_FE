@@ -6,19 +6,17 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
+import { errorToast } from "../../utils/toastConfig";
 
-const LessonCard = (props) => {
+export const PaidLessonCard = (props) => {
   const navigation = useNavigation();
+  const isUnlock = props.paidCourse.unlock;
 
   const handleNavigation = () => {
-    if (props.paidCourse) {
-      if (props.paidCourse.unlock) {
-        navigation.navigate("WatchLesson", { lesson: props.lesson });
-      } else {
-        navigation.navigate("UnlockLesson", { lesson: props.lesson });
-      }
-    } else {
+    if (isUnlock) {
       navigation.navigate("WatchLesson", { lesson: props.lesson });
+    } else {
+      errorToast("You will need to unlock the course to continue");
     }
   };
 
@@ -38,18 +36,20 @@ const LessonCard = (props) => {
           <Text style={styles.subHeading} numberOfLines={1}>
             {props.lesson.name}
           </Text>
-          {/* <Text style={styles.subText}>{props.lesson.length}</Text> */}
         </View>
       </View>
-
-      <TouchableOpacity style={styles.secondPart}>
-        <MaterialIcons name="lock-outline" size={scale(14)} color="black" />
-      </TouchableOpacity>
+      {isUnlock ? (
+        <TouchableOpacity style={styles.secondPart}>
+          <MaterialIcons name="pending" size={scale(14)} color="black" />
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity style={styles.secondPart}>
+          <MaterialIcons name="lock-outline" size={scale(14)} color="black" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
-
-export default LessonCard;
 
 const styles = ScaledSheet.create({
   container: {

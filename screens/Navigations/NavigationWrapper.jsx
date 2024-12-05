@@ -5,6 +5,7 @@ import userStore from "../../store/userStore";
 
 const NavigationWrapper = () => {
   const token = userStore((state) => state.token);
+
   const user = userStore((state) => state.user);
 
   return (

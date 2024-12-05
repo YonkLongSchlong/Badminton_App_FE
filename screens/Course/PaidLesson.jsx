@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import userStore from "../../store/userStore.js";
 import { getFreeLessonById } from "../../hooks/Lesson/getFreeLessonsById.js";
 import { getQuestionsByFreeLesson } from "../../hooks/Question/getQuestions.js";
+import { getUserLesson } from "../../hooks/UserLesson/getUserLesson.js";
 import { errorToast } from "../../utils/toastConfig.js";
 
 const MyHeader = ({ data }) => {
@@ -82,11 +83,11 @@ const EditorJsViewerNative = createEditorJsViewer({
   },
 });
 
-export default function WatchLesson(props) {
+export default function PaidLesson(props) {
   const navigation = useNavigation();
   const token = userStore((state) => state.token);
   const user = userStore((state) => state.user);
-  const { lesson, userLesson } = props.route.params;
+  const { lesson } = props.route.params;
 
   const lessonId = lesson.id;
   const freeLesson = useQuery({
@@ -98,6 +99,12 @@ export default function WatchLesson(props) {
   const freeLessonQuestions = useQuery({
     queryKey: ["freeLessonQuestions", token, lessonId],
     queryFn: () => getQuestionsByFreeLesson(token, lessonId),
+    enabled: !!token,
+  });
+
+  const userLesson = useQuery({
+    queryKey: ["userLesson", token, lessonId],
+    queryFn: () => getUserLesson(token, user, lessonId),
     enabled: !!token,
   });
 
@@ -116,12 +123,12 @@ export default function WatchLesson(props) {
             } else {
               navigation.navigate("Quiz", {
                 questions: freeLessonQuestions.data,
-                lesson: freeLesson.data,
+                lesson: lesson,
               });
             }
           }}
         >
-          {userLesson == undefined || userLesson.status == 0 ? (
+          {userLesson.isSuccess && userLesson.data == null ? (
             <Text style={styles.btnText}>Quiz</Text>
           ) : (
             <Text style={styles.btnText}>Revision</Text>

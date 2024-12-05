@@ -6,19 +6,43 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import createUserLessonFreeLesson from "../../hooks/UserLesson/createUserLessonFreeLesson";
+import { getUserLesson } from "../../hooks/UserLesson/getUserLesson";
 
-const LessonCard = (props) => {
+export default FreeLessonCard = (props) => {
   const navigation = useNavigation();
+  const user = userStore((state) => state.user);
+  const token = userStore((state) => state.token);
+  const lessonId = props.lesson.id;
+
+  const userLesson = useQuery({
+    queryKey: ["userLesson", token, lessonId],
+    queryFn: () => getUserLesson(token, user, lessonId),
+    enabled: !!token,
+  });
+
+  const enrollLessonMutation = useMutation({
+    mutationFn: createUserLessonFreeLesson,
+    onSuccess: (data) => {
+      console.log(data);
+
+      navigation.navigate("WatchLesson", {
+        lesson: props.lesson,
+        userLesson: userLesson.data,
+      });
+    },
+  });
 
   const handleNavigation = () => {
-    if (props.paidCourse) {
-      if (props.paidCourse.unlock) {
-        navigation.navigate("WatchLesson", { lesson: props.lesson });
-      } else {
-        navigation.navigate("UnlockLesson", { lesson: props.lesson });
-      }
+    if (userLesson.data != null) {
+      navigation.navigate("WatchLesson", {
+        lesson: props.lesson,
+        userLesson: userLesson.data,
+      });
     } else {
-      navigation.navigate("WatchLesson", { lesson: props.lesson });
+      const lessonId = props.lesson.id;
+      enrollLessonMutation.mutate({ user, lessonId, token });
     }
   };
 
@@ -43,13 +67,11 @@ const LessonCard = (props) => {
       </View>
 
       <TouchableOpacity style={styles.secondPart}>
-        <MaterialIcons name="lock-outline" size={scale(14)} color="black" />
+        <MaterialIcons name="event-available" size={scale(14)} color="black" />
       </TouchableOpacity>
     </View>
   );
 };
-
-export default LessonCard;
 
 const styles = ScaledSheet.create({
   container: {

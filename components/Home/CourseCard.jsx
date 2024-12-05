@@ -7,30 +7,20 @@ import { useNavigation } from "@react-navigation/native";
 
 const CourseCard = (props) => {
   const navigation = useNavigation();
+
+  const handleNavigation = () => {
+    if (props.course.type == "free") {
+      navigation.navigate("FreeCourseDetails", { course: props.course });
+    } else {
+      navigation.navigate("PaidCourseDetails", { course: props.course });
+    }
+  };
   return (
-    <TouchableOpacity
-      onPress={() =>
-        navigation.navigate("CourseDetails", { course: props.course })
-      }
-      style={styles.container}
-    >
-      <View style={styles.imageContainer}></View>
+    <TouchableOpacity onPress={handleNavigation} style={styles.container}>
+      <View style={styles.imageContainer}>
+        <Image style={styles.image} source={{ uri: props.course.thumbnail }} />
+      </View>
       <View style={styles.courseNameContainer}>
-
-        {/* Student view */}
-        {/* <View style={styles.quantityContainer}>
-          <Ionicons
-            name="clipboard-outline"
-            color={ColorAccent.tertiary}
-            size={scale(12)}
-          />
-          <Text style={styles.text}>
-            {props.course.lesson_quantity} Lessons
-          </Text>
-        </View>
-        <Text style={styles.text}>Coach: Michael</Text> */}
-
-        {/* Coach view*/}
         <View style={styles.quantityContainer}>
           <View style={styles.numberLession}>
             <Ionicons
@@ -39,15 +29,20 @@ const CourseCard = (props) => {
               size={scale(12)}
             />
             <Text style={styles.text}>
-              {props.course.lesson_quantity} Lessons
+              {props.course.lessonQuantity} Lessons
             </Text>
           </View>
-          <Text style={styles.status}>{props.course.status}</Text>
         </View>
 
         <Text style={styles.heading} numberOfLines={2}>
           {props.course.name}
         </Text>
+        <Text style={styles.text}>
+          Type:{" "}
+          {props.course.type.charAt(0).toUpperCase() +
+            props.course.type.slice(1)}
+        </Text>
+        <Text style={styles.text}>Category: {props.course.category.name}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -63,11 +58,14 @@ const styles = ScaledSheet.create({
   },
   imageContainer: {
     borderRadius: 10,
-    width: "75@s",
-    height: "75@s",
-    backgroundColor: ColorAccent.secondary,
+    width: "80@s",
+    height: "80@s",
   },
-  image: {},
+  image: {
+    width: "80@s",
+    height: "80@s",
+    borderRadius: 10,
+  },
   courseNameContainer: {
     width: "70%",
     gap: 5,
@@ -77,7 +75,7 @@ const styles = ScaledSheet.create({
     alignItems: "center",
     gap: 5,
   },
-  numberLession:{
+  numberLession: {
     flexDirection: "row",
     gap: 5,
   },
@@ -89,9 +87,9 @@ const styles = ScaledSheet.create({
     fontFamily: "Medium",
     fontSize: "9@s",
   },
-  status:{
+  status: {
     fontFamily: "Medium",
     fontSize: "9@s",
-    marginLeft: 150
-  }
+    marginLeft: 150,
+  },
 });

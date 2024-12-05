@@ -4,24 +4,21 @@ import ColorAccent from "../../constant/Color.js";
 import { ScaledSheet } from "react-native-size-matters";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import LessonCard from "../../components/Course/LessonCard.jsx";
+import { getFreeCourseById } from "../../hooks/Course/getFreeCourseById.js";
+import { useQuery } from "@tanstack/react-query";
+import FreeLessonCard from "../../components/Course/FreeLessonCard.jsx";
 
-const CourseDetails = (props) => {
+export default FreeCourseDetails = (props) => {
   const { course } = props.route.params;
   const [show, setShow] = useState(false);
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-  const { navigation } = props;
+  const token = userStore((state) => state.token);
 
-  const toggleDropdown = () => setDropdownVisible(!dropdownVisible);
-
-  const handleDelete = () => {
-    console.log("Course deleted");
-    setDropdownVisible(false);
-  };
-
-  const handleUpdate = () => {
-    navigation.navigate("AddCourse", { course });
-    setDropdownVisible(false);
-  };
+  const courseId = course.id;
+  const freeCourse = useQuery({
+    queryKey: ["freeCourse", token, courseId],
+    queryFn: () => getFreeCourseById(token, courseId),
+    enabled: !!token,
+  });
 
   return (
     <View style={styles.container}>
@@ -31,10 +28,7 @@ const CourseDetails = (props) => {
       >
         {/* COURSE IMAGE SECTION */}
         <View style={styles.imageContainer}>
-          <Image
-            style={styles.image}
-            source={require("../../assets/course_banner.jpg")}
-          />
+          <Image style={styles.image} source={{ uri: course.thumbnail }} />
         </View>
 
         {/* COURSE DESCRIPTION SECTION */}
@@ -48,21 +42,14 @@ const CourseDetails = (props) => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.priceWrapper}>
-          <Text style={styles.heading}>Price</Text>
-          <Text style={styles.heading}>255.000 đ</Text>
-        </View>
 
         {/* LESSON LIST SECTION */}
         <View style={styles.lessonListSection}>
           <View style={styles.lessonListContainer}>
-            {course.lessons.map((lesson) => (
-              <LessonCard
-                navigation={navigation}
-                key={lesson.id}
-                lesson={lesson}
-              />
-            ))}
+            {freeCourse.data &&
+              freeCourse.data.freeLesson.map((lesson) => (
+                <FreeLessonCard key={lesson.id} lesson={lesson} />
+              ))}
           </View>
         </View>
       </ScrollView>
@@ -70,14 +57,12 @@ const CourseDetails = (props) => {
       {/* ACCESS BUTTON SECTION */}
       <View style={styles.btnContainer}>
         <TouchableOpacity style={styles.btn}>
-          <Text style={styles.btnText}>Get Full Access - Đ 255.000</Text>
+          <Text style={styles.btnText}>Start Learning</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
-
-export default CourseDetails;
 
 const styles = ScaledSheet.create({
   container: {

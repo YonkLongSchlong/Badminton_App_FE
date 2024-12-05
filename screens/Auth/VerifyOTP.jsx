@@ -28,8 +28,6 @@ export default VerifyOTP = ({ navigation, route }) => {
       }
     },
     onError: (data) => {
-      console.log(data.message);
-
       errorToast(data.message);
     },
   });

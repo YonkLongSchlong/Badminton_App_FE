@@ -8,34 +8,9 @@ import CourseCategoryCard from "../../components/Home/CourseCategoryCard.jsx";
 import CourseCard from "../../components/Home/CourseCard.jsx";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
-
-const instructors = [
-  {
-    id: 1,
-    image: require("../../assets/4043232_avatar_batman_comics_hero_icon.png"),
-    name: "Michael",
-  },
-  {
-    id: 2,
-    image: require("../../assets/4043232_avatar_batman_comics_hero_icon.png"),
-    name: "Florida",
-  },
-  {
-    id: 3,
-    image: require("../../assets/4043232_avatar_batman_comics_hero_icon.png"),
-    name: "Juan",
-  },
-  {
-    id: 4,
-    image: require("../../assets/4043232_avatar_batman_comics_hero_icon.png"),
-    name: "Doppinder",
-  },
-  {
-    id: 5,
-    image: require("../../assets/4043232_avatar_batman_comics_hero_icon.png"),
-    name: "Jimmy",
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { getCourses } from "../../hooks/Course/getCourses.js";
+import { getCoaches } from "../../hooks/Coach/getCoaches.js";
 
 const categories = [
   {
@@ -56,117 +31,47 @@ const categories = [
   },
   {
     id: 5,
-    name: "Something",
-  },
-];
-
-const courses = [
-  {
-    id: 1,
-    lesson_quantity: 24,
-    name: "The only badminton course you need",
-    description:
-      "New to badminton and eager to learn the ropes? Our “Getting started with badminton” course is the perfect starting point for you! This beginner-friendly course is designed to introduce you to the fundamentals of badminton in a supportive and engaging environment.",
-    lessons: [
-      {
-        id: 1,
-        name: "Introduction",
-        length: "2 mins, 45 secs",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
-        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
-      },
-      {
-        id: 2,
-        name: "How to get into badminton",
-        length: "2 mins, 45 secs",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
-        videoUrl:
-          "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-      },
-      {
-        id: 3,
-        name: "Let's get start with how to hold the racket",
-        length: "2 mins, 45 secs",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
-        videoUrl:
-          "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-      },
-      {
-        id: 4,
-        name: "Master your grip",
-        length: "2 mins, 45 secs",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
-        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
-      },
-      {
-        id: 5,
-        name: "Your first serve",
-        length: "2 mins, 45 secs",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
-        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
-      },
-      {
-        id: 6,
-        name: "Your first serve",
-        length: "2 mins, 45 secs",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
-        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
-      },
-      {
-        id: 7,
-        name: "Your first serve",
-        length: "2 mins, 45 secs",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed doeiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laborisnisi ut aliquip",
-        videoUrl: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
-      },
-    ],
+    name: "Free",
   },
   {
-    id: 2,
-    lesson_quantity: 24,
-    name: "The only badminton course you need to become a supreme competitor",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna tempor incididunt ut labore et dolore magna aliqua tempor incididunt ut labore et dolore magna aliqua",
-  },
-  {
-    id: 3,
-    lesson_quantity: 24,
-    name: "Getting started with badminton",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna tempor incididunt ut labore et dolore magna aliqua tempor incididunt ut labore et dolore magna aliqua",
-  },
-  {
-    id: 4,
-    lesson_quantity: 24,
-    name: "Getting started with badminton",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna tempor incididunt ut labore et dolore magna aliqua tempor incididunt ut labore et dolore magna aliqua",
-  },
-  {
-    id: 5,
-    lesson_quantity: 24,
-    name: "Getting started with badminton",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna tempor incididunt ut labore et dolore magna aliqua tempor incididunt ut labore et dolore magna aliqua",
+    id: 6,
+    name: "Paid",
   },
 ];
 
 const Dashboard = () => {
   const [chosenCategory, setChosenCategory] = useState("All");
   const user = userStore((state) => state.user);
+  const token = userStore((state) => state.token);
+  const logout = userStore((state) => state.logout);
 
   const avatarSrc =
     user.avatar === null
       ? require("../../assets/4043232_avatar_batman_comics_hero_icon.png")
-      : {uri: user.avatar};
-  const userFullName = user.firstName && user.lastName === null ? "User" : `${user.firstName} ${user.lastName}`;
+      : { uri: user.avatar };
+
+  const userFullName =
+    user.firstName && user.lastName === null
+      ? "User"
+      : `${user.firstName} ${user.lastName}`;
+
+  const courses = useQuery({
+    queryKey: ["courses", token, chosenCategory],
+    queryFn: () => getCourses(token, chosenCategory),
+    enabled: !!token,
+  });
+
+  const coaches = useQuery({
+    queryKey: ["coaches", token],
+    queryFn: () => getCoaches(token),
+    enabled: !!token,
+  });
+
+  if (courses.isError) {
+    async () => {
+      await logout();
+    };
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -212,9 +117,10 @@ const Dashboard = () => {
             horizontal
             showsHorizontalScrollIndicator={false}
           >
-            {instructors.map((instructor) => (
-              <InstructorCard key={instructor.id} instructor={instructor} />
-            ))}
+            {coaches.data &&
+              coaches.data.map((coach) => (
+                <InstructorCard key={coach.id} coach={coach} />
+              ))}
           </ScrollView>
         </View>
 
@@ -236,9 +142,10 @@ const Dashboard = () => {
           </ScrollView>
 
           <View style={styles.courseListContainer}>
-            {courses.map((course) => (
-              <CourseCard key={course.id} course={course} />
-            ))}
+            {courses.data &&
+              courses.data.data.map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
           </View>
 
           <View style={styles.exploreBtnContainer}>
@@ -287,8 +194,8 @@ const styles = ScaledSheet.create({
     borderRadius: 150,
   },
   image: {
-    width: "45@s",
-    height: "45@s",
+    width: "40@s",
+    height: "40@s",
     borderRadius: 150,
     resizeMode: "cover",
   },

@@ -7,6 +7,7 @@ import { toastConfig } from "./utils/toastConfig";
 import { useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import userStore from "./store/userStore";
+import { StripeProvider } from "@stripe/stripe-react-native";
 
 const queryClient = new QueryClient();
 
@@ -40,8 +41,13 @@ export default function App({ navigation }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NavigationWrapper />
-      <Toast config={toastConfig} />
+      <StripeProvider
+        publishableKey={process.env.EXPO_PUBLIC_STRIPE_API_KEY}
+        merchantDisplayName="Court Companion"
+      >
+        <NavigationWrapper />
+        <Toast config={toastConfig} />
+      </StripeProvider>
     </QueryClientProvider>
   );
 }

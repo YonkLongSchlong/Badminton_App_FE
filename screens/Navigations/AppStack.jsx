@@ -2,15 +2,16 @@ import { StyleSheet } from "react-native";
 import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DrawerNavigation from "./DrawerNavigation";
-import CourseDetails from "../Course/CourseDetails.jsx";
 import Schedule from "../Setting/Schedule.jsx";
 import Password from "../Setting/Password.jsx";
 import EditProfile from "../Setting/Profile/EditProfile.jsx";
-import AddCourse from "../Course/AddCourse.jsx";
-import AddLesson from "../Course/AddLesson.jsx";
 import WatchLesson from "../Course/WatchLesson.jsx";
-import PublicCourse from "../Course/PublicCourse.jsx";
 import { scale } from "react-native-size-matters";
+import Competition from "../Sport/Competition.jsx";
+import FreeCourseDetails from "../Course/FreeCourseDetails.jsx";
+import { PaidCourseDetails } from "../Course/PaidCourseDetails.jsx";
+import Quiz from "../Quiz/Quiz.jsx";
+import PaidLesson from "../Course/PaidLesson.jsx";
 
 const Stack = createNativeStackNavigator();
 
@@ -21,19 +22,6 @@ const AppStack = () => {
         name="DrawerNavigation"
         component={DrawerNavigation}
         options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="CourseDetails"
-        component={CourseDetails}
-        options={(props) => ({
-          headerTitleAlign: "center",
-          headerTitle: props.route.params.course.name,
-          headerShadowVisible: false,
-          headerTitleStyle: {
-            fontFamily: "Bold",
-            fontSize: scale(13),
-          },
-        })}
       />
       <Stack.Screen
         name="Schedule"
@@ -62,32 +50,6 @@ const AppStack = () => {
         })}
       />
       <Stack.Screen
-        name="AddCourse"
-        component={AddCourse}
-        options={() => ({
-          headerTitleAlign: "center",
-          headerTitle: "Add Course",
-          headerShadowVisible: false,
-          headerTitleStyle: {
-            fontFamily: "Bold",
-            fontSize: scale(14),
-          },
-        })}
-      />
-      <Stack.Screen
-        name="AddLesson"
-        component={AddLesson}
-        options={() => ({
-          headerTitleAlign: "center",
-          headerTitle: "Add Lesson",
-          headerShadowVisible: false,
-          headerTitleStyle: {
-            fontFamily: "Bold",
-            fontSize: scale(14),
-          },
-        })}
-      />
-      <Stack.Screen
         name="WatchLesson"
         component={WatchLesson}
         options={(props) => ({
@@ -101,15 +63,41 @@ const AppStack = () => {
         })}
       />
       <Stack.Screen
-        name="PublicCourse"
-        component={PublicCourse}
-        options={() => ({
+        name="PaidLesson"
+        component={PaidLesson}
+        options={(props) => ({
           headerTitleAlign: "center",
-          headerTitle: "Public Course",
+          headerTitle: props.route.params.lesson.name,
           headerShadowVisible: false,
           headerTitleStyle: {
             fontFamily: "Bold",
-            fontSize: scale(14),
+            fontSize: scale(13),
+          },
+        })}
+      />
+      <Stack.Screen
+        name="FreeCourseDetails"
+        component={FreeCourseDetails}
+        options={(props) => ({
+          headerTitleAlign: "center",
+          headerTitle: props.route.params.course.name,
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            fontFamily: "Bold",
+            fontSize: scale(13),
+          },
+        })}
+      />
+      <Stack.Screen
+        name="PaidCourseDetails"
+        component={PaidCourseDetails}
+        options={(props) => ({
+          headerTitleAlign: "center",
+          headerTitle: props.route.params.course.name,
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            fontFamily: "Bold",
+            fontSize: scale(13),
           },
         })}
       />
@@ -124,6 +112,26 @@ const AppStack = () => {
             fontFamily: "Bold",
             fontSize: scale(14),
           },
+        })}
+      />
+      <Stack.Screen
+        name="Quiz"
+        component={Quiz}
+        options={() => ({
+          headerTitleAlign: "center",
+          headerTitle: "Quiz",
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            fontFamily: "Bold",
+            fontSize: scale(14),
+          },
+        })}
+      />
+      <Stack.Screen
+        name="Competition"
+        component={Competition}
+        options={() => ({
+          header: () => null,
         })}
       />
     </Stack.Navigator>

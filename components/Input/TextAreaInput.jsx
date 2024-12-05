@@ -3,13 +3,7 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import Color from "../../constant/Color";
 import { ScaledSheet } from "react-native-size-matters";
 
-export default function EditTextInput({
-  label,
-  ecrypted,
-  value,
-  setValue,
-  editable,
-}) {
+export default function TextAreaInput({ ecrypted, value, setValue, editable }) {
   const [isFocus, setIsFocus] = useState(false);
 
   const onFocus = () => {
@@ -22,8 +16,6 @@ export default function EditTextInput({
 
   return (
     <View style={styles.textInputContainer}>
-      <Text style={styles.label}>{label}</Text>
-
       <TextInput
         style={[isFocus ? styles.textInputFocus : styles.textInput, ,]}
         secureTextEntry={ecrypted}
@@ -32,16 +24,9 @@ export default function EditTextInput({
         onBlur={onBlur}
         onChangeText={(text) => setValue(text)}
         editable={editable}
+        numberOfLines={3}
+        multiline={true}
       />
-      {label == "Password" ? (
-        <Text style={styles.notifyText}>
-          Please enter your password to cotinue *
-        </Text>
-      ) : label == "Confirm new password" ? (
-        <Text style={styles.notifyText}>
-          Please confirm your new password to update *
-        </Text>
-      ) : null}
     </View>
   );
 }
@@ -49,6 +34,7 @@ export default function EditTextInput({
 const styles = ScaledSheet.create({
   textInputContainer: {
     marginBottom: 0,
+    gap: 10,
   },
   label: {
     paddingLeft: 4,
@@ -58,7 +44,7 @@ const styles = ScaledSheet.create({
   textInput: {
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: Color.black,
-    borderRadius: 10,
+    borderRadius: 5,
     width: "100%",
     padding: "10@s",
     fontFamily: "Medium",
@@ -68,7 +54,7 @@ const styles = ScaledSheet.create({
   textInputFocus: {
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: Color.tertiary,
-    borderRadius: 10,
+    borderRadius: 5,
     width: "100%",
     padding: "10@s",
     fontFamily: "Medium",
