@@ -1,6 +1,6 @@
-export const getUserLesson = async (token, user, lessonId) => {
+export const getPaidLessonById = async (token, lessonId) => {
   const response = await fetch(
-    process.env.EXPO_PUBLIC_BASE_URL + `/user-lesson/${user.id}/${lessonId}`,
+    process.env.EXPO_PUBLIC_BASE_URL + `/paid-lessons/${lessonId}/user`,
     {
       method: "GET",
       headers: {

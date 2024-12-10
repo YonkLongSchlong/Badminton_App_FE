@@ -7,16 +7,16 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { s, ScaledSheet } from "react-native-size-matters";
-import { Video } from "expo-av";
+import { ResizeMode, Video } from "expo-av";
 import ColorAccent from "../../constant/Color.js";
 import { createEditorJsViewer } from "editorjs-viewer-native";
 import { useNavigation } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import userStore from "../../store/userStore.js";
-import { getFreeLessonById } from "../../hooks/Lesson/getFreeLessonsById.js";
-import { getQuestionsByFreeLesson } from "../../hooks/Question/getQuestions.js";
+import { getQuestionByPaidLesson } from "../../hooks/Question/getQuestions.js";
 import { getUserLesson } from "../../hooks/UserLesson/getUserLesson.js";
 import { errorToast } from "../../utils/toastConfig.js";
+import { getPaidLessonById } from "../../hooks/Lesson/getPaidLessonById.js";
 
 const MyHeader = ({ data }) => {
   if (data && data.text.includes("&nbsp;")) {
@@ -69,6 +69,28 @@ const MyList = ({ data }) => {
   );
 };
 
+const VideoComponent = ({ block }) => {
+  const video = useRef(null);
+  const [status, setStatus] = useState({});
+
+  data = block.data; // Check if data is passed correctly
+
+  return (
+    <View style={{ marginTop: 20, marginBottom: 20, gap: 10 }}>
+      <Video
+        ref={video}
+        style={styles.video}
+        source={{
+          uri: data.file.url,
+        }}
+        useNativeControls
+        resizeMode={ResizeMode.CONTAIN}
+        onPlaybackStatusUpdate={(status) => setStatus(status)}
+      />
+    </View>
+  );
+};
+
 const EditorJsViewerNative = createEditorJsViewer({
   tools: {
     header: {
@@ -81,6 +103,11 @@ const EditorJsViewerNative = createEditorJsViewer({
       Component: MyList,
     },
   },
+  customTools: {
+    video: {
+      Component: VideoComponent,
+    },
+  },
 });
 
 export default function PaidLesson(props) {
@@ -90,15 +117,15 @@ export default function PaidLesson(props) {
   const { lesson } = props.route.params;
 
   const lessonId = lesson.id;
-  const freeLesson = useQuery({
-    queryKey: ["freeLesson", token, lessonId],
-    queryFn: () => getFreeLessonById(token, lessonId),
+  const paidLesson = useQuery({
+    queryKey: ["paidLesson", token, lessonId],
+    queryFn: () => getPaidLessonById(token, lessonId),
     enabled: !!token,
   });
 
-  const freeLessonQuestions = useQuery({
-    queryKey: ["freeLessonQuestions", token, lessonId],
-    queryFn: () => getQuestionsByFreeLesson(token, lessonId),
+  const paidLessonQuestions = useQuery({
+    queryKey: ["paidLessonQuestions", token, lessonId],
+    queryFn: () => getQuestionByPaidLesson(token, lessonId),
     enabled: !!token,
   });
 
@@ -110,19 +137,19 @@ export default function PaidLesson(props) {
 
   const renderEditorJsContent = () => (
     <>
-      {freeLesson.data && (
-        <EditorJsViewerNative data={freeLesson.data.content} />
+      {paidLesson.data && (
+        <EditorJsViewerNative data={paidLesson.data.content} />
       )}
 
       <View style={styles.btnContainer}>
         <TouchableOpacity
           style={styles.btn}
           onPress={() => {
-            if (freeLessonQuestions.data.length === 0) {
+            if (paidLessonQuestions.data.length === 0) {
               errorToast("No quiz available for this lesson");
             } else {
               navigation.navigate("Quiz", {
-                questions: freeLessonQuestions.data,
+                questions: paidLessonQuestions.data,
                 lesson: lesson,
               });
             }
@@ -140,9 +167,9 @@ export default function PaidLesson(props) {
 
   return (
     <FlatList
-      data={[{}]} // Dummy data to satisfy FlatList requirements
+      data={[{}]}
       renderItem={renderEditorJsContent}
-      keyExtractor={(item, index) => index.toString()} // Unique key for each item
+      keyExtractor={(item, index) => index.toString()}
       contentContainerStyle={styles.container}
     />
   );
@@ -159,6 +186,7 @@ const styles = ScaledSheet.create({
     fontSize: "20@s",
   },
   header: {
+    marginBottom: 10,
     fontSize: s(22),
     fontFamily: "Bold",
   },
@@ -199,5 +227,10 @@ const styles = ScaledSheet.create({
     fontFamily: "Bold",
     fontSize: "12@s",
     color: ColorAccent.primary,
+  },
+  video: {
+    width: "100%",
+    height: 200,
+    borderRadius: 10,
   },
 });

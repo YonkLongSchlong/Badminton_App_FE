@@ -13,7 +13,6 @@ export const createOrder = async ({ user, token, course }) => {
     }),
   });
   const data = await response.json();
-  console.log(data);
 
   return data;
 };

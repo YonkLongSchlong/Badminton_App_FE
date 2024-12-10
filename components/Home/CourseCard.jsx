@@ -16,7 +16,11 @@ const CourseCard = (props) => {
     }
   };
   return (
-    <TouchableOpacity onPress={handleNavigation} style={styles.container}>
+    <TouchableOpacity
+      onPress={handleNavigation}
+      style={styles.container}
+      key={props.course.id}
+    >
       <View style={styles.imageContainer}>
         <Image style={styles.image} source={{ uri: props.course.thumbnail }} />
       </View>

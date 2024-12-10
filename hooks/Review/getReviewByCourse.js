@@ -11,7 +11,5 @@ export const getReviewByCourse = async (token, courseId) => {
   );
 
   const data = await response.json();
-  console.log(data);
-
   return data;
 };

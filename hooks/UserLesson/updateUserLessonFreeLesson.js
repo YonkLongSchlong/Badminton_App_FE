@@ -1,12 +1,4 @@
 export const updateUserLessonFreeLesson = async ({ user, lessonId, token }) => {
-  console.log(
-    JSON.stringify({
-      userId: user.id,
-      freeLessonId: lessonId,
-      status: 0,
-    })
-  );
-
   const response = await fetch(
     process.env.EXPO_PUBLIC_BASE_URL + `/user-lesson/free-lesson`,
     {

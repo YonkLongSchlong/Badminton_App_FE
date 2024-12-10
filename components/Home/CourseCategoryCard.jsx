@@ -2,12 +2,17 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 const CourseCategoryList = (props) => {
+  const queryClient = useQueryClient();
   return (
-    <View style={styles.container}>
+    <View style={styles.container} key={props.category.id}>
       <TouchableOpacity
-        onPress={() => props.setChosenCategory(props.category.name)}
+        onPress={() => {
+          props.setChosenCategory(props.category.name);
+          queryClient.invalidateQueries("courses");
+        }}
         style={styles.nameContainer}
       >
         <Text

@@ -15,10 +15,6 @@ import { getCoaches } from "../../hooks/Coach/getCoaches.js";
 const categories = [
   {
     id: 1,
-    name: "All",
-  },
-  {
-    id: 2,
     name: "Beginner",
   },
   {
@@ -26,21 +22,21 @@ const categories = [
     name: "Intermediate",
   },
   {
-    id: 4,
+    id: 2,
     name: "Advance",
   },
   {
-    id: 5,
+    id: 4,
     name: "Free",
   },
   {
-    id: 6,
+    id: 5,
     name: "Paid",
   },
 ];
 
 const Dashboard = () => {
-  const [chosenCategory, setChosenCategory] = useState("All");
+  const [chosenCategory, setChosenCategory] = useState("Beginner");
   const user = userStore((state) => state.user);
   const token = userStore((state) => state.token);
   const logout = userStore((state) => state.logout);

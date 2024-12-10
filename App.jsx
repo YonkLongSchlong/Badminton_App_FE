@@ -21,6 +21,7 @@ export default function App({ navigation }) {
     Medium: require("./assets/fonts/Quicksand-Medium.ttf"),
     Semibold: require("./assets/fonts/Quicksand-SemiBold.ttf"),
     Bold: require("./assets/fonts/Quicksand-Bold.ttf"),
+    ItalicBold: require("./assets/fonts/Quicksand-BoldItalic.ttf"),
   });
 
   useEffect(() => {

@@ -14,7 +14,7 @@ export const PaidLessonCard = (props) => {
 
   const handleNavigation = () => {
     if (isUnlock) {
-      navigation.navigate("WatchLesson", { lesson: props.lesson });
+      navigation.navigate("PaidLesson", { lesson: props.lesson });
     } else {
       errorToast("You will need to unlock the course to continue");
     }

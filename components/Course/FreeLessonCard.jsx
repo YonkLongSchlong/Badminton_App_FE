@@ -25,8 +25,6 @@ export default FreeLessonCard = (props) => {
   const enrollLessonMutation = useMutation({
     mutationFn: createUserLessonFreeLesson,
     onSuccess: (data) => {
-      console.log(data);
-
       navigation.navigate("WatchLesson", {
         lesson: props.lesson,
         userLesson: userLesson.data,

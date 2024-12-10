@@ -24,12 +24,29 @@ const MyHeader = ({ data }) => {
         {data && data.text.replace(/&nbsp;?/g, " ")}
       </Text>
     );
+  } else if (data && data.text.includes("<i>")) {
+    return (
+      <View style={{ marginVertical: 10 }}>
+        <Text style={styles.italicHeader}>
+          {data.text.replace(/&nbsp;?|<i>|<\/i>/g, " ")}
+        </Text>
+      </View>
+    );
   }
+
   return <Text style={styles.header}>{data && data.text}</Text>;
 };
 
 const MyParagraph = ({ data }) => {
-  if (data && data.text.includes("<b>")) {
+  if (data && data.text.includes("<b>") && data.text.includes("<i>")) {
+    return (
+      <View style={{ marginVertical: 10 }}>
+        <Text style={styles.italicBoldSubHeader}>
+          {data.text.replace(/&nbsp;?|<i>|<\/i>|<b>|<\/b>/g, " ")}
+        </Text>
+      </View>
+    );
+  } else if (data && data.text.includes("<b>")) {
     return (
       <View style={{ marginVertical: 10 }}>
         <Text style={styles.subHeader}>
@@ -40,7 +57,7 @@ const MyParagraph = ({ data }) => {
   } else if (data && data.text.includes("<i>")) {
     return (
       <View style={{ marginVertical: 10 }}>
-        <Text style={styles.italicHeader}>
+        <Text style={styles.italicSubHeader}>
           {data.text.replace(/&nbsp;?|<i>|<\/i>/g, " ")}
         </Text>
       </View>
@@ -68,6 +85,28 @@ const MyList = ({ data }) => {
   );
 };
 
+const VideoComponent = ({ block }) => {
+  const video = useRef(null);
+  const [status, setStatus] = useState({});
+
+  data = block.data; // Check if data is passed correctly
+
+  return (
+    <View style={{ marginTop: 20, marginBottom: 20, gap: 10 }}>
+      <Video
+        ref={video}
+        style={styles.video}
+        source={{
+          uri: data.file.url,
+        }}
+        useNativeControls
+        resizeMode={ResizeMode.CONTAIN}
+        onPlaybackStatusUpdate={(status) => setStatus(status)}
+      />
+    </View>
+  );
+};
+
 const EditorJsViewerNative = createEditorJsViewer({
   tools: {
     header: {
@@ -78,6 +117,11 @@ const EditorJsViewerNative = createEditorJsViewer({
     },
     list: {
       Component: MyList,
+    },
+    customTools: {
+      video: {
+        Component: VideoComponent,
+      },
     },
   },
 });
@@ -160,6 +204,17 @@ const styles = ScaledSheet.create({
     fontFamily: "Bold",
     lineHeight: 22,
   },
+  italicSubHeader: {
+    fontSize: s(13),
+    fontFamily: "Bold",
+    lineHeight: 22,
+    fontStyle: "italic",
+  },
+  italicBoldSubHeader: {
+    fontSize: s(13),
+    fontFamily: "Bold",
+    lineHeight: 22,
+  },
   italicHeader: {
     fontSize: s(13),
     fontFamily: "Bold",
@@ -192,5 +247,9 @@ const styles = ScaledSheet.create({
     fontFamily: "Bold",
     fontSize: "12@s",
     color: ColorAccent.primary,
+  },
+  video: {
+    width: "100%",
+    height: 200, // Adjust height as needed
   },
 });
