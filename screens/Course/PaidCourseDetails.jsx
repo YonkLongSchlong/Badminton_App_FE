@@ -1,5 +1,5 @@
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ColorAccent from "../../constant/Color.js";
 import { s, ScaledSheet } from "react-native-size-matters";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -21,6 +21,7 @@ export const PaidCourseDetails = (props) => {
   const { course } = props.route.params;
   const [show, setShow] = useState(false);
   const [reviewText, setReviewText] = useState("");
+  const [alredyReview, setAlredyReview] = useState(false);
   const user = userStore((state) => state.user);
   const token = userStore((state) => state.token);
   const [starRating, setStarRating] = useState(0);
@@ -75,6 +76,7 @@ export const PaidCourseDetails = (props) => {
       reviewText,
       starRating,
     });
+    setAlredyReview(true);
   };
 
   const handleCreateOrder = async () => {
@@ -101,12 +103,26 @@ export const PaidCourseDetails = (props) => {
     }
   };
 
+  useEffect(() => {
+    if (courseReview.isSuccess && courseReview.data) {
+      const containsUserId = courseReview.data.data.some(
+        (review) => review.userId === user.id
+      );
+      if (containsUserId) {
+        setAlredyReview(true);
+      }
+    }
+  }, [courseReview.status]);
+
   return (
     <View style={styles.container}>
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.courseNameContainer}>
+          <Text style={styles.courseNameText}>{course.name}</Text>
+        </View>
         {/* -------------- COURSE IMAGE SECTION -------------- */}
         <View style={styles.imageContainer}>
           <Image style={styles.image} source={{ uri: course.thumbnail }} />
@@ -150,7 +166,11 @@ export const PaidCourseDetails = (props) => {
           <Text style={styles.heading}>Reviews</Text>
           {courseReview.data && courseReview.data.data.length > 0 ? (
             courseReview.data.data.map((review) => (
-              <ReviewCard review={review} />
+              <ReviewCard
+                review={review}
+                setAlredyReview={setAlredyReview}
+                key={review.id}
+              />
             ))
           ) : (
             <View>
@@ -165,7 +185,7 @@ export const PaidCourseDetails = (props) => {
         </View>
 
         {/* -------------- REVIEW INPUT SECTION -------------- */}
-        {paidCourse.data && paidCourse.data.unlock ? (
+        {paidCourse.data && paidCourse.data.unlock && !alredyReview ? (
           <View style={styles.reviewInputSection}>
             <Text style={styles.label}>Write your review</Text>
             <View style={styles.ratingContainer}>
@@ -200,7 +220,7 @@ export const PaidCourseDetails = (props) => {
       </ScrollView>
 
       {/* -------------- ACCESS BUTTON SECTION -------------- */}
-      {paidCourse.data && paidCourse.data.unlock ? null : ( // </View> //   </TouchableOpacity> //     <Text style={styles.btnText}>Start Learning</Text> //   <TouchableOpacity style={styles.btn} onPress={() => {}}> // <View style={styles.btnContainer}>
+      {paidCourse.data && paidCourse.data.unlock ? null : (
         <View style={styles.btnContainer}>
           <TouchableOpacity style={styles.btn} onPress={handleCreateOrder}>
             <Text style={styles.btnText}>
@@ -219,12 +239,18 @@ const styles = ScaledSheet.create({
     flex: 1,
     backgroundColor: ColorAccent.primary,
   },
+  courseNameContainer: {
+    paddingTop: 10,
+    paddingBottom: 15,
+    justifyContent: "center",
+    width: "100%",
+  },
+  courseNameText: { fontFamily: "Bold", fontSize: "13@s", textAlign: "center" },
   label: {
     paddingLeft: 4,
     fontFamily: "Bold",
   },
   scrollView: {
-    paddingTop: 10,
     paddingHorizontal: 25,
     paddingBottom: 100,
   },

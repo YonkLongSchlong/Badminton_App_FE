@@ -75,21 +75,21 @@ export default function Knockout({ matches }) {
       {/* -------------- ROUND OF 16 FIRST LINE ------------- */}
       <View style={styles.roundLine}>
         {roundOf16MatchesFirstLine.map((match) => (
-          <KnockoutCard match={match} />
+          <KnockoutCard match={match} key={match.id} />
         ))}
       </View>
 
       {/* -------------- QUARTER FINAL FIRST LINE ------------- */}
       <View style={styles.roundLine}>
         {quarterFinalMatchesFirstLine.map((match) => (
-          <KnockoutCard match={match} />
+          <KnockoutCard match={match} key={match.id} />
         ))}
       </View>
 
       {/* -------------- SEMI FINAL FIRST LINE ------------- */}
       <View style={styles.roundLine}>
         {semiFinalMatchesFirstLine.map((match) => (
-          <KnockoutCard match={match} />
+          <KnockoutCard match={match} key={match.id} />
         ))}
       </View>
 
@@ -101,7 +101,7 @@ export default function Knockout({ matches }) {
             style={styles.image}
           />
           {final.map((match) => (
-            <KnockoutCard match={match} />
+            <KnockoutCard match={match} key={match.id} />
           ))}
         </View>
       </View>
@@ -109,21 +109,21 @@ export default function Knockout({ matches }) {
       {/* -------------- SEMI FINAL FIRST LINE ------------- */}
       <View style={styles.roundLine}>
         {semiFinalMatchesSecondLine.map((match) => (
-          <KnockoutCard match={match} />
+          <KnockoutCard match={match} key={match.id} />
         ))}
       </View>
 
       {/* -------------- QUARTER FINAL SECOND LINE ------------- */}
       <View style={styles.roundLine}>
         {quarterFinalMatchesSecondLine.map((match) => (
-          <KnockoutCard match={match} />
+          <KnockoutCard match={match} key={match.id} />
         ))}
       </View>
 
       {/* -------------- ROUND OF 16 SECOND LINE ------------- */}
       <View style={styles.roundLine}>
         {roundOf16MatchesSecondLine.map((match) => (
-          <KnockoutCard match={match} />
+          <KnockoutCard match={match} key={match.id} />
         ))}
       </View>
     </View>

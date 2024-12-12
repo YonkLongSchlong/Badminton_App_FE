@@ -8,15 +8,13 @@ import SettingCard from "../../components/Home/SettingCard.jsx";
 import userStore from "../../store/userStore.js";
 import { StatusBar } from "expo-status-bar";
 
-
 const Profile = ({ navigation }) => {
   const logout = userStore((state) => state.logout);
   const user = userStore((state) => state.user);
 
   const handleLogout = async () => {
     await logout();
-  }
-
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -76,15 +74,8 @@ const Profile = ({ navigation }) => {
             <SettingCard
               icon="shield-checkmark-outline"
               label="Password"
-              onPress={() => navigation.navigate("Password")}
-            />
-            <SettingCard icon="notifications-outline" label="Notifications" />
-            <SettingCard icon="card-outline" label="Payment settings" />
-            <SettingCard
-              icon="calendar-outline"
-              label="Schedule"
               last={true}
-              onPress={() => navigation.navigate("Schedule")}
+              onPress={() => navigation.navigate("Password")}
             />
           </View>
 

@@ -12,6 +12,7 @@ import FreeCourseDetails from "../Course/FreeCourseDetails.jsx";
 import { PaidCourseDetails } from "../Course/PaidCourseDetails.jsx";
 import Quiz from "../Quiz/Quiz.jsx";
 import PaidLesson from "../Course/PaidLesson.jsx";
+import { BadmintonRules } from "../BadmintonRules/BadmintonRules.jsx";
 
 const Stack = createNativeStackNavigator();
 
@@ -54,7 +55,7 @@ const AppStack = () => {
         component={WatchLesson}
         options={(props) => ({
           headerTitleAlign: "center",
-          headerTitle: props.route.params.lesson.name,
+          headerTitle: "Watch Lesson",
           headerShadowVisible: false,
           headerTitleStyle: {
             fontFamily: "Bold",
@@ -67,7 +68,7 @@ const AppStack = () => {
         component={PaidLesson}
         options={(props) => ({
           headerTitleAlign: "center",
-          headerTitle: props.route.params.lesson.name,
+          headerTitle: "Watch Lesson",
           headerShadowVisible: false,
           headerTitleStyle: {
             fontFamily: "Bold",
@@ -80,7 +81,7 @@ const AppStack = () => {
         component={FreeCourseDetails}
         options={(props) => ({
           headerTitleAlign: "center",
-          headerTitle: props.route.params.course.name,
+          headerTitle: "Course Details",
           headerShadowVisible: false,
           headerTitleStyle: {
             fontFamily: "Bold",
@@ -93,7 +94,7 @@ const AppStack = () => {
         component={PaidCourseDetails}
         options={(props) => ({
           headerTitleAlign: "center",
-          headerTitle: props.route.params.course.name,
+          headerTitle: "Course Details",
           headerShadowVisible: false,
           headerTitleStyle: {
             fontFamily: "Bold",

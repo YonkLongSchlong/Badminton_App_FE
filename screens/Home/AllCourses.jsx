@@ -22,7 +22,6 @@ const searchFilter = [
   { id: 3, name: "Beginner", value: "Beginner" },
   { id: 4, name: "Intermediate", value: "Intermediate" },
   { id: 5, name: "Advance", value: "Advance" },
-  { id: 5, name: "All", value: "All" },
 ];
 
 const filterOption = [
@@ -90,7 +89,7 @@ export default function AllCourses({ navigation }) {
         />
       )}
 
-      <View style={styles.filterIconContainer}>
+      {/* <View style={styles.filterIconContainer}>
         <Text style={styles.header}>{courseType}</Text>
         <TouchableOpacity onPress={() => setOpenFilter(!openFilter)}>
           <MaterialIcons name="filter-list" size={s(20)} />
@@ -104,7 +103,7 @@ export default function AllCourses({ navigation }) {
             ))}
           </View>
         )}
-      </View>
+      </View> */}
 
       {/* ---------- COURSES ------------ */}
       <FlatList

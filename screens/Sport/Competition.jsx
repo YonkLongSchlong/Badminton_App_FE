@@ -28,10 +28,6 @@ const categories = [
     id: 3,
     name: "Knockout",
   },
-  {
-    id: 4,
-    name: "News",
-  },
 ];
 
 export default function Competition({ route }) {
@@ -130,7 +126,9 @@ export default function Competition({ route }) {
         <View style={styles.matchListContainer}>
           {chosenCategory === "Matches" ? (
             matches.data &&
-            sortedMatches.map((item) => <MatchCard match={item} id={item.id} />)
+            sortedMatches.map((item) => (
+              <MatchCard match={item} id={item.id} key={item.id} />
+            ))
           ) : chosenCategory === "Details" ? (
             selectedSeason && (
               <CompetitionDetails

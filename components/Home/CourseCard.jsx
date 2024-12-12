@@ -15,6 +15,7 @@ const CourseCard = (props) => {
       navigation.navigate("PaidCourseDetails", { course: props.course });
     }
   };
+
   return (
     <TouchableOpacity
       onPress={handleNavigation}
@@ -37,7 +38,6 @@ const CourseCard = (props) => {
             </Text>
           </View>
         </View>
-
         <Text style={styles.heading} numberOfLines={2}>
           {props.course.name}
         </Text>

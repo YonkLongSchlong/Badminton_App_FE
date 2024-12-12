@@ -1,5 +1,5 @@
 import { Image, ScrollView, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ColorAccent from "../../constant/Color.js";
@@ -11,6 +11,7 @@ import { StatusBar } from "expo-status-bar";
 import { useQuery } from "@tanstack/react-query";
 import { getCourses } from "../../hooks/Course/getCourses.js";
 import { getCoaches } from "../../hooks/Coach/getCoaches.js";
+import { useNavigation } from "@react-navigation/native";
 
 const categories = [
   {
@@ -40,6 +41,7 @@ const Dashboard = () => {
   const user = userStore((state) => state.user);
   const token = userStore((state) => state.token);
   const logout = userStore((state) => state.logout);
+  const nagivation = useNavigation();
 
   const avatarSrc =
     user.avatar === null
@@ -64,10 +66,16 @@ const Dashboard = () => {
   });
 
   if (courses.isError) {
-    async () => {
-      await logout();
-    };
+    console.log(courses.data);
   }
+
+  useEffect(() => {
+    if (courses.status == "error") {
+      (async () => {
+        await logout();
+      })();
+    }
+  }, [courses.status]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -139,13 +147,18 @@ const Dashboard = () => {
 
           <View style={styles.courseListContainer}>
             {courses.data &&
-              courses.data.data.map((course) => (
-                <CourseCard key={course.id} course={course} />
-              ))}
+              courses.data.data
+                .slice(0, 4)
+                .map((course) => (
+                  <CourseCard key={course.id} course={course} />
+                ))}
           </View>
 
           <View style={styles.exploreBtnContainer}>
-            <TouchableOpacity style={styles.exploreBtn}>
+            <TouchableOpacity
+              style={styles.exploreBtn}
+              onPress={() => nagivation.navigate("All Courses")}
+            >
               <Text style={[styles.subHeading, { color: "white" }]}>
                 Explore more
               </Text>

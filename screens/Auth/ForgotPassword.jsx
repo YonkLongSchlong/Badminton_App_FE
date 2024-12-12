@@ -6,10 +6,46 @@ import { useForm } from "react-hook-form";
 import { emailRegex } from "../../constant/Regex.js";
 
 const ForgotPassword = ({ navigation }) => {
+  return (
+    <>
+      <View style={styles.background} />
+      <View style={styles.container}>
+        {/* ----------- HEADER ----------- */}
+        <View style={styles.headerWrapper}>
+          <Text style={styles.header}>Let's get started!</Text>
+          <Text style={styles.subHeader}>Enter your OTP to login</Text>
+        </View>
 
+        {/* ----------- EMAIL FORM ----------- */}
+        <View style={styles.loginWrapper}>
+          <InputField
+            name={"email"}
+            control={control}
+            placeholder={"Enter your email"}
+            label={"Email"}
+            rules={otpRules}
+            secure={false}
+          />
 
+          <View style={styles.registerLinkWrapper}>
+            <Text style={styles.registerText}>Didn't receive a otp?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text style={styles.registerLink}>RESEND OTP</Text>
+            </TouchableOpacity>
+          </View>
 
-  return <></>;
+          <View style={styles.loginBtnWrapper}>
+            <TouchableOpacity
+              style={styles.loginBtn}
+              onPress={handleSubmit(handleVerifyOtp)}
+            >
+              <Text style={styles.loginText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </>
+  );
 };
 
 const styles = ScaledSheet.create({

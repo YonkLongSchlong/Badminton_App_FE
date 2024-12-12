@@ -7,16 +7,24 @@ import LessonCard from "../../components/Course/LessonCard.jsx";
 import { getFreeCourseById } from "../../hooks/Course/getFreeCourseById.js";
 import { useQuery } from "@tanstack/react-query";
 import FreeLessonCard from "../../components/Course/FreeLessonCard.jsx";
+import { getUserLesson } from "../../hooks/UserLesson/getUserLesson.js";
 
 export default FreeCourseDetails = (props) => {
   const { course } = props.route.params;
   const [show, setShow] = useState(false);
   const token = userStore((state) => state.token);
+  const user = userStore((state) => state.user);
 
   const courseId = course.id;
   const freeCourse = useQuery({
     queryKey: ["freeCourse", token, courseId],
     queryFn: () => getFreeCourseById(token, courseId),
+    enabled: !!token,
+  });
+
+  const userLesson = useQuery({
+    queryKey: ["userLesson", token, courseId],
+    queryFn: () => getUserLesson(token, user, courseId),
     enabled: !!token,
   });
 
@@ -60,6 +68,13 @@ export default FreeCourseDetails = (props) => {
           <Text style={styles.btnText}>Start Learning</Text>
         </TouchableOpacity>
       </View>
+
+      {/* ACCESS BUTTON SECTION
+      <View style={styles.btnContainer}>
+        <TouchableOpacity style={styles.btn}>
+          <Text style={styles.btnText}>Start Learning</Text>
+        </TouchableOpacity>
+      </View> */}
     </View>
   );
 };
