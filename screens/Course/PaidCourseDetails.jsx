@@ -15,6 +15,7 @@ import TextAreaInput from "../../components/Input/TextAreaInput.jsx";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { createReview } from "../../hooks/Review/createReview.js";
 import Stars from "../../components/Course/Stars.jsx";
+import { useNavigation } from "@react-navigation/native";
 
 export const PaidCourseDetails = (props) => {
   const queryClient = useQueryClient();
@@ -25,6 +26,7 @@ export const PaidCourseDetails = (props) => {
   const user = userStore((state) => state.user);
   const token = userStore((state) => state.token);
   const [starRating, setStarRating] = useState(0);
+  const navigation = useNavigation();
 
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
@@ -139,6 +141,32 @@ export const PaidCourseDetails = (props) => {
             </Text>
           </TouchableOpacity>
         </View>
+        {paidCourse.data && (
+          <TouchableOpacity
+            style={styles.coachImageNameContainer}
+            onPress={() =>
+              navigation.navigate("CoachDescription", {
+                coachId: paidCourse.data.result.coach.id,
+              })
+            }
+          >
+            <View style={styles.avatarContainer}>
+              <Image
+                style={styles.avatar}
+                source={
+                  paidCourse.data.result.coach.avatar == null
+                    ? require("../../assets/4043232_avatar_batman_comics_hero_icon.png")
+                    : { uri: paidCourse.data.result.coach.avatar }
+                }
+              />
+            </View>
+            <Text style={styles.coachText}>
+              {paidCourse.data.result.coach.firstName +
+                " " +
+                paidCourse.data.result.coach.lastName}
+            </Text>
+          </TouchableOpacity>
+        )}
         {course.star > 0 ? <Stars course={course} /> : null}
         <View style={styles.priceWrapper}>
           <Text style={styles.heading}>Price</Text>
@@ -387,5 +415,30 @@ const styles = ScaledSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 15,
+  },
+  coachImageNameContainer: {
+    marginTop: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  avatarContainer: {
+    borderRadius: 164,
+    borderWidth: 3,
+    width: "45@s",
+    height: "45@s",
+    borderColor: ColorAccent.tertiary,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  avatar: {
+    width: "35@s",
+    height: "35@s",
+    borderRadius: 150,
+    resizeMode: "cover",
+  },
+  coachText: {
+    fontFamily: "Bold",
+    fontSize: "12@s",
   },
 });

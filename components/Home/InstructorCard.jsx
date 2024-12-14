@@ -1,8 +1,10 @@
 import { Text, View, TouchableOpacity, Image } from "react-native";
 import React from "react";
 import { ScaledSheet } from "react-native-size-matters";
+import { useNavigation } from "@react-navigation/native";
 
 const InstructorList = (props) => {
+  const navigation = useNavigation();
   const avatarSrc =
     props.coach.avatar === null
       ? require("../../assets/avatar.png")
@@ -10,7 +12,14 @@ const InstructorList = (props) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.imageContainer}>
+      <TouchableOpacity
+        style={styles.imageContainer}
+        onPress={() =>
+          navigation.navigate("CoachDescription", {
+            coachId: props.coach.id,
+          })
+        }
+      >
         <Image style={styles.image} source={avatarSrc} />
       </TouchableOpacity>
       <Text style={styles.text}>
@@ -36,7 +45,8 @@ const styles = ScaledSheet.create({
   image: {
     width: "45@s",
     height: "45@s",
-    resizeMode: "contain",
+    resizeMode: "cover",
+    borderRadius: 8,
   },
   text: {
     fontFamily: "Semibold",

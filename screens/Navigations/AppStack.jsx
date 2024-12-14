@@ -13,6 +13,7 @@ import { PaidCourseDetails } from "../Course/PaidCourseDetails.jsx";
 import Quiz from "../Quiz/Quiz.jsx";
 import PaidLesson from "../Course/PaidLesson.jsx";
 import { BadmintonRules } from "../BadmintonRules/BadmintonRules.jsx";
+import CoachDescription from "../Coach/CoachDescription.jsx";
 
 const Stack = createNativeStackNavigator();
 
@@ -121,6 +122,19 @@ const AppStack = () => {
         options={() => ({
           headerTitleAlign: "center",
           headerTitle: "Quiz",
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            fontFamily: "Bold",
+            fontSize: scale(14),
+          },
+        })}
+      />
+      <Stack.Screen
+        name="CoachDescription"
+        component={CoachDescription}
+        options={() => ({
+          headerTitleAlign: "center",
+          headerTitle: "Coach Description",
           headerShadowVisible: false,
           headerTitleStyle: {
             fontFamily: "Bold",
