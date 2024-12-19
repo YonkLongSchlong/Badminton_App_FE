@@ -1,6 +1,7 @@
-export const getFreeCourseById = async (token, id) => {
+export const getOngoingCourse = async (token, user) => {
+  const userId = user.id;
   const response = await fetch(
-    process.env.EXPO_PUBLIC_BASE_URL + `/free-courses/${id}/user`,
+    process.env.EXPO_PUBLIC_BASE_URL + `/user-course/ogoing/${userId}`,
     {
       method: "GET",
       headers: {

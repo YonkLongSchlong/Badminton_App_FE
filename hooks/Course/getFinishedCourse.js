@@ -1,6 +1,7 @@
-export const getFreeLessons = async (token) => {
+export const getFinishedCourse = async (token, user) => {
+  const userId = user.id;
   const response = await fetch(
-    process.env.EXPO_PUBLIC_BASE_URL + "/free-courses",
+    process.env.EXPO_PUBLIC_BASE_URL + `/user-course/finished/${userId}`,
     {
       method: "GET",
       headers: {
@@ -11,6 +12,7 @@ export const getFreeLessons = async (token) => {
   );
 
   const data = await response.json();
+  console.log(data);
 
   return data;
 };

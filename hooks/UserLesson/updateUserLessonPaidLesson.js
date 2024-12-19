@@ -1,6 +1,6 @@
-export const updateUserLessonPaidLesson = async ({ user, lessonId, token }) => {
+export const updateUserLessonPaidLesson = async ({ user, lesson, token }) => {
   const response = await fetch(
-    process.env.EXPO_PUBLIC_BASE_URL + `/user-lesson/free-lesson`,
+    process.env.EXPO_PUBLIC_BASE_URL + `/user-lesson/paid-lesson`,
     {
       headers: {
         accept: "application/json",
@@ -10,7 +10,7 @@ export const updateUserLessonPaidLesson = async ({ user, lessonId, token }) => {
       method: "PATCH",
       body: JSON.stringify({
         userId: user.id,
-        paidLessonId: lessonId,
+        paidLessonId: lesson.id,
         status: 1,
       }),
     }

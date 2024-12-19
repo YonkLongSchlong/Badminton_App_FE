@@ -11,10 +11,19 @@ import { errorToast } from "../../utils/toastConfig";
 export const PaidLessonCard = (props) => {
   const navigation = useNavigation();
   const isUnlock = props.paidCourse.unlock;
+  const userLesson = props.paidCourse.result.userLesson;
 
   const handleNavigation = () => {
+    if (props.paidCourse.started == false) {
+      errorToast("You will need to start the course to continue");
+      return;
+    }
+
     if (isUnlock) {
-      navigation.navigate("PaidLesson", { lesson: props.lesson });
+      navigation.navigate("PaidLesson", {
+        lesson: props.lesson,
+        userLesson: userLesson,
+      });
     } else {
       errorToast("You will need to unlock the course to continue");
     }
@@ -28,6 +37,7 @@ export const PaidLessonCard = (props) => {
             name="play-circle"
             color={ColorAccent.light_tertiary}
             size={scale(46)}
+            // disabled={props.paidCourse.started == false}
             onPress={handleNavigation}
           />
         </TouchableOpacity>
@@ -40,7 +50,18 @@ export const PaidLessonCard = (props) => {
       </View>
       {isUnlock ? (
         <TouchableOpacity style={styles.secondPart}>
-          <MaterialIcons name="pending" size={scale(14)} color="black" />
+          {userLesson.length > 0 &&
+          userLesson.some(
+            (obj) => obj.paidLessonId == props.lesson.id && obj.status == 1
+          ) ? (
+            <MaterialIcons name="done" size={scale(14)} color="black" />
+          ) : (
+            <MaterialIcons
+              name="chevron-right"
+              size={scale(14)}
+              color="black"
+            />
+          )}
         </TouchableOpacity>
       ) : (
         <TouchableOpacity style={styles.secondPart}>

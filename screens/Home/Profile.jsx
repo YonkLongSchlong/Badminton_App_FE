@@ -7,10 +7,26 @@ import OverviewCard from "../../components/Home/OverviewCard.jsx";
 import SettingCard from "../../components/Home/SettingCard.jsx";
 import userStore from "../../store/userStore.js";
 import { StatusBar } from "expo-status-bar";
+import { useQuery } from "@tanstack/react-query";
+import { getOngoingCourse } from "../../hooks/Course/getOngoingCourse.js";
+import { getFinishedCourse } from "../../hooks/Course/getFinishedCourse.js";
 
 const Profile = ({ navigation }) => {
   const logout = userStore((state) => state.logout);
   const user = userStore((state) => state.user);
+  const token = userStore((state) => state.token);
+
+  const ongoingCourse = useQuery({
+    queryKey: ["ongoingCourse"],
+    queryFn: () => getOngoingCourse(token, user),
+    enabled: !!token,
+  });
+
+  const finishedCourse = useQuery({
+    queryKey: ["finishedCourse"],
+    queryFn: () => getFinishedCourse(token, user),
+    enabled: !!token,
+  });
 
   const handleLogout = async () => {
     await logout();
@@ -51,16 +67,26 @@ const Profile = ({ navigation }) => {
         </View>
 
         {/* ------------ OVERVIEW SECTION ------------- */}
-        <View style={styles.overviewSection}>
-          <View>
-            <Text style={styles.heading}>Overview:</Text>
+        {ongoingCourse.data && finishedCourse.data && (
+          <View style={styles.overviewSection}>
+            <View>
+              <Text style={styles.heading}>Overview:</Text>
+            </View>
+            <View style={styles.overviewCardContainer}>
+              <OverviewCard
+                courseQuantity={ongoingCourse.data.length}
+                courses={ongoingCourse.data}
+                label={"Ongoing"}
+              />
+              <OverviewCard
+                courseQuantity={finishedCourse.data.length}
+                courses={finishedCourse.data}
+                label={"Finished"}
+              />
+              {/* <OverviewCard courseQuantity={ongoingCourse.data.length} /> */}
+            </View>
           </View>
-          <View style={styles.overviewCardContainer}>
-            <OverviewCard />
-            <OverviewCard />
-            <OverviewCard />
-          </View>
-        </View>
+        )}
 
         {/* ------------ SETTING CARDS SECTIONS------------- */}
         <View style={styles.settingCardSection}>

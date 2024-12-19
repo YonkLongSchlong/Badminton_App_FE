@@ -16,6 +16,8 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { createReview } from "../../hooks/Review/createReview.js";
 import Stars from "../../components/Course/Stars.jsx";
 import { useNavigation } from "@react-navigation/native";
+import startPaidUserCourse from "../../hooks/UserCourse/startPaidUserCourse.js";
+import updatePaidUserCourse from "../../hooks/UserCourse/updatePaidUserCourse.js";
 
 export const PaidCourseDetails = (props) => {
   const queryClient = useQueryClient();
@@ -26,6 +28,7 @@ export const PaidCourseDetails = (props) => {
   const user = userStore((state) => state.user);
   const token = userStore((state) => state.token);
   const [starRating, setStarRating] = useState(0);
+  const [lessonPass, setLessonPass] = useState(0);
   const navigation = useNavigation();
 
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
@@ -45,7 +48,7 @@ export const PaidCourseDetails = (props) => {
 
   const createReviewMutation = useMutation({
     mutationFn: createReview,
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       successToast("Review notification", "Create review successfully");
       queryClient.invalidateQueries(["courseReview", token, courseId]);
     },
@@ -67,6 +70,26 @@ export const PaidCourseDetails = (props) => {
       successToast("Order notification", "Create payment successfully");
       const orderId = data.data.id;
       createPaymentIntent.mutate({ user, token, course, orderId });
+    },
+  });
+
+  const finishedCourseMutation = useMutation({
+    mutationFn: updatePaidUserCourse,
+    onSuccess: () => {
+      successToast("Course notification", "You have finished this course 🤩");
+      queryClient.invalidateQueries(["paidCourse", token, courseId], {
+        refetchActive: true,
+      });
+    },
+  });
+
+  const startCourseMutation = useMutation({
+    mutationFn: startPaidUserCourse,
+    onSuccess: () => {
+      successToast("Course notification", "You have started this course 👏🏻");
+      queryClient.invalidateQueries(["paidCourse", token, courseId], {
+        refetchActive: true,
+      });
     },
   });
 
@@ -105,6 +128,15 @@ export const PaidCourseDetails = (props) => {
     }
   };
 
+  const handleStartCourse = async () => {
+    startCourseMutation.mutate({ user, courseId, token });
+  };
+
+  const handleFinishedCourse = async () => {
+    const status = 2;
+    finishedCourseMutation.mutate({ user, courseId, status, token });
+  };
+
   useEffect(() => {
     if (courseReview.isSuccess && courseReview.data) {
       const containsUserId = courseReview.data.data.some(
@@ -115,6 +147,19 @@ export const PaidCourseDetails = (props) => {
       }
     }
   }, [courseReview.status]);
+
+  useEffect(() => {
+    if (paidCourse.isSuccess && paidCourse.data) {
+      const passedLessonsCount = paidCourse.data.result.userLesson.reduce(
+        (count, obj) => {
+          return obj.status == 1 ? count + 1 : count;
+        },
+        0
+      );
+
+      setLessonPass(passedLessonsCount);
+    }
+  }, [paidCourse]);
 
   return (
     <View style={styles.container}>
@@ -258,6 +303,26 @@ export const PaidCourseDetails = (props) => {
           </TouchableOpacity>
         </View>
       )}
+
+      {/* -------------- START COURSE BUTTON SECTION -------------- */}
+      {paidCourse.data && paidCourse.data.started == false ? (
+        <View style={styles.btnContainer}>
+          <TouchableOpacity style={styles.btn} onPress={handleStartCourse}>
+            <Text style={styles.btnText}>Start course</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
+
+      {/* -------------- FINISH COURSE BUTTON SECTION -------------- */}
+      {paidCourse.data &&
+        paidCourse.data.finished == false &&
+        lessonPass == paidCourse.data.result.paidLesson.length && (
+          <View style={styles.btnContainer}>
+            <TouchableOpacity style={styles.btn} onPress={handleFinishedCourse}>
+              <Text style={styles.btnText}>Finish course</Text>
+            </TouchableOpacity>
+          </View>
+        )}
     </View>
   );
 };
@@ -368,6 +433,7 @@ const styles = ScaledSheet.create({
     gap: 5,
   },
   reviewBtn: {
+    width: 180,
     backgroundColor: ColorAccent.tertiary,
     borderRadius: 5,
     justifyContent: "center",

@@ -12,7 +12,7 @@ export default function KnockoutCard({ match }) {
   };
 
   return (
-    <View style={styles.card}>
+    <View style={styles.card} key={match.id}>
       <View style={styles.opponentsContainer}>
         <View style={styles.opponentContainer}>
           <View style={styles.imageHolder}>

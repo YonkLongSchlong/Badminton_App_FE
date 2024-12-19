@@ -4,7 +4,7 @@ import { ScaledSheet } from "react-native-size-matters";
 
 export default function DuoMatch({ match, id }) {
   return (
-    <TouchableOpacity style={styles.container} id={id}>
+    <TouchableOpacity style={styles.container} id={id} key={id}>
       <View style={styles.dateTextContainer}>
         <Text style={styles.dateText}>
           {new Date(match.sport_event.start_time).toLocaleDateString("en-GB")}

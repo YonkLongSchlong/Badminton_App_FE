@@ -1,19 +1,21 @@
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ColorAccent from "../../constant/Color.js";
 import { ScaledSheet } from "react-native-size-matters";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import LessonCard from "../../components/Course/LessonCard.jsx";
-import { getFreeCourseById } from "../../hooks/Course/getFreeCourseById.js";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import FreeLessonCard from "../../components/Course/FreeLessonCard.jsx";
-import { getUserLesson } from "../../hooks/UserLesson/getUserLesson.js";
+import startFreeUserCourse from "../../hooks/UserCourse/startFreeUserCourse.js";
+import { successToast } from "../../utils/toastConfig.js";
+import { getFreeCourseById } from "../../hooks/Course/getFreeCourseById.js";
+import updateFreeUserCourse from "../../hooks/UserCourse/updateFreeUserCourse.js";
 
 export default FreeCourseDetails = (props) => {
+  const queryClient = useQueryClient();
   const { course } = props.route.params;
   const [show, setShow] = useState(false);
   const token = userStore((state) => state.token);
   const user = userStore((state) => state.user);
+  const [lessonPass, setLessonPass] = useState(0);
 
   const courseId = course.id;
   const freeCourse = useQuery({
@@ -22,18 +24,52 @@ export default FreeCourseDetails = (props) => {
     enabled: !!token,
   });
 
-  const userLesson = useQuery({
-    queryKey: ["userLesson", token, courseId],
-    queryFn: () => getUserLesson(token, user, courseId),
-    enabled: !!token,
+  const startCourseMutation = useMutation({
+    mutationFn: startFreeUserCourse,
+    onSuccess: () => {
+      successToast("Course notification", "You have started this course 👏🏻");
+      queryClient.invalidateQueries(["freeCourse", token, courseId]);
+    },
   });
 
+  const finishCourseMutation = useMutation({
+    mutationFn: updateFreeUserCourse,
+    onSuccess: () => {
+      successToast("Course notification", "You have finished this course 🤩");
+      queryClient.invalidateQueries(["freeCourse", token, courseId]);
+    },
+  });
+
+  const handleStartCourse = async () => {
+    startCourseMutation.mutate({ user, courseId, token });
+  };
+
+  const handleFinishedCourse = async () => {
+    const status = 2;
+    finishCourseMutation.mutate({ user, courseId, status, token });
+  };
+
+  useEffect(() => {
+    if (freeCourse.isSuccess && freeCourse.data) {
+      const passedLessonsCount = freeCourse.data.result.userLesson.reduce(
+        (count, obj) => {
+          return obj.status == 1 ? count + 1 : count;
+        },
+        0
+      );
+
+      setLessonPass(passedLessonsCount);
+    }
+  }, [freeCourse]);
   return (
     <View style={styles.container}>
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.courseNameContainer}>
+          <Text style={styles.courseNameText}>{course.name}</Text>
+        </View>
         {/* COURSE IMAGE SECTION */}
         <View style={styles.imageContainer}>
           <Image style={styles.image} source={{ uri: course.thumbnail }} />
@@ -55,26 +91,37 @@ export default FreeCourseDetails = (props) => {
         <View style={styles.lessonListSection}>
           <View style={styles.lessonListContainer}>
             {freeCourse.data &&
-              freeCourse.data.freeLesson.map((lesson) => (
-                <FreeLessonCard key={lesson.id} lesson={lesson} />
+              freeCourse.data.result.freeLesson.map((lesson) => (
+                <FreeLessonCard
+                  key={lesson.id}
+                  lesson={lesson}
+                  freeCourse={freeCourse.data}
+                />
               ))}
           </View>
         </View>
       </ScrollView>
 
       {/* ACCESS BUTTON SECTION */}
-      <View style={styles.btnContainer}>
-        <TouchableOpacity style={styles.btn}>
-          <Text style={styles.btnText}>Start Learning</Text>
-        </TouchableOpacity>
-      </View>
+      {freeCourse.data &&
+      (freeCourse.data.started == false || freeCourse.data.started == null) ? (
+        <View style={styles.btnContainer}>
+          <TouchableOpacity style={styles.btn} onPress={handleStartCourse}>
+            <Text style={styles.btnText}>Start Course</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
 
-      {/* ACCESS BUTTON SECTION
-      <View style={styles.btnContainer}>
-        <TouchableOpacity style={styles.btn}>
-          <Text style={styles.btnText}>Start Learning</Text>
-        </TouchableOpacity>
-      </View> */}
+      {freeCourse.data &&
+        (freeCourse.data.finished == false ||
+          freeCourse.data.finished == null) &&
+        lessonPass == freeCourse.data.result.freeLesson.length && (
+          <View style={styles.btnContainer}>
+            <TouchableOpacity style={styles.btn} onPress={handleFinishedCourse}>
+              <Text style={styles.btnText}>Finish course</Text>
+            </TouchableOpacity>
+          </View>
+        )}
     </View>
   );
 };
@@ -89,6 +136,13 @@ const styles = ScaledSheet.create({
     paddingHorizontal: 25,
     paddingBottom: 100,
   },
+  courseNameContainer: {
+    paddingTop: 10,
+    paddingBottom: 15,
+    justifyContent: "center",
+    width: "100%",
+  },
+  courseNameText: { fontFamily: "Bold", fontSize: "13@s", textAlign: "center" },
   imageContainer: {
     borderRadius: 10,
   },

@@ -1,11 +1,11 @@
-export default createUserLessonFreeLesson = async ({
+export default createUserLessonPaidLesson = async ({
   user,
   lessonId,
   courseId,
   token,
 }) => {
   const response = await fetch(
-    process.env.EXPO_PUBLIC_BASE_URL + `/user-lesson/free-lesson`,
+    process.env.EXPO_PUBLIC_BASE_URL + `/user-lesson/paid-lesson`,
     {
       headers: {
         accept: "application/json",
@@ -15,9 +15,9 @@ export default createUserLessonFreeLesson = async ({
       method: "POST",
       body: JSON.stringify({
         userId: user.id,
-        freeLessonId: lessonId,
-        freeCourseId: courseId,
-        courseType: 0,
+        paidLessonId: lessonId,
+        paidCourseId: courseId,
+        courseType: 1,
         status: 0,
       }),
     }

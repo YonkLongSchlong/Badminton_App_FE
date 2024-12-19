@@ -11,11 +11,12 @@ import { Video } from "expo-av";
 import ColorAccent from "../../constant/Color.js";
 import { createEditorJsViewer } from "editorjs-viewer-native";
 import { useNavigation } from "@react-navigation/native";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import userStore from "../../store/userStore.js";
 import { getFreeLessonById } from "../../hooks/Lesson/getFreeLessonsById.js";
 import { getQuestionsByFreeLesson } from "../../hooks/Question/getQuestions.js";
 import { errorToast } from "../../utils/toastConfig.js";
+import createUserLessonFreeLesson from "../../hooks/UserLesson/createUserLessonFreeLesson.js";
 
 const MyHeader = ({ data }) => {
   if (data && data.text.includes("&nbsp;")) {
@@ -131,6 +132,7 @@ export default function WatchLesson(props) {
   const token = userStore((state) => state.token);
   const user = userStore((state) => state.user);
   const { lesson, userLesson } = props.route.params;
+  console.log(userLesson);
 
   const lessonId = lesson.id;
   const freeLesson = useQuery({
@@ -145,6 +147,23 @@ export default function WatchLesson(props) {
     enabled: !!token,
   });
 
+  const userLessonMutation = useMutation({
+    mutationFn: createUserLessonFreeLesson,
+    onSuccess: () => {
+      navigation.navigate("Quiz", {
+        questions: freeLessonQuestions.data,
+        lesson: freeLesson.data,
+      });
+    },
+  });
+
+  const handleNavigateToQuiz = () => {
+    const courseId = lesson.freeCourseId;
+    console.log(courseId);
+
+    userLessonMutation.mutate({ user, lessonId, courseId, token });
+  };
+
   const renderEditorJsContent = () => (
     <>
       {freeLesson.data && (
@@ -158,17 +177,16 @@ export default function WatchLesson(props) {
             if (freeLessonQuestions.data.length === 0) {
               errorToast("No quiz available for this lesson");
             } else {
-              navigation.navigate("Quiz", {
-                questions: freeLessonQuestions.data,
-                lesson: freeLesson.data,
-              });
+              handleNavigateToQuiz();
             }
           }}
         >
-          {userLesson == undefined || userLesson.status == 0 ? (
-            <Text style={styles.btnText}>Quiz</Text>
-          ) : (
+          {userLesson.some(
+            (obj) => obj.freeLessonId == lesson.id && obj.status == 1
+          ) ? (
             <Text style={styles.btnText}>Revision</Text>
+          ) : (
+            <Text style={styles.btnText}>Quiz</Text>
           )}
         </TouchableOpacity>
       </View>

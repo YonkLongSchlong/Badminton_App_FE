@@ -14,6 +14,8 @@ import Quiz from "../Quiz/Quiz.jsx";
 import PaidLesson from "../Course/PaidLesson.jsx";
 import { BadmintonRules } from "../BadmintonRules/BadmintonRules.jsx";
 import CoachDescription from "../Coach/CoachDescription.jsx";
+import { OngoingCourse } from "../Course/OngoingCourse.jsx";
+import { FinishedCourse } from "../Course/FinishedCourse.jsx";
 
 const Stack = createNativeStackNavigator();
 
@@ -135,6 +137,32 @@ const AppStack = () => {
         options={() => ({
           headerTitleAlign: "center",
           headerTitle: "Coach Description",
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            fontFamily: "Bold",
+            fontSize: scale(14),
+          },
+        })}
+      />
+      <Stack.Screen
+        name="OngoingCourse"
+        component={OngoingCourse}
+        options={() => ({
+          headerTitleAlign: "center",
+          headerTitle: "Ongoing Course",
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            fontFamily: "Bold",
+            fontSize: scale(14),
+          },
+        })}
+      />
+      <Stack.Screen
+        name="FinishedCourse"
+        component={FinishedCourse}
+        options={() => ({
+          headerTitleAlign: "center",
+          headerTitle: "Finished Course",
           headerShadowVisible: false,
           headerTitleStyle: {
             fontFamily: "Bold",

@@ -1,13 +1,23 @@
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import ColorAccent from "../../constant/Color.js";
+import { useNavigation } from "@react-navigation/native";
 
-const OverviewCard = () => {
+const OverviewCard = (props) => {
+  const navigation = useNavigation();
+
+  const handleNavigation = () => {
+    if (props.label === "Ongoing") {
+      navigation.navigate("OngoingCourse", { courses: props.courses });
+    } else {
+      navigation.navigate("FinishedCourse", { courses: props.courses });
+    }
+  };
   return (
-    <View style={styles.container}>
-      <Text style={styles.number}>5</Text>
-      <Text style={styles.text}>Enrolls</Text>
-    </View>
+    <TouchableOpacity style={styles.container} onPress={handleNavigation}>
+      <Text style={styles.number}>{props.courseQuantity}</Text>
+      <Text style={styles.text}>{props.label}</Text>
+    </TouchableOpacity>
   );
 };
 
@@ -16,7 +26,7 @@ export default OverviewCard;
 const styles = ScaledSheet.create({
   container: {
     alignItems: "center",
-    paddingVertical: "10@s",
+    paddingVertical: "12@s",
     paddingHorizontal: "15@s",
     borderRadius: 10,
     backgroundColor: ColorAccent.secondary,
@@ -26,7 +36,7 @@ const styles = ScaledSheet.create({
     fontSize: "16@s",
   },
   text: {
-    fontFamily: "Regular",
+    fontFamily: "Medium",
     fontSize: "10@s",
   },
 });

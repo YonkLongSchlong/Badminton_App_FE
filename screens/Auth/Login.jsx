@@ -77,15 +77,6 @@ export default Login = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-
-        {/* ----------- BOTTOM LINKS ----------- */}
-        <View style={styles.bottomLinkWrapper}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("ForgotPassword")}
-          >
-            <Text style={styles.bottomLink}>Forgot your password?</Text>
-          </TouchableOpacity>
-        </View>
       </View>
     </>
   );

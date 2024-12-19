@@ -1,4 +1,7 @@
 import { Image, Text, View } from "react-native";
+import { LogBox } from "react-native";
+
+LogBox.ignoreLogs(['Each child in a list should have a unique "key" prop']);
 import { ScaledSheet } from "react-native-size-matters";
 import Color from "../../constant/Color";
 import KnockoutCard from "./Knockout/KnockoutCard";

@@ -11,12 +11,13 @@ import { ResizeMode, Video } from "expo-av";
 import ColorAccent from "../../constant/Color.js";
 import { createEditorJsViewer } from "editorjs-viewer-native";
 import { useNavigation } from "@react-navigation/native";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import userStore from "../../store/userStore.js";
 import { getQuestionByPaidLesson } from "../../hooks/Question/getQuestions.js";
 import { getUserLesson } from "../../hooks/UserLesson/getUserLesson.js";
 import { errorToast } from "../../utils/toastConfig.js";
 import { getPaidLessonById } from "../../hooks/Lesson/getPaidLessonById.js";
+import createUserLessonPaidLesson from "../../hooks/UserLesson/createUserLessonPaidLesson.js";
 
 const MyHeader = ({ data }) => {
   if (data && data.text.includes("&nbsp;")) {
@@ -114,7 +115,8 @@ export default function PaidLesson(props) {
   const navigation = useNavigation();
   const token = userStore((state) => state.token);
   const user = userStore((state) => state.user);
-  const { lesson } = props.route.params;
+
+  const { lesson, userLesson } = props.route.params;
 
   const lessonId = lesson.id;
   const paidLesson = useQuery({
@@ -129,11 +131,20 @@ export default function PaidLesson(props) {
     enabled: !!token,
   });
 
-  const userLesson = useQuery({
-    queryKey: ["userLesson", token, lessonId],
-    queryFn: () => getUserLesson(token, user, lessonId),
-    enabled: !!token,
+  const userLessonMutation = useMutation({
+    mutationFn: createUserLessonPaidLesson,
+    onSuccess: () => {
+      navigation.navigate("Quiz", {
+        questions: paidLessonQuestions.data,
+        lesson: lesson,
+      });
+    },
   });
+
+  const handleNavigateToQuiz = () => {
+    const courseId = lesson.paidCourseId;
+    userLessonMutation.mutate({ user, lessonId, courseId, token });
+  };
 
   const renderEditorJsContent = () => (
     <>
@@ -148,17 +159,16 @@ export default function PaidLesson(props) {
             if (paidLessonQuestions.data.length === 0) {
               errorToast("No quiz available for this lesson");
             } else {
-              navigation.navigate("Quiz", {
-                questions: paidLessonQuestions.data,
-                lesson: lesson,
-              });
+              handleNavigateToQuiz();
             }
           }}
         >
-          {userLesson.isSuccess && userLesson.data == null ? (
-            <Text style={styles.btnText}>Quiz</Text>
-          ) : (
+          {userLesson.some(
+            (obj) => obj.paidLessonId == lesson.id && obj.status == 1
+          ) ? (
             <Text style={styles.btnText}>Revision</Text>
+          ) : (
+            <Text style={styles.btnText}>Quiz</Text>
           )}
         </TouchableOpacity>
       </View>

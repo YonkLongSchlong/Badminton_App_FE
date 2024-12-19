@@ -27,6 +27,10 @@ export default Quiz = ({ route }) => {
 
   const currentQuestion = questions[currentQuestionIndex];
 
+  const handleNavigation = () => {
+    navigation.pop(2);
+  };
+
   const handleAnswer = (option) => {
     setSelectedAnswer(option.text);
     if (option.text == currentQuestion.rightAnswer) {
@@ -55,7 +59,7 @@ export default Quiz = ({ route }) => {
     mutationFn: updateUserLessonFreeLesson,
     onSuccess: () => {
       setIsCompleted(true);
-      queryClient.invalidateQueries("userLesson");
+      queryClient.invalidateQueries("freeCourse");
     },
   });
 
@@ -63,7 +67,7 @@ export default Quiz = ({ route }) => {
     mutationFn: updateUserLessonPaidLesson,
     onSuccess: () => {
       setIsCompleted(true);
-      queryClient.invalidateQueries("userLesson");
+      queryClient.invalidateQueries("paidCourse");
     },
   });
 
@@ -93,7 +97,7 @@ export default Quiz = ({ route }) => {
         <Text style={styles.score}>
           Your score: {score}/{questions.length}
         </Text>
-        <TouchableOpacity style={styles.nextBtn}>
+        <TouchableOpacity style={styles.nextBtn} onPress={handleNavigation}>
           <Text style={styles.btnText}>NEXT LESSON</Text>
         </TouchableOpacity>
       </View>

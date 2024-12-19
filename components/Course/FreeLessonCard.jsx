@@ -3,40 +3,41 @@ import React from "react";
 import { scale, ScaledSheet } from "react-native-size-matters";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import createUserLessonFreeLesson from "../../hooks/UserLesson/createUserLessonFreeLesson";
-import { getUserLesson } from "../../hooks/UserLesson/getUserLesson";
+import { errorToast } from "../../utils/toastConfig";
 
 export default FreeLessonCard = (props) => {
   const navigation = useNavigation();
   const user = userStore((state) => state.user);
   const token = userStore((state) => state.token);
-  const lessonId = props.lesson.id;
+  console.log(props.freeCourse);
 
-  const userLesson = useQuery({
-    queryKey: ["userLesson", token, lessonId],
-    queryFn: () => getUserLesson(token, user, lessonId),
-    enabled: !!token,
-  });
+  const userLesson = props.freeCourse.result.userLesson;
+  console.log(userLesson);
 
   const enrollLessonMutation = useMutation({
     mutationFn: createUserLessonFreeLesson,
     onSuccess: (data) => {
       navigation.navigate("WatchLesson", {
         lesson: props.lesson,
-        userLesson: userLesson.data,
+        userLesson: userLesson,
       });
     },
   });
 
   const handleNavigation = () => {
-    if (userLesson.data != null) {
+    if (props.freeCourse.started == false || props.freeCourse.started == null) {
+      errorToast("You will need to start the course to continue");
+      return;
+    }
+    console.log(props.lesson);
+
+    if (userLesson != null) {
       navigation.navigate("WatchLesson", {
         lesson: props.lesson,
-        userLesson: userLesson.data,
+        userLesson: userLesson,
       });
     } else {
       const lessonId = props.lesson.id;
@@ -65,7 +66,14 @@ export default FreeLessonCard = (props) => {
       </View>
 
       <TouchableOpacity style={styles.secondPart}>
-        <MaterialIcons name="event-available" size={scale(14)} color="black" />
+        {userLesson.length > 0 &&
+        userLesson.some(
+          (obj) => obj.freeLessonId == props.lesson.id && obj.status == 1
+        ) ? (
+          <MaterialIcons name="done" size={scale(14)} color="black" />
+        ) : (
+          <MaterialIcons name="chevron-right" size={scale(14)} color="black" />
+        )}
       </TouchableOpacity>
     </View>
   );
